@@ -1,17 +1,21 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { PrivyProvider as PrivyProviderBase } from '@privy-io/react-auth';
+import React from 'react'
+import { PrivyProvider as PrivyProviderBase } from '@privy-io/react-auth'
 
 interface PrivyProviderProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export default function PrivyProvider({ children }: PrivyProviderProps) {
-  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || '';
+  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''
 
+  // Si no hay App ID configurado, solo retornar los children sin el provider
   if (!appId) {
-    console.warn('⚠️ NEXT_PUBLIC_PRIVY_APP_ID is not set. Wallet connection will not work.');
+    console.warn(
+      '⚠️ NEXT_PUBLIC_PRIVY_APP_ID is not set. Running without wallet connection.'
+    )
+    return <>{children}</>
   }
 
   return (
@@ -32,5 +36,5 @@ export default function PrivyProvider({ children }: PrivyProviderProps) {
     >
       {children}
     </PrivyProviderBase>
-  );
+  )
 }

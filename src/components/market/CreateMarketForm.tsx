@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import { CreateMarketForm, MarketCategory, OutcomeType } from '@/types/market';
 import { PlusIcon, TrashIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import MarketPreview from './MarketPreview';
+import { MarketService } from '@/lib/marketService';
+import { useWallet } from '@/hooks/useWallet';
+import { useRouter } from 'next/navigation';
 
 const initialForm: CreateMarketForm = {
   question: '',
@@ -41,6 +44,8 @@ const outcomeTypeOptions = [
 ];
 
 export default function CreateMarketForm() {
+  const { isConnected, address, connect } = useWallet();
+  const router = useRouter();
   const [form, setForm] = useState<CreateMarketForm>(initialForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -79,16 +84,50 @@ export default function CreateMarketForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check wallet connection first
+    if (!isConnected) {
+      await connect();
+      return;
+    }
+
+    if (!address) {
+      alert('Please connect your wallet to create a market');
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
-      // TODO: Implement market creation logic
       console.log('Creating market:', form);
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
+      
+      // Create market through service
+      const newMarket = await MarketService.createMarket({
+        question: form.question,
+        description: form.description,
+        category: form.category,
+        resolutionDate: form.resolutionDate,
+        resolutionSource: form.resolutionSource,
+        outcomeType: form.outcomeType,
+        options: form.options.map(option => ({
+          id: option.text.toLowerCase().replace(/\s+/g, '_'),
+          text: option.text,
+          probability: 0.5, // Default probability
+          volume: 0
+        })),
+        creator: address,
+        fees: form.fees
+      });
+      
+      console.log('Market created successfully:', newMarket);
       alert('Market created successfully!');
+      
+      // Redirect to the new market
+      router.push(`/market/${newMarket.id}`);
+      
     } catch (error) {
       console.error('Error creating market:', error);
-      alert('Error creating market. Please try again.');
+      alert(`Error creating market: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -331,11 +370,26 @@ export default function CreateMarketForm() {
           </div>
         </div>
 
+        {/* Wallet Connection Status */}
+        {!isConnected && (
+          <div className="bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-4 mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 bg-yellow-600 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">!</span>
+              </div>
+              <div>
+                <p className="text-yellow-300 font-medium">Wallet Not Connected</p>
+                <p className="text-yellow-400 text-sm">Connect your wallet to create a market</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Submit Button */}
         <div className="flex justify-end">
           <button
             type="submit"
-            disabled={!isFormValid() || isSubmitting}
+            disabled={!isFormValid() || isSubmitting || !isConnected}
             className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center gap-2"
           >
             {isSubmitting ? (
@@ -343,6 +397,8 @@ export default function CreateMarketForm() {
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 Creating Market...
               </>
+            ) : !isConnected ? (
+              'Connect Wallet to Create'
             ) : (
               'Create Market'
             )}

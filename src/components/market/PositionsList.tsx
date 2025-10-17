@@ -1,30 +1,65 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Position } from '@/types/market';
-import { ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '@heroicons/react/24/solid';
-import { ChartBarIcon } from '@heroicons/react/24/outline';
+import { MarketService } from '@/lib/marketService';
+import { useWallet } from '@/hooks/useWallet';
 
 interface PositionsListProps {
-  positions: Position[];
-  onSell?: (positionId: string) => void;
+  marketId: string;
 }
 
-export default function PositionsList({ positions, onSell }: PositionsListProps) {
-  const totalValue = positions.reduce((sum, pos) => sum + pos.currentValue, 0);
-  const totalProfitLoss = positions.reduce((sum, pos) => sum + pos.profitLoss, 0);
-  const totalProfitLossPercentage = positions.reduce((sum, pos) => sum + pos.profitLossPercentage, 0) / positions.length;
+export default function PositionsList({ marketId }: PositionsListProps) {
+  const { address } = useWallet();
+  const [positions, setPositions] = useState<Position[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (positions.length === 0) {
+  useEffect(() => {
+    const loadPositions = async () => {
+      if (!address) {
+        setPositions([]);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const positionsData = await MarketService.getUserPositions(address);
+        // Filter positions for this market
+        const marketPositions = positionsData.filter(p => p.marketId === marketId);
+        setPositions(marketPositions);
+      } catch (error) {
+        console.error('Error loading positions:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPositions();
+  }, [marketId, address]);
+
+  const handleSellPosition = (positionId: string) => {
+    console.log('Sell position:', positionId);
+    // TODO: Implement sell position logic
+  };
+
+  if (!address) {
     return (
       <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-xl font-semibold mb-4">Your Positions</h3>
-        <div className="text-center py-12">
-          <ChartBarIcon className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-          <h4 className="text-lg font-medium text-gray-400 mb-2">No positions yet</h4>
-          <p className="text-gray-500 text-sm">
-            Start trading to build your portfolio
-          </p>
+        <h3 className="text-lg font-semibold mb-4">Your Positions</h3>
+        <p className="text-gray-400 text-center py-4">Connect your wallet to view positions</p>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <h3 className="text-lg font-semibold mb-4">Your Positions</h3>
+        <div className="animate-pulse space-y-2">
+          {[...Array(2)].map((_, i) => (
+            <div key={i} className="h-16 bg-gray-700 rounded"></div>
+          ))}
         </div>
       </div>
     );
@@ -32,113 +67,50 @@ export default function PositionsList({ positions, onSell }: PositionsListProps)
 
   return (
     <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-      <h3 className="text-xl font-semibold mb-6">Your Positions</h3>
-
-      {/* Portfolio Summary */}
-      <div className="bg-gray-900/50 rounded-lg p-4 mb-6 border border-gray-700">
-        <div className="grid grid-cols-3 gap-4">
-          <div>
-            <div className="text-xs text-gray-400 mb-1">Total Value</div>
-            <div className="text-white font-semibold text-lg">
-              ${totalValue.toFixed(2)}
-            </div>
-          </div>
-          <div>
-            <div className="text-xs text-gray-400 mb-1">P&L</div>
-            <div className={`font-semibold text-lg flex items-center gap-1 ${
-              totalProfitLoss >= 0 ? 'text-green-400' : 'text-red-400'
-            }`}>
-              {totalProfitLoss >= 0 ? (
-                <ArrowTrendingUpIcon className="w-4 h-4" />
-              ) : (
-                <ArrowTrendingDownIcon className="w-4 h-4" />
-              )}
-              ${Math.abs(totalProfitLoss).toFixed(2)}
-            </div>
-          </div>
-          <div>
-            <div className="text-xs text-gray-400 mb-1">P&L %</div>
-            <div className={`font-semibold text-lg ${
-              totalProfitLossPercentage >= 0 ? 'text-green-400' : 'text-red-400'
-            }`}>
-              {totalProfitLossPercentage >= 0 ? '+' : ''}
-              {totalProfitLossPercentage.toFixed(2)}%
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Positions List */}
-      <div className="space-y-3">
-        {positions.map((position) => (
-          <div
-            key={position.id}
-            className="bg-gray-700/50 rounded-lg p-4 border border-gray-600 hover:border-purple-500/50 transition-all"
-          >
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <h4 className="font-semibold text-white mb-1">
-                  Position #{position.optionId}
-                </h4>
-                <p className="text-sm text-gray-400">
-                  Market: {position.marketId}
-                </p>
+      <h3 className="text-lg font-semibold mb-4">Your Positions</h3>
+      
+      {positions.length === 0 ? (
+        <p className="text-gray-400 text-center py-4">No positions in this market</p>
+      ) : (
+        <div className="space-y-3">
+          {positions.map((position) => (
+            <div key={position.id} className="p-4 bg-gray-700/50 rounded-lg border border-gray-600">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white font-medium">{position.optionId}</span>
+                <span className="text-purple-400 font-bold">
+                  {position.shares.toFixed(2)} shares
+                </span>
               </div>
-              <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                position.profitLoss >= 0
-                  ? 'bg-green-600/20 text-green-400 border border-green-600/30'
-                  : 'bg-red-600/20 text-red-400 border border-red-600/30'
-              }`}>
-                {position.profitLoss >= 0 ? '+' : ''}
-                {position.profitLossPercentage.toFixed(2)}%
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <div>
-                <div className="text-xs text-gray-400 mb-1">Shares</div>
-                <div className="text-white font-medium">
-                  {position.shares.toFixed(2)}
+              
+              <div className="grid grid-cols-2 gap-4 text-sm mb-3">
+                <div>
+                  <div className="text-gray-400">Avg Price</div>
+                  <div className="text-white font-medium">${position.averagePrice.toFixed(4)}</div>
+                </div>
+                <div>
+                  <div className="text-gray-400">Current Value</div>
+                  <div className="text-white font-medium">${position.currentValue.toFixed(2)}</div>
                 </div>
               </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">Avg. Price</div>
-                <div className="text-white font-medium">
-                  ${position.averagePrice.toFixed(4)}
-                </div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">Current Value</div>
-                <div className="text-white font-medium">
-                  ${position.currentValue.toFixed(2)}
-                </div>
-              </div>
-              <div>
-                <div className="text-xs text-gray-400 mb-1">Profit/Loss</div>
-                <div className={`font-medium ${
+              
+              <div className="flex items-center justify-between">
+                <div className={`text-sm font-medium ${
                   position.profitLoss >= 0 ? 'text-green-400' : 'text-red-400'
                 }`}>
-                  {position.profitLoss >= 0 ? '+' : ''}
-                  ${position.profitLoss.toFixed(2)}
+                  {position.profitLoss >= 0 ? '+' : ''}${position.profitLoss.toFixed(2)} 
+                  ({position.profitLossPercentage >= 0 ? '+' : ''}{position.profitLossPercentage.toFixed(1)}%)
                 </div>
+                <button
+                  onClick={() => handleSellPosition(position.id)}
+                  className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded transition-colors"
+                >
+                  Sell
+                </button>
               </div>
             </div>
-
-            {onSell && (
-              <button
-                onClick={() => onSell(position.id)}
-                className="w-full py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-600/30 rounded-lg font-medium text-sm transition-colors"
-              >
-                Sell Position
-              </button>
-            )}
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
-
-
-
-

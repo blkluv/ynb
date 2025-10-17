@@ -5,12 +5,13 @@ import { MarketOption, TradeType } from '@/types/market';
 import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useWallet } from '@/hooks/useWallet';
+import { MarketService } from '@/lib/marketService';
 
 interface TradingPanelProps {
   marketId: string;
   options: MarketOption[];
   tradingFee: number;
-  onTrade: (optionId: string, type: TradeType, amount: number, shares: number) => Promise<void>;
+  onTrade?: (optionId: string, type: TradeType, amount: number, shares: number) => Promise<void>;
 }
 
 export default function TradingPanel({ marketId, options, tradingFee, onTrade }: TradingPanelProps) {
@@ -36,15 +37,36 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
       return;
     }
 
-    if (!selectedOption || amountNum <= 0) return;
+    if (!selectedOption || amountNum <= 0 || !address) return;
 
     setIsSubmitting(true);
     try {
       console.log('Trading with wallet:', address);
-      await onTrade(selectedOption, tradeType, amountNum, estimatedShares);
+      
+      // Execute trade through service
+      const trade = await MarketService.executeTrade(
+        marketId,
+        selectedOption,
+        tradeType,
+        amountNum,
+        address
+      );
+      
+      console.log('Trade executed:', trade);
+      
+      // Call custom onTrade callback if provided
+      if (onTrade) {
+        await onTrade(selectedOption, tradeType, amountNum, trade.shares);
+      }
+      
       setAmount('');
+      
+      // Show success message (you could add a toast notification here)
+      alert(`Trade successful! ${tradeType === TradeType.BUY ? 'Bought' : 'Sold'} ${trade.shares.toFixed(2)} shares`);
+      
     } catch (error) {
       console.error('Trade error:', error);
+      alert(`Trade failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsSubmitting(false);
     }

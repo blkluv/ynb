@@ -1,14 +1,73 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { OrderBook as OrderBookType } from '@/types/market';
+import { MarketService } from '@/lib/marketService';
 
 interface OrderBookProps {
-  orderBook: OrderBookType;
-  optionName: string;
+  marketId: string;
 }
 
-export default function OrderBook({ orderBook, optionName }: OrderBookProps) {
+export default function OrderBook({ marketId }: OrderBookProps) {
+  const [orderBook, setOrderBook] = useState<OrderBookType | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadOrderBook = async () => {
+      try {
+        setLoading(true);
+        // For now, we'll create a mock order book
+        // In production, this would come from the blockchain/API
+        const mockOrderBook: OrderBookType = {
+          optionId: 'yes',
+          bids: [
+            { price: 0.6480, shares: 150, total: 97.2 },
+            { price: 0.6450, shares: 200, total: 129.0 },
+            { price: 0.6400, shares: 350, total: 224.0 },
+            { price: 0.6350, shares: 180, total: 114.3 },
+            { price: 0.6300, shares: 250, total: 157.5 }
+          ],
+          asks: [
+            { price: 0.6520, shares: 180, total: 117.36 },
+            { price: 0.6550, shares: 220, total: 144.1 },
+            { price: 0.6600, shares: 300, total: 198.0 },
+            { price: 0.6650, shares: 150, total: 99.75 },
+            { price: 0.6700, shares: 200, total: 134.0 }
+          ]
+        };
+        setOrderBook(mockOrderBook);
+      } catch (error) {
+        console.error('Error loading order book:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadOrderBook();
+  }, [marketId]);
+
+  if (loading) {
+    return (
+      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <h3 className="text-lg font-semibold mb-4">Order Book</h3>
+        <div className="animate-pulse space-y-2">
+          <div className="h-4 bg-gray-700 rounded"></div>
+          <div className="h-4 bg-gray-700 rounded"></div>
+          <div className="h-4 bg-gray-700 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!orderBook) {
+    return (
+      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <h3 className="text-lg font-semibold mb-4">Order Book</h3>
+        <p className="text-gray-400">No order book data available</p>
+      </div>
+    );
+  }
+
   const maxTotal = Math.max(
     ...orderBook.bids.map(b => b.total),
     ...orderBook.asks.map(a => a.total)
@@ -16,127 +75,63 @@ export default function OrderBook({ orderBook, optionName }: OrderBookProps) {
 
   return (
     <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-      <h3 className="text-xl font-semibold mb-4">Order Book - {optionName}</h3>
-
-      <div className="grid grid-cols-2 gap-6">
-        {/* Bids (Buy Orders) */}
+      <h3 className="text-lg font-semibold mb-4">Order Book</h3>
+      
+      <div className="grid grid-cols-2 gap-4">
+        {/* Bids */}
         <div>
-          <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-700">
-            <h4 className="text-sm font-semibold text-green-400">Bids (Buy)</h4>
-          </div>
+          <div className="text-sm font-medium text-gray-400 mb-2">Bids (Buy Orders)</div>
           <div className="space-y-1">
-            {/* Header */}
-            <div className="grid grid-cols-3 gap-2 text-xs text-gray-400 font-medium mb-2">
-              <span>Price</span>
-              <span className="text-right">Shares</span>
-              <span className="text-right">Total</span>
-            </div>
-            
-            {/* Bid Orders */}
-            {orderBook.bids.length > 0 ? (
-              orderBook.bids.map((bid, index) => (
-                <div key={index} className="relative">
-                  {/* Background bar */}
-                  <div
-                    className="absolute inset-0 bg-green-500/10 rounded"
+            {orderBook.bids.map((bid, index) => (
+              <div key={index} className="flex items-center justify-between text-sm">
+                <div className="flex-1 flex items-center">
+                  <div 
+                    className="h-6 bg-green-600/20 rounded-l"
                     style={{ width: `${(bid.total / maxTotal) * 100}%` }}
                   ></div>
-                  
-                  {/* Content */}
-                  <div className="relative grid grid-cols-3 gap-2 text-sm py-1.5 px-2 hover:bg-gray-700/50 rounded transition-colors">
-                    <span className="text-green-400 font-medium">
-                      ${bid.price.toFixed(4)}
-                    </span>
-                    <span className="text-right text-white">
-                      {bid.shares.toFixed(2)}
-                    </span>
-                    <span className="text-right text-gray-300">
-                      ${bid.total.toFixed(2)}
-                    </span>
-                  </div>
+                  <div className="flex-1 bg-gray-700/50 h-6 rounded-r"></div>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-4 text-gray-500 text-sm">
-                No buy orders
+                <div className="flex items-center justify-between w-32 ml-2">
+                  <span className="text-green-400 font-medium">{bid.price.toFixed(4)}</span>
+                  <span className="text-white">{bid.shares}</span>
+                  <span className="text-gray-400">{bid.total.toFixed(1)}</span>
+                </div>
               </div>
-            )}
+            ))}
           </div>
         </div>
 
-        {/* Asks (Sell Orders) */}
+        {/* Asks */}
         <div>
-          <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-700">
-            <h4 className="text-sm font-semibold text-red-400">Asks (Sell)</h4>
-          </div>
+          <div className="text-sm font-medium text-gray-400 mb-2">Asks (Sell Orders)</div>
           <div className="space-y-1">
-            {/* Header */}
-            <div className="grid grid-cols-3 gap-2 text-xs text-gray-400 font-medium mb-2">
-              <span>Price</span>
-              <span className="text-right">Shares</span>
-              <span className="text-right">Total</span>
-            </div>
-            
-            {/* Ask Orders */}
-            {orderBook.asks.length > 0 ? (
-              orderBook.asks.map((ask, index) => (
-                <div key={index} className="relative">
-                  {/* Background bar */}
-                  <div
-                    className="absolute inset-0 bg-red-500/10 rounded"
+            {orderBook.asks.map((ask, index) => (
+              <div key={index} className="flex items-center justify-between text-sm">
+                <div className="flex-1 flex items-center">
+                  <div 
+                    className="h-6 bg-red-600/20 rounded-l"
                     style={{ width: `${(ask.total / maxTotal) * 100}%` }}
                   ></div>
-                  
-                  {/* Content */}
-                  <div className="relative grid grid-cols-3 gap-2 text-sm py-1.5 px-2 hover:bg-gray-700/50 rounded transition-colors">
-                    <span className="text-red-400 font-medium">
-                      ${ask.price.toFixed(4)}
-                    </span>
-                    <span className="text-right text-white">
-                      {ask.shares.toFixed(2)}
-                    </span>
-                    <span className="text-right text-gray-300">
-                      ${ask.total.toFixed(2)}
-                    </span>
-                  </div>
+                  <div className="flex-1 bg-gray-700/50 h-6 rounded-r"></div>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-4 text-gray-500 text-sm">
-                No sell orders
+                <div className="flex items-center justify-between w-32 ml-2">
+                  <span className="text-red-400 font-medium">{ask.price.toFixed(4)}</span>
+                  <span className="text-white">{ask.shares}</span>
+                  <span className="text-gray-400">{ask.total.toFixed(1)}</span>
+                </div>
               </div>
-            )}
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Summary Stats */}
-      <div className="mt-6 pt-6 border-t border-gray-700 grid grid-cols-3 gap-4 text-center">
-        <div>
-          <div className="text-xs text-gray-400 mb-1">Spread</div>
-          <div className="text-white font-semibold">
-            {orderBook.asks.length > 0 && orderBook.bids.length > 0
-              ? `$${(orderBook.asks[0].price - orderBook.bids[0].price).toFixed(4)}`
-              : 'N/A'}
-          </div>
-        </div>
-        <div>
-          <div className="text-xs text-gray-400 mb-1">Best Bid</div>
-          <div className="text-green-400 font-semibold">
-            {orderBook.bids.length > 0 ? `$${orderBook.bids[0].price.toFixed(4)}` : 'N/A'}
-          </div>
-        </div>
-        <div>
-          <div className="text-xs text-gray-400 mb-1">Best Ask</div>
-          <div className="text-red-400 font-semibold">
-            {orderBook.asks.length > 0 ? `$${orderBook.asks[0].price.toFixed(4)}` : 'N/A'}
-          </div>
+      <div className="mt-4 pt-4 border-t border-gray-700">
+        <div className="flex items-center justify-between text-xs text-gray-400">
+          <span>Price</span>
+          <span>Shares</span>
+          <span>Total</span>
         </div>
       </div>
     </div>
   );
 }
-
-
-
-

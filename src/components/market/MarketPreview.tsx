@@ -1,26 +1,25 @@
 'use client';
 
 import React from 'react';
-import { CreateMarketForm, MarketCategory } from '@/types/market';
-import { CalendarIcon, GlobeAltIcon, TagIcon } from '@heroicons/react/24/outline';
+import { MarketQuestion } from '@/types/market';
+import { CalendarIcon, GlobeAltIcon, TagIcon, CurrencyDollarIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 
 interface MarketPreviewProps {
-  form: CreateMarketForm;
+  market: MarketQuestion;
 }
 
-const categoryEmojis: Record<MarketCategory, string> = {
-  [MarketCategory.SPORTS]: '⚽',
-  [MarketCategory.POLITICS]: '🏛️',
-  [MarketCategory.ECONOMICS]: '📈',
-  [MarketCategory.TECHNOLOGY]: '💻',
-  [MarketCategory.CRYPTO]: '₿',
-  [MarketCategory.WEATHER]: '🌤️',
-  [MarketCategory.ENTERTAINMENT]: '🎬',
-  [MarketCategory.OTHER]: '📊'
+const categoryEmojis: Record<string, string> = {
+  'sports': '⚽',
+  'politics': '🏛️',
+  'economics': '📈',
+  'technology': '💻',
+  'crypto': '₿',
+  'weather': '🌤️',
+  'entertainment': '🎬',
+  'other': '📊'
 };
 
 const formatDate = (dateString: string) => {
-  if (!dateString) return 'Not set';
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -40,26 +39,15 @@ const formatOutcomeType = (type: string) => {
   }
 };
 
-export default function MarketPreview({ form }: MarketPreviewProps) {
-  if (!form.question.trim()) {
-    return (
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold mb-4 text-gray-300">Market Preview</h3>
-        <p className="text-gray-400 italic">Start filling out the form to see a preview of your market...</p>
-      </div>
-    );
-  }
-
+export default function MarketPreview({ market }: MarketPreviewProps) {
   return (
     <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-      <h3 className="text-lg font-semibold mb-4">Market Preview</h3>
-      
       <div className="space-y-6">
         {/* Question */}
         <div>
-          <h4 className="text-lg font-medium text-white mb-2">{form.question}</h4>
-          {form.description && (
-            <p className="text-gray-300 text-sm leading-relaxed">{form.description}</p>
+          <h4 className="text-xl font-semibold text-white mb-2">{market.question}</h4>
+          {market.description && (
+            <p className="text-gray-300 text-sm leading-relaxed">{market.description}</p>
           )}
         </div>
 
@@ -67,80 +55,106 @@ export default function MarketPreview({ form }: MarketPreviewProps) {
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-2 text-gray-400">
             <TagIcon className="w-4 h-4" />
-            <span>{categoryEmojis[form.category]} {form.category}</span>
+            <span>{categoryEmojis[market.category] || '📊'} {market.category.toUpperCase()}</span>
           </div>
           <div className="text-gray-400">
-            {formatOutcomeType(form.outcomeType)}
+            {formatOutcomeType(market.outcomeType)}
           </div>
         </div>
 
         {/* Options */}
         <div>
           <h5 className="font-medium text-white mb-3">Market Options:</h5>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {form.options.map((option, index) => (
+          <div className="space-y-2">
+            {market.options.map((option) => (
               <div
-                key={index}
+                key={option.id}
                 className="flex items-center justify-between p-3 bg-gray-700 rounded-lg border border-gray-600"
               >
-                <span className="text-white font-medium">{option.text || `Option ${index + 1}`}</span>
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <div className="w-16 h-2 bg-gray-600 rounded-full">
-                    <div className="w-8 h-2 bg-purple-500 rounded-full"></div>
+                <span className="text-white font-medium">{option.text}</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-24 h-2 bg-gray-600 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-purple-600 to-blue-600"
+                      style={{ width: `${option.probability * 100}%` }}
+                    ></div>
                   </div>
-                  <span>50%</span>
+                  <span className="text-purple-400 font-bold text-sm min-w-[3rem] text-right">
+                    {(option.probability * 100).toFixed(1)}%
+                  </span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Resolution Details */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            <CalendarIcon className="w-4 h-4" />
-            <span>Resolution: {formatDate(form.resolutionDate)}</span>
-          </div>
-          
-          {form.resolutionSource && (
-            <div className="flex items-center gap-2 text-sm text-gray-400">
-              <GlobeAltIcon className="w-4 h-4" />
-              <span className="truncate">{form.resolutionSource}</span>
+        {/* Market Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="flex items-center gap-2">
+            <CurrencyDollarIcon className="w-5 h-5 text-purple-400" />
+            <div>
+              <div className="text-xs text-gray-400">Volume</div>
+              <div className="text-white font-semibold">${market.volume.toLocaleString()}</div>
             </div>
-          )}
+          </div>
+          <div className="flex items-center gap-2">
+            <UserGroupIcon className="w-5 h-5 text-blue-400" />
+            <div>
+              <div className="text-xs text-gray-400">Traders</div>
+              <div className="text-white font-semibold">{market.participants}</div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="w-5 h-5 text-green-400" />
+            <div>
+              <div className="text-xs text-gray-400">Resolution</div>
+              <div className="text-white font-semibold text-xs">
+                {formatDate(market.resolutionDate)}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 bg-yellow-600/20 rounded flex items-center justify-center">
+              <span className="text-yellow-400 font-bold text-xs">%</span>
+            </div>
+            <div>
+              <div className="text-xs text-gray-400">Trading Fee</div>
+              <div className="text-white font-semibold">{market.fees.tradingFee}%</div>
+            </div>
+          </div>
         </div>
 
-        {/* Fees */}
-        <div className="border-t border-gray-700 pt-4">
-          <h5 className="font-medium text-white mb-3">Fee Structure:</h5>
-          <div className="grid grid-cols-3 gap-4 text-sm">
-            <div className="text-center">
-              <div className="text-gray-400">Creation</div>
-              <div className="text-white font-medium">{form.fees.creationFee}%</div>
+        {/* Resolution Details */}
+        <div className="space-y-3">
+          {market.resolutionSource && (
+            <div className="flex items-center gap-2 text-sm text-gray-400">
+              <GlobeAltIcon className="w-4 h-4" />
+              <a 
+                href={market.resolutionSource} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors truncate"
+              >
+                {market.resolutionSource}
+              </a>
             </div>
-            <div className="text-center">
-              <div className="text-gray-400">Trading</div>
-              <div className="text-white font-medium">{form.fees.tradingFee}%</div>
-            </div>
-            <div className="text-center">
-              <div className="text-gray-400">Resolution</div>
-              <div className="text-white font-medium">{form.fees.resolutionFee}%</div>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Status Indicator */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-700">
           <span className="text-sm text-gray-400">Market Status:</span>
-          <span className="px-3 py-1 bg-yellow-600/20 text-yellow-400 text-xs font-medium rounded-full border border-yellow-600/30">
-            Draft
+          <span className={`px-3 py-1 text-xs font-medium rounded-full border ${
+            market.status === 'active'
+              ? 'bg-green-600/20 text-green-400 border-green-600/30'
+              : market.status === 'resolved'
+              ? 'bg-blue-600/20 text-blue-400 border-blue-600/30'
+              : 'bg-gray-600/20 text-gray-400 border-gray-600/30'
+          }`}>
+            {market.status.toUpperCase()}
           </span>
         </div>
       </div>
     </div>
   );
 }
-
-
-
-

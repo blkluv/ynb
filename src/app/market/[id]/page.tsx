@@ -1,162 +1,115 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import Layout from '@/components/layout/Layout';
+import MarketPreview from '@/components/market/MarketPreview';
 import TradingPanel from '@/components/market/TradingPanel';
 import OrderBook from '@/components/market/OrderBook';
-import PositionsList from '@/components/market/PositionsList';
 import TradeHistory from '@/components/market/TradeHistory';
-import {
-  MarketQuestion,
-  MarketCategory,
-  OutcomeType,
-  MarketStatus,
-  TradeType,
-  TradeStatus,
-  Position,
-  Trade,
-  OrderBook as OrderBookType
-} from '@/types/market';
-import { CalendarIcon, UserGroupIcon, CurrencyDollarIcon, CheckBadgeIcon } from '@heroicons/react/24/outline';
-
-// Mock data - In production, this would come from API/blockchain
-const mockMarket: MarketQuestion = {
-  id: '1',
-  question: 'Will Bitcoin reach $100,000 by December 31, 2024?',
-  description: 'This market will resolve to YES if Bitcoin (BTC) reaches or exceeds $100,000 USD on any major exchange (Coinbase, Binance, Kraken) before 11:59 PM UTC on December 31, 2024. Price will be verified using CoinGecko API data.',
-  category: MarketCategory.CRYPTO,
-  resolutionDate: '2024-12-31T23:59:59Z',
-  resolutionSource: 'https://www.coingecko.com/en/coins/bitcoin',
-  outcomeType: OutcomeType.BINARY,
-  options: [
-    { id: 'yes', text: 'Yes', probability: 0.65, volume: 12500 },
-    { id: 'no', text: 'No', probability: 0.35, volume: 8300 }
-  ],
-  creator: '0x1234...5678',
-  createdAt: '2024-01-15T10:00:00Z',
-  status: MarketStatus.ACTIVE,
-  volume: 20800,
-  participants: 342,
-  fees: {
-    creationFee: 0.5,
-    tradingFee: 0.5,
-    resolutionFee: 1.0
-  }
-};
-
-const mockOrderBook: OrderBookType = {
-  optionId: 'yes',
-  bids: [
-    { price: 0.6480, shares: 150, total: 97.2 },
-    { price: 0.6450, shares: 200, total: 129.0 },
-    { price: 0.6400, shares: 350, total: 224.0 },
-    { price: 0.6350, shares: 180, total: 114.3 },
-    { price: 0.6300, shares: 250, total: 157.5 }
-  ],
-  asks: [
-    { price: 0.6520, shares: 180, total: 117.36 },
-    { price: 0.6550, shares: 220, total: 144.1 },
-    { price: 0.6600, shares: 300, total: 198.0 },
-    { price: 0.6650, shares: 150, total: 99.75 },
-    { price: 0.6700, shares: 200, total: 134.0 }
-  ]
-};
-
-const mockPositions: Position[] = [
-  {
-    id: 'pos1',
-    marketId: '1',
-    optionId: 'yes',
-    shares: 50,
-    averagePrice: 0.62,
-    currentValue: 32.5,
-    profitLoss: 1.5,
-    profitLossPercentage: 4.84
-  }
-];
-
-const mockTrades: Trade[] = [
-  {
-    id: 'trade1',
-    marketId: '1',
-    userId: 'user1',
-    optionId: 'yes',
-    type: TradeType.BUY,
-    amount: 31,
-    shares: 50,
-    price: 0.62,
-    fee: 0.155,
-    timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-    status: TradeStatus.CONFIRMED,
-    txHash: '0xabcd...1234'
-  },
-  {
-    id: 'trade2',
-    marketId: '1',
-    userId: 'user1',
-    optionId: 'no',
-    type: TradeType.BUY,
-    amount: 10,
-    shares: 28.57,
-    price: 0.35,
-    fee: 0.05,
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
-    status: TradeStatus.CONFIRMED,
-    txHash: '0xabcd...5678'
-  }
-];
+import PositionsList from '@/components/market/PositionsList';
+import { MarketQuestion, Position, Trade, TradeType } from '@/types/market';
+import { MarketService } from '@/lib/marketService';
+import { useWallet } from '@/hooks/useWallet';
 
 export default function MarketPage() {
-  const [positions] = useState<Position[]>(mockPositions);
-  const [trades, setTrades] = useState<Trade[]>(mockTrades);
+  const params = useParams();
+  const marketId = params.id as string;
+  const { address } = useWallet();
+  
+  const [market, setMarket] = useState<MarketQuestion | null>(null);
+  const [positions, setPositions] = useState<Position[]>([]);
+  const [trades, setTrades] = useState<Trade[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<'trade' | 'positions' | 'history'>('trade');
 
-  const handleTrade = async (optionId: string, type: TradeType, amount: number, shares: number) => {
-    console.log('Trade:', { optionId, type, amount, shares });
-    
-    // Simulate trade execution
-    const newTrade: Trade = {
-      id: `trade${Date.now()}`,
-      marketId: mockMarket.id,
-      userId: 'user1',
-      optionId,
-      type,
-      amount,
-      shares,
-      price: mockMarket.options.find(opt => opt.id === optionId)?.probability || 0,
-      fee: amount * (mockMarket.fees.tradingFee / 100),
-      timestamp: new Date().toISOString(),
-      status: TradeStatus.PENDING,
-      txHash: undefined
+  useEffect(() => {
+    const loadMarketData = async () => {
+      try {
+        setLoading(true);
+        const [marketData, positionsData, tradesData] = await Promise.all([
+          MarketService.getMarket(marketId),
+          address ? MarketService.getUserPositions(address) : Promise.resolve([]),
+          MarketService.getMarketTrades(marketId)
+        ]);
+
+        if (marketData) {
+          setMarket(marketData);
+        } else {
+          setError('Market not found');
+        }
+        
+        setPositions(positionsData);
+        setTrades(tradesData);
+      } catch (err) {
+        setError('Failed to load market data');
+        console.error('Error loading market:', err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setTrades(prev => [newTrade, ...prev]);
+    loadMarketData();
 
-    // Simulate blockchain confirmation
-    setTimeout(() => {
-      setTrades(prev => prev.map(t => 
-        t.id === newTrade.id 
-          ? { ...t, status: TradeStatus.CONFIRMED, txHash: `0x${Math.random().toString(16).slice(2, 10)}...${Math.random().toString(16).slice(2, 6)}` }
-          : t
-      ));
-    }, 2000);
+    // Subscribe to real-time updates
+    const unsubscribe = MarketService.subscribeToMarketUpdates(marketId, (updatedMarket) => {
+      setMarket(updatedMarket);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [marketId, address]);
+
+  const handleTrade = async (optionId: string, type: TradeType, amount: number, shares: number) => {
+    if (!address) return;
+
+    try {
+      // Refresh positions after trade
+      const updatedPositions = await MarketService.getUserPositions(address);
+      setPositions(updatedPositions);
+
+      // Refresh trades
+      const updatedTrades = await MarketService.getMarketTrades(marketId);
+      setTrades(updatedTrades);
+    } catch (error) {
+      console.error('Error refreshing data after trade:', error);
+    }
   };
 
-  const handleSellPosition = (positionId: string) => {
+  const handleSellPosition = async (positionId: string) => {
     console.log('Sell position:', positionId);
     // TODO: Implement sell position logic
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+  if (loading) {
+    return (
+      <Layout>
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !market) {
+    return (
+      <Layout>
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="text-center py-16">
+            <h2 className="text-2xl font-bold text-white mb-4">Market Not Found</h2>
+            <p className="text-gray-400 mb-6">{error || 'The market you are looking for does not exist.'}</p>
+            <a href="/markets" className="text-purple-400 hover:text-purple-300">
+              ← Back to Markets
+            </a>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -167,21 +120,21 @@ export default function MarketPage() {
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
                 <span className="px-3 py-1 bg-purple-600/20 text-purple-400 text-xs font-medium rounded-full border border-purple-600/30">
-                  ₿ {mockMarket.category}
+                  {market.category.toUpperCase()}
                 </span>
                 <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                  mockMarket.status === MarketStatus.ACTIVE
+                  market.status === 'active'
                     ? 'bg-green-600/20 text-green-400 border border-green-600/30'
                     : 'bg-gray-600/20 text-gray-400 border border-gray-600/30'
                 }`}>
-                  {mockMarket.status.toUpperCase()}
+                  {market.status.toUpperCase()}
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3">
-                {mockMarket.question}
+                {market.question}
               </h1>
               <p className="text-gray-300 leading-relaxed mb-4">
-                {mockMarket.description}
+                {market.description}
               </p>
             </div>
           </div>
@@ -189,33 +142,41 @@ export default function MarketPage() {
           {/* Market Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="flex items-center gap-3">
-              <CurrencyDollarIcon className="w-8 h-8 text-purple-400" />
+              <div className="w-8 h-8 bg-purple-600/20 rounded-lg flex items-center justify-center">
+                <span className="text-purple-400 font-bold text-sm">$</span>
+              </div>
               <div>
                 <div className="text-xs text-gray-400">Total Volume</div>
-                <div className="text-white font-semibold">${mockMarket.volume.toLocaleString()}</div>
+                <div className="text-white font-semibold">${market.volume.toLocaleString()}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <UserGroupIcon className="w-8 h-8 text-blue-400" />
+              <div className="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center">
+                <span className="text-blue-400 font-bold text-sm">👥</span>
+              </div>
               <div>
                 <div className="text-xs text-gray-400">Participants</div>
-                <div className="text-white font-semibold">{mockMarket.participants}</div>
+                <div className="text-white font-semibold">{market.participants}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <CalendarIcon className="w-8 h-8 text-green-400" />
+              <div className="w-8 h-8 bg-green-600/20 rounded-lg flex items-center justify-center">
+                <span className="text-green-400 font-bold text-sm">📅</span>
+              </div>
               <div>
                 <div className="text-xs text-gray-400">Resolution Date</div>
                 <div className="text-white font-semibold text-sm">
-                  {formatDate(mockMarket.resolutionDate)}
+                  {new Date(market.resolutionDate).toLocaleDateString()}
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <CheckBadgeIcon className="w-8 h-8 text-yellow-400" />
+              <div className="w-8 h-8 bg-yellow-600/20 rounded-lg flex items-center justify-center">
+                <span className="text-yellow-400 font-bold text-sm">%</span>
+              </div>
               <div>
                 <div className="text-xs text-gray-400">Trading Fee</div>
-                <div className="text-white font-semibold">{mockMarket.fees.tradingFee}%</div>
+                <div className="text-white font-semibold">{market.fees.tradingFee}%</div>
               </div>
             </div>
           </div>
@@ -226,16 +187,13 @@ export default function MarketPage() {
           {/* Left Column - Trading & Order Book */}
           <div className="lg:col-span-2 space-y-6">
             <TradingPanel
-              marketId={mockMarket.id}
-              options={mockMarket.options}
-              tradingFee={mockMarket.fees.tradingFee}
+              marketId={market.id}
+              options={market.options}
+              tradingFee={market.fees.tradingFee}
               onTrade={handleTrade}
             />
             
-            <OrderBook
-              orderBook={mockOrderBook}
-              optionName={mockMarket.options[0].text}
-            />
+            <OrderBook marketId={marketId} />
           </div>
 
           {/* Right Column - Tabs for Positions & History */}
@@ -279,7 +237,7 @@ export default function MarketPage() {
               <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
                 <h3 className="text-lg font-semibold mb-4">Market Options</h3>
                 <div className="space-y-3">
-                  {mockMarket.options.map((option) => (
+                  {market.options.map((option) => (
                     <div
                       key={option.id}
                       className="bg-gray-700/50 rounded-lg p-4 border border-gray-600"
@@ -305,10 +263,10 @@ export default function MarketPage() {
               </div>
             )}
             {selectedTab === 'positions' && (
-              <PositionsList positions={positions} onSell={handleSellPosition} />
+              <PositionsList marketId={marketId} />
             )}
             {selectedTab === 'history' && (
-              <TradeHistory trades={trades} />
+              <TradeHistory marketId={marketId} />
             )}
           </div>
         </div>
@@ -316,7 +274,3 @@ export default function MarketPage() {
     </Layout>
   );
 }
-
-
-
-

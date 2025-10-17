@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import MarketCard from '@/components/market/MarketCard';
 import {
@@ -12,9 +12,34 @@ import {
 import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import { MarketService } from '@/lib/marketService';
 
-// Mock data - In production, this would come from API/blockchain
-const mockMarkets: MarketQuestion[] = [
+export default function MarketsPage() {
+  const [markets, setMarkets] = useState<MarketQuestion[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [sortBy, setSortBy] = useState('volume');
+  const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    const loadMarkets = async () => {
+      try {
+        setLoading(true);
+        const marketsData = await MarketService.getMarkets();
+        setMarkets(marketsData);
+      } catch (error) {
+        console.error('Error loading markets:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMarkets();
+  }, []);
+
+  // Mock data fallback - In production, this would come from API/blockchain
+  const mockMarkets: MarketQuestion[] = [
   {
     id: '1',
     question: 'Will Bitcoin reach $100,000 by December 31, 2024?',
@@ -151,13 +176,7 @@ const sortOptions = [
   { value: 'ending-soon', label: 'Ending Soon' }
 ];
 
-export default function MarketsPage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [sortBy, setSortBy] = useState('volume');
-  const [showFilters, setShowFilters] = useState(false);
-
-  const filteredMarkets = mockMarkets
+  const filteredMarkets = markets
     .filter(market => {
       const matchesSearch = market.question.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || market.category === selectedCategory;
@@ -177,6 +196,18 @@ export default function MarketsPage() {
           return 0;
       }
     });
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -309,6 +340,7 @@ export default function MarketsPage() {
     </Layout>
   );
 }
+
 
 
 
