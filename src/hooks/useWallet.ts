@@ -17,8 +17,7 @@ export function useWallet() {
   // Get the primary Solana wallet
   const solanaWallet = useMemo(() => {
     return wallets.find(wallet => 
-      wallet.walletClientType === 'solana' || 
-      wallet.chainType === 'solana'
+      wallet.walletClientType === 'solana'
     );
   }, [wallets]);
 
