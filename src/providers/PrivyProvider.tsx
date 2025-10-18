@@ -8,9 +8,10 @@ interface PrivyProviderProps {
 }
 
 export default function PrivyProvider({ children }: PrivyProviderProps) {
-  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''
+  // Usar App ID de demo si no está configurado
+  // Para producción, crea tu propio App ID en https://dashboard.privy.io/
+  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'clpispdty00ycl80fpueukfm'
 
-  // Si no hay App ID configurado, solo retornar los children sin el provider
   if (!appId) {
     console.warn(
       '⚠️ NEXT_PUBLIC_PRIVY_APP_ID is not set. Running without wallet connection.'
