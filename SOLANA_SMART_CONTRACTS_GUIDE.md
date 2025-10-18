@@ -3,12 +3,14 @@
 ## ✅ **Estado Actual**
 
 ### **Frontend:**
+
 - ✅ **Deployado en Vercel** - https://[tu-proyecto].vercel.app
 - ✅ **Build exitoso**
 - ✅ **UI/UX completa**
 - ⏳ **Funcionalidad mock** (esperando smart contracts)
 
 ### **Smart Contracts:**
+
 - ✅ **Código completo** en `prediction-market-latam/`
 - ✅ **Arquitectura definida**
 - ⏳ **Pendiente: Instalación de herramientas**
@@ -30,6 +32,7 @@ cd "C:\Users\edgar\cypherpunk hackathon2025\prediction-market-latam"
 ```
 
 Este script instala todo automáticamente:
+
 - Solana CLI
 - Anchor Framework
 - Dependencias necesarias
@@ -43,6 +46,7 @@ Este script instala todo automáticamente:
 Si prefieres instalar manualmente o el script falla:
 
 #### **1. Instalar Rust** (5 min)
+
 ```powershell
 # Descarga desde: https://rustup.rs/
 # Ejecuta el instalador
@@ -50,8 +54,9 @@ Si prefieres instalar manualmente o el script falla:
 ```
 
 #### **2. Instalar Solana CLI** (3 min)
+
 ```powershell
-# Descarga: 
+# Descarga:
 https://github.com/solana-labs/solana/releases/latest
 
 # Busca: solana-install-init-x86_64-pc-windows-msvc.exe
@@ -63,6 +68,7 @@ solana --version
 ```
 
 #### **3. Instalar Anchor** (10 min)
+
 ```powershell
 cargo install --git https://github.com/coral-xyz/anchor avm --locked --force
 avm install 0.29.0
@@ -144,19 +150,19 @@ npm install @solana/web3.js @coral-xyz/anchor
 Crea `src/lib/solana/connection.ts`:
 
 ```typescript
-import { Connection, PublicKey } from '@solana/web3.js';
-import { AnchorProvider, Program } from '@coral-xyz/anchor';
-import idl from '../idl/prediction_market.json';
+import { Connection, PublicKey } from '@solana/web3.js'
+import { AnchorProvider, Program } from '@coral-xyz/anchor'
+import idl from '../idl/prediction_market.json'
 
-const PROGRAM_ID = new PublicKey('TU_PROGRAM_ID_AQUI');
+const PROGRAM_ID = new PublicKey('TU_PROGRAM_ID_AQUI')
 
 export const getConnection = () => {
-  return new Connection('https://api.devnet.solana.com', 'confirmed');
-};
+  return new Connection('https://api.devnet.solana.com', 'confirmed')
+}
 
 export const getProgram = (provider: AnchorProvider) => {
-  return new Program(idl as any, PROGRAM_ID, provider);
-};
+  return new Program(idl as any, PROGRAM_ID, provider)
+}
 ```
 
 ### **4. Actualizar `marketService.ts`**
@@ -164,18 +170,18 @@ export const getProgram = (provider: AnchorProvider) => {
 Reemplaza las funciones mock con llamadas reales al programa:
 
 ```typescript
-import { getConnection, getProgram } from './solana/connection';
+import { getConnection, getProgram } from './solana/connection'
 
 export class MarketService {
   static async getMarkets() {
-    const connection = getConnection();
-    const program = getProgram(provider); // Necesitas el provider de Privy
-    
+    const connection = getConnection()
+    const program = getProgram(provider) // Necesitas el provider de Privy
+
     // Fetch markets from program
-    const markets = await program.account.predictionMarket.all();
-    return markets.map(m => transformMarketData(m));
+    const markets = await program.account.predictionMarket.all()
+    return markets.map((m) => transformMarketData(m))
   }
-  
+
   // ... más métodos
 }
 ```
@@ -187,12 +193,14 @@ export class MarketService {
 Tu smart contract tiene estas funcionalidades principales:
 
 ### **Core Functions:**
+
 - `initialize` - Inicializar el programa
 - `create_market` - Crear nuevo mercado
 - `place_prediction` - Hacer una predicción
 - `claim_winnings` - Reclamar ganancias
 
 ### **Advanced Features:**
+
 - `submit_evidence` - Enviar evidencia
 - `vote_on_eligibility` - Votar en gobernanza
 - `resolve_market_with_oracle` - Resolver con oráculo
@@ -201,6 +209,7 @@ Tu smart contract tiene estas funcionalidades principales:
 - `verify_human_identity` - Proof of Humanity
 
 ### **Accounts:**
+
 - `PredictionMarket` - Datos del mercado
 - `UserProfile` - Perfil de usuario
 - `UserPosition` - Posiciones del usuario
@@ -211,28 +220,30 @@ Tu smart contract tiene estas funcionalidades principales:
 
 ## 🎯 **Timeline Completo**
 
-| Paso | Tiempo | Status |
-|------|--------|--------|
-| Instalar tools | 15 min | ⏳ Pendiente |
-| Configurar Solana | 5 min | ⏳ Pendiente |
-| Build programa | 2 min | ⏳ Pendiente |
-| Deploy a Devnet | 2 min | ⏳ Pendiente |
-| Copiar IDL | 1 min | ⏳ Pendiente |
-| Integrar con frontend | 10 min | ⏳ Pendiente |
-| Testing end-to-end | 10 min | ⏳ Pendiente |
-| **TOTAL** | **~45 min** | |
+| Paso                  | Tiempo      | Status       |
+| --------------------- | ----------- | ------------ |
+| Instalar tools        | 15 min      | ⏳ Pendiente |
+| Configurar Solana     | 5 min       | ⏳ Pendiente |
+| Build programa        | 2 min       | ⏳ Pendiente |
+| Deploy a Devnet       | 2 min       | ⏳ Pendiente |
+| Copiar IDL            | 1 min       | ⏳ Pendiente |
+| Integrar con frontend | 10 min      | ⏳ Pendiente |
+| Testing end-to-end    | 10 min      | ⏳ Pendiente |
+| **TOTAL**             | **~45 min** |              |
 
 ---
 
 ## 📝 **Checklist de Deployment**
 
 ### **Pre-deployment:**
+
 - [ ] Herramientas instaladas (Rust, Solana, Anchor)
 - [ ] Wallet generado
 - [ ] SOL de Devnet obtenido (mínimo 2 SOL)
 - [ ] Dependencias instaladas (`yarn install`)
 
 ### **Build:**
+
 - [ ] `anchor build` exitoso
 - [ ] Program ID generado
 - [ ] `Anchor.toml` actualizado
@@ -240,11 +251,13 @@ Tu smart contract tiene estas funcionalidades principales:
 - [ ] Re-build exitoso
 
 ### **Deploy:**
+
 - [ ] `anchor deploy` exitoso
 - [ ] Programa verificado en Explorer
 - [ ] Logs funcionando
 
 ### **Integration:**
+
 - [ ] IDL copiado al frontend
 - [ ] Dependencias de Solana instaladas
 - [ ] Connection helper creado
@@ -256,6 +269,7 @@ Tu smart contract tiene estas funcionalidades principales:
 ## 🆘 **¿Problemas?**
 
 ### **Error: comando no encontrado**
+
 ```bash
 # Cierra y abre nueva terminal PowerShell
 # Verifica la instalación:
@@ -264,6 +278,7 @@ anchor --version
 ```
 
 ### **Error: Insufficient Funds**
+
 ```bash
 # Solicita más SOL:
 solana airdrop 2
@@ -272,6 +287,7 @@ solana airdrop 2
 ```
 
 ### **Error: Build failed**
+
 ```bash
 anchor clean
 cargo clean
@@ -297,26 +313,31 @@ En `prediction-market-latam/`:
 ### **Presentación Recomendada:**
 
 **Slide 1: Problema**
+
 - Mercados binarios (Yes/No) son limitados
 - Dificultan predicciones precisas de valores numéricos
 
 **Slide 2: Solución**
+
 - **PrismaFi**: Scalar prediction markets en Solana
 - Predice valores exactos (ej: CPI 2.4%)
 - Payout proporcional a la precisión
 
 **Slide 3: Tech Stack**
+
 - **Frontend**: Next.js + Privy ✅ Deployado
 - **Blockchain**: Solana (velocidad + bajos costos)
 - **Smart Contracts**: Anchor Framework
 - **Features**: Oracle integration, reputation, governance
 
 **Slide 4: Traction**
+
 - MVP funcional ✅
 - UI/UX profesional ✅
 - Smart contracts listos para deploy ⏳
 
 **Slide 5: Roadmap**
+
 - Devnet deployment (esta semana)
 - Beta testing
 - Mainnet launch
@@ -326,18 +347,20 @@ En `prediction-market-latam/`:
 ## 🚀 **¿Listo para Empezar?**
 
 ### **Opción A: Script Automático** (Recomendado)
+
 ```powershell
 cd "C:\Users\edgar\cypherpunk hackathon2025\prediction-market-latam"
 .\install-solana-tools.ps1
 ```
 
 ### **Opción B: Quick Start Manual**
+
 Lee `prediction-market-latam/QUICK_START.md`
 
 ### **Opción C: Guía Detallada**
+
 Lee `prediction-market-latam/SETUP_SMART_CONTRACTS.md`
 
 ---
 
 **¿Cuál prefieres?** 🎯
-

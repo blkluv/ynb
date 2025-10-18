@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "projects": {
+    "app": "apps/app",
+    "ui": "libs/ui"
+  }
+}
+
+
+

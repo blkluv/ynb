@@ -6,6 +6,7 @@ import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useWallet } from '@/hooks/useWallet';
 import { MarketService } from '@/lib/marketService';
+import toast, { Toaster } from 'react-hot-toast';
 
 interface TradingPanelProps {
   marketId: string;
@@ -40,6 +41,10 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
     if (!selectedOption || amountNum <= 0 || !address) return;
 
     setIsSubmitting(true);
+    
+    // Show loading toast
+    const loadingToast = toast.loading('Confirming transaction on Solana...');
+    
     try {
       console.log('Trading with wallet:', address);
       
@@ -54,6 +59,32 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
       
       console.log('Trade executed:', trade);
       
+      // Dismiss loading toast
+      toast.dismiss(loadingToast);
+      
+      // Show success toast with transaction link
+      toast.success(
+        (t) => (
+          <div className="flex flex-col gap-1">
+            <span className="font-semibold">
+              Transaction Confirmed! ✅
+            </span>
+            <span className="text-sm">
+              {tradeType === TradeType.BUY ? 'Bought' : 'Sold'} {trade.shares.toFixed(2)} shares
+            </span>
+            <a 
+              href={trade.explorerUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-xs text-purple-400 hover:text-purple-300 underline"
+            >
+              View on Solana Explorer →
+            </a>
+          </div>
+        ),
+        { duration: 6000 }
+      );
+      
       // Call custom onTrade callback if provided
       if (onTrade) {
         await onTrade(selectedOption, tradeType, amountNum, trade.shares);
@@ -61,12 +92,13 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
       
       setAmount('');
       
-      // Show success message (you could add a toast notification here)
-      alert(`Trade successful! ${tradeType === TradeType.BUY ? 'Bought' : 'Sold'} ${trade.shares.toFixed(2)} shares`);
-      
     } catch (error) {
       console.error('Trade error:', error);
-      alert(`Trade failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      toast.dismiss(loadingToast);
+      toast.error(
+        `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        { duration: 5000 }
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -230,6 +262,30 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
           )}
         </button>
       </form>
+      
+      {/* Toast Notifications Container */}
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#1f2937',
+            color: '#fff',
+            border: '1px solid #374151',
+          },
+          success: {
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
     </div>
   );
 }

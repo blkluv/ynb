@@ -10,12 +10,15 @@ En `src/providers/PrivyProvider.tsx` líneas 14-18:
 
 ```typescript
 if (!appId) {
-  console.warn('⚠️ NEXT_PUBLIC_PRIVY_APP_ID is not set. Running without wallet connection.')
+  console.warn(
+    '⚠️ NEXT_PUBLIC_PRIVY_APP_ID is not set. Running without wallet connection.'
+  )
   return <>{children}</>
 }
 ```
 
 Cuando no hay `NEXT_PUBLIC_PRIVY_APP_ID`, el PrivyProvider NO se inicializa, por lo tanto:
+
 - `usePrivy()` no funciona
 - `login()` no existe
 - El botón muestra "Connect Wallet" pero no hace nada al hacer click
@@ -56,9 +59,9 @@ npm run dev
 
 ---
 
-### **Opción 2: Usar un Priv
+### \*\*Opción 2: Usar un Priv
 
-y App ID de Demo (2 minutos)**
+y App ID de Demo (2 minutos)\*\*
 
 Si solo quieres probar rápido, usa un App ID público de demo:
 
@@ -87,12 +90,14 @@ Si no quieres usar Privy ahora, podemos crear un mock wallet provider:
 **Para el hackathon:**
 
 **Opción 1** - Configurar Privy real (5 min)
+
 - Solo necesitas crear una cuenta
 - Es gratis
 - Da 5000 usuarios gratis al mes
 - Funciona perfectamente
 
 **Ventajas:**
+
 - Wallet connection real
 - Multi-chain support
 - Email/Social login
@@ -118,14 +123,14 @@ Si quieres que lo arregle ahora mismo, dime cuál opción prefieres:
 
 **A)** Configurar Privy real (necesito tu App ID)  
 **B)** Usar App ID de demo  
-**C)** Crear mock wallet provider  
+**C)** Crear mock wallet provider
 
 ---
 
 **Estado Actual:**
+
 - ❌ Privy App ID: No configurado
 - ⚠️ Botón visible pero no funcional
 - ✅ Código correcto, solo falta configuración
 
 **Tiempo para arreglar:** 2-5 minutos
-

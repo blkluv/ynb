@@ -16,7 +16,8 @@ export default function PrivyProvider({ children }: PrivyProviderProps) {
 
   // Demo App ID público para testing
   // Para producción: crea tu App ID en https://dashboard.privy.io/
-  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'clpispdty00ycl80fpueukfm'
+  const appId =
+    process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'clpispdty00ycl80fpueukfm'
 
   // Si no hay App ID válido, renderizar sin Privy
   if (!appId || appId.trim().length < 10) {

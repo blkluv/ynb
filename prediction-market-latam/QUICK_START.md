@@ -22,6 +22,7 @@ cd "C:\Users\edgar\cypherpunk hackathon2025\prediction-market-latam"
 ```
 
 El script instalará automáticamente:
+
 - ✅ Rust (si no está instalado)
 - ✅ Solana CLI
 - ✅ Anchor Framework
@@ -136,12 +137,14 @@ solana address -k target/deploy/prediction_market-keypair.json
 ### **Paso 3: Actualizar Program ID**
 
 **Archivo `Anchor.toml`:**
+
 ```toml
 [programs.devnet]
 prediction_market = "TU_PROGRAM_ID_AQUI"
 ```
 
 **Archivo `programs/prediction-market/src/lib.rs`:**
+
 ```rust
 declare_id!("TU_PROGRAM_ID_AQUI");
 ```
@@ -231,20 +234,20 @@ npm install @solana/web3.js @solana/wallet-adapter-react @solana/wallet-adapter-
 Crea `src/lib/solana/connection.ts`:
 
 ```typescript
-import { Connection, PublicKey } from '@solana/web3.js';
-import { AnchorProvider, Program } from '@coral-xyz/anchor';
-import idl from '../idl/prediction_market.json';
+import { Connection, PublicKey } from '@solana/web3.js'
+import { AnchorProvider, Program } from '@coral-xyz/anchor'
+import idl from '../idl/prediction_market.json'
 
-const DEVNET_RPC = 'https://api.devnet.solana.com';
-const PROGRAM_ID = new PublicKey('TU_PROGRAM_ID_AQUI');
+const DEVNET_RPC = 'https://api.devnet.solana.com'
+const PROGRAM_ID = new PublicKey('TU_PROGRAM_ID_AQUI')
 
 export const getConnection = () => {
-  return new Connection(DEVNET_RPC, 'confirmed');
-};
+  return new Connection(DEVNET_RPC, 'confirmed')
+}
 
 export const getProgram = (provider: AnchorProvider) => {
-  return new Program(idl as any, PROGRAM_ID, provider);
-};
+  return new Program(idl as any, PROGRAM_ID, provider)
+}
 ```
 
 ---
@@ -281,12 +284,14 @@ graph LR
 ## 🆘 Troubleshooting Rápido
 
 ### **Error: Insufficient Funds**
+
 ```bash
 solana airdrop 2
 # O usa: https://faucet.solana.com/
 ```
 
 ### **Error: anchor command not found**
+
 ```bash
 # Cerrar y abrir nueva terminal
 # Verificar PATH:
@@ -294,6 +299,7 @@ $env:PATH
 ```
 
 ### **Error: Build failed**
+
 ```bash
 anchor clean
 cargo clean
@@ -301,6 +307,7 @@ anchor build
 ```
 
 ### **Error: Program ID mismatch**
+
 - Verifica que `Anchor.toml` y `lib.rs` tengan el mismo ID
 - Recompila: `anchor build`
 
@@ -311,6 +318,7 @@ anchor build
 Si llegaste aquí, tu programa está deployado en Devnet.
 
 **Próximos pasos:**
+
 1. ✅ Copia el Program ID
 2. ✅ Integra con el frontend
 3. ✅ Prueba crear tu primer mercado
@@ -325,4 +333,3 @@ Si llegaste aquí, tu programa está deployado en Devnet.
 - **Deployment:** Ver `DEPLOYMENT.md`
 
 **¿Listo para deployar?** 🚀
-

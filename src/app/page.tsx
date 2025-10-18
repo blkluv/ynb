@@ -1,50 +1,54 @@
-'use client';
+'use client'
 
-import React from 'react';
-import Layout from '@/components/layout/Layout';
-import Link from 'next/link';
-import { 
-  ChartBarIcon, 
-  CurrencyDollarIcon, 
+import React from 'react'
+import Layout from '@/components/layout/Layout'
+import Link from 'next/link'
+import {
+  ChartBarIcon,
+  CurrencyDollarIcon,
   ShieldCheckIcon,
   GlobeAltIcon,
   ArrowRightIcon,
-  PlayIcon
-} from '@heroicons/react/24/outline';
+  PlayIcon,
+} from '@heroicons/react/24/outline'
 
 const features = [
   {
     name: 'Permissionless Markets',
-    description: 'Create and trade on any event without restrictions. Full decentralization on Solana.',
+    description:
+      'Create and trade on any event without restrictions. Full decentralization on Solana.',
     icon: GlobeAltIcon,
-    color: 'text-blue-400'
+    color: 'text-blue-400',
   },
   {
     name: 'Low Fees',
-    description: 'Trade with minimal fees thanks to Solana\'s high throughput and low costs.',
+    description:
+      "Trade with minimal fees thanks to Solana's high throughput and low costs.",
     icon: CurrencyDollarIcon,
-    color: 'text-green-400'
+    color: 'text-green-400',
   },
   {
     name: 'Secure Resolution',
-    description: 'Decentralized resolution system with validator incentives and dispute mechanisms.',
+    description:
+      'Decentralized resolution system with validator incentives and dispute mechanisms.',
     icon: ShieldCheckIcon,
-    color: 'text-purple-400'
+    color: 'text-purple-400',
   },
   {
     name: 'Real-time Data',
-    description: 'Live market data and instant settlements powered by Solana\'s speed.',
+    description:
+      "Live market data and instant settlements powered by Solana's speed.",
     icon: ChartBarIcon,
-    color: 'text-orange-400'
-  }
-];
+    color: 'text-orange-400',
+  },
+]
 
 const stats = [
   { label: 'Active Markets', value: '50+', change: '+12%' },
   { label: 'Total Volume', value: '$2.1M', change: '+45%' },
   { label: 'Traders', value: '1,200+', change: '+28%' },
-  { label: 'Success Rate', value: '99.2%', change: '+0.1%' }
-];
+  { label: 'Success Rate', value: '99.2%', change: '+0.1%' },
+]
 
 const markets = [
   {
@@ -54,7 +58,7 @@ const markets = [
     probability: 65,
     volume: '$125K',
     participants: 342,
-    timeLeft: '45 days'
+    timeLeft: '45 days',
   },
   {
     id: '2',
@@ -63,7 +67,7 @@ const markets = [
     probability: 52,
     volume: '$89K',
     participants: 521,
-    timeLeft: '12 days'
+    timeLeft: '12 days',
   },
   {
     id: '3',
@@ -72,9 +76,9 @@ const markets = [
     probability: 28,
     volume: '$67K',
     participants: 267,
-    timeLeft: '2,190 days'
-  }
-];
+    timeLeft: '2,190 days',
+  },
+]
 
 export default function HomePage() {
   return (
@@ -92,8 +96,9 @@ export default function HomePage() {
                 </span>
               </h1>
               <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-                Trade on any event, anywhere. PrismaFi enables permissionless prediction markets 
-                with lightning-fast settlements and minimal fees on Solana.
+                Trade on any event, anywhere. PrismaFi enables permissionless
+                prediction markets with lightning-fast settlements and minimal
+                fees on Solana.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/markets">
@@ -120,9 +125,13 @@ export default function HomePage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
-                  <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
+                  <div className="text-3xl font-bold text-white mb-2">
+                    {stat.value}
+                  </div>
                   <div className="text-gray-400 text-sm mb-1">{stat.label}</div>
-                  <div className="text-green-400 text-xs font-medium">{stat.change}</div>
+                  <div className="text-green-400 text-xs font-medium">
+                    {stat.change}
+                  </div>
                 </div>
               ))}
             </div>
@@ -137,22 +146,23 @@ export default function HomePage() {
                 Why Choose PrismaFi?
               </h2>
               <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                Built on Solana for speed, security, and scalability. 
-                Experience the future of decentralized prediction markets.
+                Built on Solana for speed, security, and scalability. Experience
+                the future of decentralized prediction markets.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {features.map((feature, index) => (
-                <div key={index} className="bg-gray-900 rounded-lg p-6 border border-gray-700 hover:border-purple-500/50 transition-all">
+                <div
+                  key={index}
+                  className="bg-gray-900 rounded-lg p-6 border border-gray-700 hover:border-purple-500/50 transition-all"
+                >
                   <div className={`w-12 h-12 ${feature.color} mb-4`}>
                     <feature.icon className="w-full h-full" />
                   </div>
                   <h3 className="text-xl font-semibold text-white mb-3">
                     {feature.name}
                   </h3>
-                  <p className="text-gray-400">
-                    {feature.description}
-                  </p>
+                  <p className="text-gray-400">{feature.description}</p>
                 </div>
               ))}
             </div>
@@ -180,12 +190,17 @@ export default function HomePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {markets.map((market) => (
-                <div key={market.id} className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-purple-500/50 transition-all">
+                <div
+                  key={market.id}
+                  className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-purple-500/50 transition-all"
+                >
                   <div className="flex items-start justify-between mb-4">
                     <span className="px-3 py-1 bg-purple-600/20 text-purple-400 text-sm font-medium rounded-full">
                       {market.category}
                     </span>
-                    <span className="text-gray-400 text-sm">{market.timeLeft}</span>
+                    <span className="text-gray-400 text-sm">
+                      {market.timeLeft}
+                    </span>
                   </div>
                   <h3 className="text-white font-semibold mb-4 line-clamp-2">
                     {market.question}
@@ -193,15 +208,21 @@ export default function HomePage() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-400 text-sm">Probability</span>
-                      <span className="text-white font-semibold">{market.probability}%</span>
+                      <span className="text-white font-semibold">
+                        {market.probability}%
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-400 text-sm">Volume</span>
-                      <span className="text-white font-semibold">{market.volume}</span>
+                      <span className="text-white font-semibold">
+                        {market.volume}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-400 text-sm">Traders</span>
-                      <span className="text-white font-semibold">{market.participants}</span>
+                      <span className="text-white font-semibold">
+                        {market.participants}
+                      </span>
                     </div>
                   </div>
                   <Link href={`/market/${market.id}`}>
@@ -222,7 +243,7 @@ export default function HomePage() {
               Ready to Start Trading?
             </h2>
             <p className="text-gray-300 text-lg mb-8">
-              Join thousands of traders making predictions on real-world events. 
+              Join thousands of traders making predictions on real-world events.
               Create markets, trade outcomes, and earn from your knowledge.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -241,8 +262,5 @@ export default function HomePage() {
         </section>
       </div>
     </Layout>
-  );
+  )
 }
-
-
-

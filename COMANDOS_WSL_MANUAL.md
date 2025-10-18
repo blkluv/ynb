@@ -30,6 +30,7 @@ cargo --version
 ```
 
 **Output esperado:**
+
 ```
 rustc 1.XX.X
 cargo 1.XX.X
@@ -57,6 +58,7 @@ sudo apt-get install -y \
 ```
 
 **Output esperado:**
+
 ```
 ✓ Paquetes instalados correctamente
 ```
@@ -80,6 +82,7 @@ solana --version
 ```
 
 **Output esperado:**
+
 ```
 solana-cli 1.XX.XX
 ```
@@ -109,6 +112,7 @@ anchor --version
 ```
 
 **Output esperado:**
+
 ```
 anchor-cli 0.29.0
 ```
@@ -126,6 +130,7 @@ solana config get
 ```
 
 **Output esperado:**
+
 ```
 Config File: /home/edgar/.config/solana/cli/config.yml
 RPC URL: https://api.devnet.solana.com
@@ -141,9 +146,9 @@ solana-keygen new
 
 # Verás algo como:
 # Generating a new keypair
-# 
+#
 # For added security, enter a BIP39 passphrase
-# 
+#
 # [Press Enter para sin passphrase o ingresa una]
 #
 # Wrote new keypair to /home/edgar/.config/solana/id.json
@@ -178,6 +183,7 @@ solana balance
 ```
 
 **Output esperado:**
+
 ```
 2 SOL
 ```
@@ -195,6 +201,7 @@ ls -la
 ```
 
 **Deberías ver:**
+
 ```
 Anchor.toml
 programs/
@@ -229,6 +236,7 @@ anchor build
 ```
 
 **Output esperado:**
+
 ```
 ✓ Built program: prediction_market.so
 ```
@@ -287,6 +295,7 @@ anchor deploy --provider.cluster devnet
 ```
 
 **Output esperado:**
+
 ```
 Deploying workspace: https://api.devnet.solana.com
 Upgrade authority: <TU_WALLET>
@@ -334,18 +343,21 @@ Tu programa está deployado en Devnet Solana.
 ## **🆘 Si Algo Falla**
 
 ### **Error: Command not found**
+
 ```bash
 # Recargar bashrc:
 source ~/.bashrc
 ```
 
 ### **Error: Insufficient funds**
+
 ```bash
 solana airdrop 2
 # O usa: https://faucet.solana.com/
 ```
 
 ### **Error: Build failed**
+
 ```bash
 anchor clean
 cargo clean
@@ -355,4 +367,3 @@ anchor build
 ---
 
 **Ejecuta estos comandos uno por uno en tu terminal de WSL Ubuntu. ¡Buena suerte! 🚀**
-

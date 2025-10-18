@@ -88,20 +88,21 @@ Si ves `anchor-cli 0.29.0`, ¡ya está listo!
 
 ## ⏰ **Timeline Total del Proyecto:**
 
-| Fase | Tiempo | Status |
-|------|--------|--------|
-| Instalación de tools | 15-20 min | ⏳ En progreso |
-| Generar wallet | 1 min | ⏳ Pendiente |
-| Obtener SOL | 30 seg | ⏳ Pendiente |
-| Build programa | 5-10 min | ⏳ Pendiente |
-| Deploy a Devnet | 2 min | ⏳ Pendiente |
-| **TOTAL** | **~25-35 min** | |
+| Fase                 | Tiempo         | Status         |
+| -------------------- | -------------- | -------------- |
+| Instalación de tools | 15-20 min      | ⏳ En progreso |
+| Generar wallet       | 1 min          | ⏳ Pendiente   |
+| Obtener SOL          | 30 seg         | ⏳ Pendiente   |
+| Build programa       | 5-10 min       | ⏳ Pendiente   |
+| Deploy a Devnet      | 2 min          | ⏳ Pendiente   |
+| **TOTAL**            | **~25-35 min** |                |
 
 ---
 
 ## 📝 **Mientras Esperas:**
 
 Puedes revisar:
+
 - ✅ Tu frontend deployado en Vercel
 - ✅ La arquitectura del proyecto en `prediction-market-latam/README.md`
 - ✅ El PRD del proyecto en `PRD.md`
@@ -118,4 +119,3 @@ Una vez termine la instalación, estarás a solo **10-15 minutos** de tener tu s
 ---
 
 **Última actualización:** En progreso...
-

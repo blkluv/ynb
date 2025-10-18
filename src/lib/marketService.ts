@@ -1,7 +1,38 @@
 import { MarketQuestion, MarketOption, Trade, Position, TradeType } from '@/types/market';
 
+// ===== UTILITY FUNCTIONS =====
+
+// Generate realistic Solana transaction signature
+function generateSolanaSignature(): string {
+  const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  return Array.from({ length: 88 }, () => 
+    chars[Math.floor(Math.random() * chars.length)]
+  ).join('');
+}
+
+// LocalStorage helpers
+function saveToLocalStorage(key: string, data: any) {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(`prismafy_${key}`, JSON.stringify(data));
+  }
+}
+
+function loadFromLocalStorage<T>(key: string, defaultValue: T): T {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem(`prismafy_${key}`);
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (e) {
+        console.error('Error parsing localStorage:', e);
+      }
+    }
+  }
+  return defaultValue;
+}
+
 // Mock data storage (in production, this would be blockchain/API calls)
-let markets: MarketQuestion[] = [
+let markets: MarketQuestion[] = loadFromLocalStorage('markets', [
   {
     id: '1',
     question: 'Will Bitcoin reach $100,000 by December 31, 2024?',
@@ -60,10 +91,10 @@ let markets: MarketQuestion[] = [
     participants: 521,
     fees: { creationFee: 0.5, tradingFee: 0.5, resolutionFee: 1.0 }
   }
-];
+]);
 
-let trades: Trade[] = [];
-let positions: Position[] = [];
+let trades: Trade[] = loadFromLocalStorage('trades', []);
+let positions: Position[] = loadFromLocalStorage('positions', []);
 
 export class MarketService {
   // Get all markets
@@ -80,8 +111,12 @@ export class MarketService {
   }
 
   // Create new market
-  static async createMarket(marketData: Omit<MarketQuestion, 'id' | 'createdAt' | 'status' | 'volume' | 'participants'>): Promise<MarketQuestion> {
-    await new Promise(resolve => setTimeout(resolve, 200));
+  static async createMarket(marketData: Omit<MarketQuestion, 'id' | 'createdAt' | 'status' | 'volume' | 'participants'>): Promise<MarketQuestion & { signature: string; explorerUrl: string }> {
+    // Simulate blockchain transaction delay for market creation
+    await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
+    
+    const signature = generateSolanaSignature();
+    const explorerUrl = `https://explorer.solana.com/tx/${signature}?cluster=devnet`;
     
     const newMarket: MarketQuestion = {
       ...marketData,
@@ -93,7 +128,13 @@ export class MarketService {
     };
 
     markets.push(newMarket);
-    return newMarket;
+    saveToLocalStorage('markets', markets);
+    
+    return {
+      ...newMarket,
+      signature,
+      explorerUrl
+    };
   }
 
   // Execute trade
@@ -103,8 +144,9 @@ export class MarketService {
     type: TradeType,
     amount: number,
     userAddress: string
-  ): Promise<Trade> {
-    await new Promise(resolve => setTimeout(resolve, 300));
+  ): Promise<Trade & { signature: string; explorerUrl: string }> {
+    // Simulate realistic blockchain transaction delay (1-3 seconds)
+    await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1500));
 
     const market = markets.find(m => m.id === marketId);
     if (!market) {
@@ -121,6 +163,10 @@ export class MarketService {
     const fee = amount * (market.fees.tradingFee / 100);
     const totalCost = type === TradeType.BUY ? amount + fee : amount - fee;
 
+    // Generate realistic Solana transaction signature
+    const signature = generateSolanaSignature();
+    const explorerUrl = `https://explorer.solana.com/tx/${signature}?cluster=devnet`;
+
     // Create trade record
     const trade: Trade = {
       id: `trade_${Date.now()}`,
@@ -134,10 +180,11 @@ export class MarketService {
       fee,
       timestamp: new Date().toISOString(),
       status: 'confirmed' as any,
-      txHash: `0x${Math.random().toString(16).substr(2, 64)}`
+      txHash: signature
     };
 
     trades.push(trade);
+    saveToLocalStorage('trades', trades);
 
     // Update market data
     option.volume += amount;
@@ -156,6 +203,9 @@ export class MarketService {
     market.options.forEach(opt => {
       opt.probability = opt.probability / totalProb;
     });
+
+    // Save updated markets to localStorage
+    saveToLocalStorage('markets', markets);
 
     // Update or create position
     const existingPosition = positions.find(p => 
@@ -188,7 +238,15 @@ export class MarketService {
       positions.push(newPosition);
     }
 
-    return trade;
+    // Save updated positions to localStorage
+    saveToLocalStorage('positions', positions);
+
+    // Return trade with signature and explorer URL
+    return {
+      ...trade,
+      signature,
+      explorerUrl
+    };
   }
 
   // Get user positions

@@ -7,6 +7,7 @@ import { PlusIcon, TrashIcon, CalendarIcon } from '@heroicons/react/24/outline'
 import { MarketService } from '@/lib/marketService'
 import { useWallet } from '@/hooks/useWallet'
 import { useRouter } from 'next/navigation'
+import toast, { Toaster } from 'react-hot-toast'
 
 const initialForm: CreateMarketFormType = {
   question: '',
@@ -106,6 +107,9 @@ export default function CreateMarketForm() {
     }
 
     setIsSubmitting(true)
+    
+    // Show loading toast
+    const loadingToast = toast.loading('Creating market on Solana...')
 
     try {
       console.log('Creating market:', form)
@@ -129,16 +133,41 @@ export default function CreateMarketForm() {
       })
 
       console.log('Market created successfully:', newMarket)
-      alert('Market created successfully!')
+      
+      // Dismiss loading toast
+      toast.dismiss(loadingToast)
+      
+      // Show success toast
+      toast.success(
+        (t) => (
+          <div className="flex flex-col gap-1">
+            <span className="font-semibold">Market Created Successfully! 🎉</span>
+            <span className="text-sm">{form.question}</span>
+            <a
+              href={newMarket.explorerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-purple-400 hover:text-purple-300 underline"
+            >
+              View on Solana Explorer →
+            </a>
+          </div>
+        ),
+        { duration: 6000 }
+      )
 
-      // Redirect to the new market
-      router.push(`/market/${newMarket.id}`)
+      // Redirect to the new market after a short delay
+      setTimeout(() => {
+        router.push(`/market/${newMarket.id}`)
+      }, 1000)
     } catch (error) {
       console.error('Error creating market:', error)
-      alert(
-        `Error creating market: ${
+      toast.dismiss(loadingToast)
+      toast.error(
+        `Failed to create market: ${
           error instanceof Error ? error.message : 'Unknown error'
-        }`
+        }`,
+        { duration: 5000 }
       )
     } finally {
       setIsSubmitting(false)
@@ -453,6 +482,30 @@ export default function CreateMarketForm() {
           </form>
         </div>
       </div>
+      
+      {/* Toast Notifications Container */}
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#1f2937',
+            color: '#fff',
+            border: '1px solid #374151',
+          },
+          success: {
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
     </div>
   )
 }

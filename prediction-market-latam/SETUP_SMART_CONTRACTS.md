@@ -135,6 +135,7 @@ anchor build
 ```
 
 **Output esperado:**
+
 ```
 Compiling prediction-market v0.1.0
 Finished release [optimized] target(s) in XX.XXs
@@ -160,12 +161,14 @@ solana address -k target/deploy/prediction_market-keypair.json
 Edita estos archivos con tu nuevo Program ID:
 
 **1. `Anchor.toml`:**
+
 ```toml
 [programs.devnet]
 prediction_market = "TU_PROGRAM_ID_AQUI"
 ```
 
 **2. `programs/prediction-market/src/lib.rs`:**
+
 ```rust
 declare_id!("TU_PROGRAM_ID_AQUI");
 ```
@@ -198,6 +201,7 @@ solana program show <TU_PROGRAM_ID>
 ```
 
 **Output esperado:**
+
 ```
 Deploying workspace: https://api.devnet.solana.com
 Upgrade authority: <TU_WALLET_ADDRESS>
@@ -367,4 +371,3 @@ anchor build
 ---
 
 **¿Listo para comenzar?** Sigue los pasos en orden y estarás deployado en Devnet en ~30-60 minutos. 🚀
-

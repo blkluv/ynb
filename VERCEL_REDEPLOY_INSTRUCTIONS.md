@@ -105,6 +105,7 @@ Después del redeploy, verifica:
 ```
 
 ❌ **NO debería aparecer**:
+
 ```
 Error: Cannot initialize the Privy provider with an invalid Privy app ID
 ```
@@ -146,12 +147,14 @@ Error: Cannot initialize the Privy provider with an invalid Privy app ID
 ### **Si el error persiste después del push:**
 
 1. **Verificar que GitHub tiene el código actualizado:**
+
    ```bash
    # Ver el último commit en GitHub
    git log --oneline -1
    ```
 
 2. **Forzar redeploy en Vercel:**
+
    - Dashboard → Deployments → Latest → **Redeploy**
 
 3. **Limpiar caché de Vercel:**
@@ -161,6 +164,7 @@ Error: Cannot initialize the Privy provider with an invalid Privy app ID
 ### **Si el Demo App ID no funciona:**
 
 Opción 1: **Crear tu propio Privy App ID** (5 minutos):
+
 1. https://dashboard.privy.io/
 2. Sign up / Login
 3. Crear nueva app
@@ -168,6 +172,7 @@ Opción 1: **Crear tu propio Privy App ID** (5 minutos):
 5. Configurar en Vercel Environment Variables
 
 Opción 2: **Desactivar wallet connection temporalmente**:
+
 ```typescript
 // En src/providers/PrivyProvider.tsx
 export default function PrivyProvider({ children }: PrivyProviderProps) {
@@ -180,13 +185,13 @@ export default function PrivyProvider({ children }: PrivyProviderProps) {
 
 ## 📝 **Resumen**
 
-| Aspecto | Estado |
-|---------|--------|
-| **Problema** | Privy App ID inválido en build |
-| **Causa** | Código actualizado no en GitHub |
-| **Solución** | Push + validación robusta |
-| **Deploy** | Automático después del push |
-| **Tiempo** | 2-3 minutos |
+| Aspecto      | Estado                          |
+| ------------ | ------------------------------- |
+| **Problema** | Privy App ID inválido en build  |
+| **Causa**    | Código actualizado no en GitHub |
+| **Solución** | Push + validación robusta       |
+| **Deploy**   | Automático después del push     |
+| **Tiempo**   | 2-3 minutos                     |
 
 ---
 
@@ -206,4 +211,3 @@ git push origin main
 **Última actualización:** 2025-10-18 21:58 UTC  
 **Commit fix:** `src/providers/PrivyProvider.tsx`  
 **Deploy target:** Vercel Production
-

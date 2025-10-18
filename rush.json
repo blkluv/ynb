@@ -1,0 +1,15 @@
+{
+  "rushVersion": "5.88.0",
+  "npmVersion": "8.19.2",
+  "nodeSupportedVersionRange": ">=18.0.0",
+  "projectFolderMaxDepth": 2,
+  "projects": [
+    {
+      "packageName": "app",
+      "projectFolder": "apps/app"
+    }
+  ]
+}
+
+
+
