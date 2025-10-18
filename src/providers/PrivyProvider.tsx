@@ -7,17 +7,21 @@ interface PrivyProviderProps {
   children: React.ReactNode
 }
 
-// Demo App ID público para testing
-// Para producción: crea tu App ID en https://dashboard.privy.io/
-const DEMO_APP_ID = 'clpispdty00ycl80fpueukfm'
-
 export default function PrivyProvider({ children }: PrivyProviderProps) {
-  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || DEMO_APP_ID
+  // Durante build/SSR, desactivar Privy para evitar errores de prerendering
+  // Solo inicializar en el cliente
+  if (typeof window === 'undefined') {
+    return <>{children}</>
+  }
 
-  // Validación adicional: si el App ID está vacío o es muy corto, es inválido
+  // Demo App ID público para testing
+  // Para producción: crea tu App ID en https://dashboard.privy.io/
+  const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'clpispdty00ycl80fpueukfm'
+
+  // Si no hay App ID válido, renderizar sin Privy
   if (!appId || appId.trim().length < 10) {
     console.warn(
-      '⚠️ Invalid Privy App ID. Using demo mode without wallet connection.'
+      '⚠️ No valid Privy App ID configured. Wallet connection disabled.'
     )
     return <>{children}</>
   }
