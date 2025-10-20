@@ -18,6 +18,7 @@
 ## ✨ **Features**
 
 ### **For Users:**
+
 - 🔐 **Seamless Wallet Connection** - Connect with Phantom, Solflare, or any Solana wallet via Privy
 - 📊 **Real-time Trading** - Buy and sell prediction shares instantly
 - 🎯 **Create Markets** - Launch your own prediction markets on any topic
@@ -27,6 +28,7 @@
 - 💾 **Data Persistence** - Your trades and markets persist using localStorage
 
 ### **For Developers:**
+
 - ⚡ **Next.js 14** - Latest App Router architecture
 - 🎨 **Tailwind CSS** - Modern, utility-first styling
 - 🔷 **TypeScript** - 100% type-safe codebase
@@ -39,6 +41,7 @@
 ## 🎬 **Quick Start**
 
 ### **Prerequisites**
+
 - Node.js 18+
 - npm or yarn
 - A Solana wallet (Phantom recommended)
@@ -97,6 +100,7 @@ cypherpunk-hackathon2025/
 ## 🛠️ **Tech Stack**
 
 ### **Frontend**
+
 - **Framework:** Next.js 14 (React 18)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
@@ -105,12 +109,14 @@ cypherpunk-hackathon2025/
 - **Wallet Auth:** Privy
 
 ### **Blockchain (In Development)**
+
 - **Chain:** Solana
 - **Framework:** Anchor 0.29.0
 - **Language:** Rust
 - **Network:** Devnet (testing), Mainnet (production)
 
 ### **Deployment**
+
 - **Frontend:** Vercel
 - **CI/CD:** GitHub Actions
 - **Smart Contracts:** Solana Devnet → Mainnet
@@ -120,18 +126,23 @@ cypherpunk-hackathon2025/
 ## 🎯 **How It Works**
 
 ### **1. Connect Your Wallet**
+
 Use Privy to connect your Solana wallet (Phantom, Solflare, etc.)
 
 ### **2. Browse Markets**
+
 Explore prediction markets on crypto, politics, technology, sports, and more.
 
 ### **3. Trade Predictions**
+
 Buy "Yes" or "No" shares based on your prediction. Share prices reflect market sentiment.
 
 ### **4. Create Markets**
+
 Launch your own markets. Set resolution dates, sources, and options.
 
 ### **5. Win Rewards**
+
 When the market resolves, winners split the pool proportionally to their shares.
 
 ---
@@ -139,6 +150,7 @@ When the market resolves, winners split the pool proportionally to their shares.
 ## 📊 **Current Status**
 
 ### **✅ Completed**
+
 - [x] Full frontend implementation
 - [x] Wallet integration with Privy
 - [x] Trading interface with real-time updates
@@ -152,12 +164,14 @@ When the market resolves, winners split the pool proportionally to their shares.
 - [x] Deployed to Vercel
 
 ### **🚧 In Development**
+
 - [ ] Smart contract deployment to Solana Devnet
 - [ ] Integration with on-chain programs
 - [ ] Oracle integration for automatic resolution
 - [ ] Enhanced AMM (Automated Market Maker)
 
 ### **🔮 Roadmap**
+
 - [ ] Liquidity pools
 - [ ] Governance token
 - [ ] Staking and rewards
@@ -170,12 +184,15 @@ When the market resolves, winners split the pool proportionally to their shares.
 ## 🎨 **Screenshots**
 
 ### Landing Page
+
 ![Landing Page](docs/screenshots/landing.png)
 
 ### Trading Interface
+
 ![Trading](docs/screenshots/trading.png)
 
 ### Market Creation
+
 ![Create Market](docs/screenshots/create-market.png)
 
 ---
@@ -204,6 +221,7 @@ npm run build
 ```
 
 ### **Test Coverage**
+
 - Landing page rendering
 - Wallet connection flow
 - Trading execution
@@ -267,6 +285,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Status:** ✅ Demo Ready
 
 ### **Key Highlights:**
+
 - ✨ Production-quality frontend
 - ⚡ Real-time trading simulation
 - 🔐 Privy wallet integration

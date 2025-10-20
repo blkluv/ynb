@@ -26,3 +26,9 @@ echo Prueba ejecutando: wsl
 echo.
 pause
 
+
+
+
+
+
+

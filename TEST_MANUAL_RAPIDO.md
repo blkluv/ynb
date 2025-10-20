@@ -1,6 +1,7 @@
 # ✅ Test Manual Rápido - PrismaFi
 
 ## 🎯 **Objetivo**
+
 Verificar que todas las funcionalidades funcionan antes del pitch.
 
 ---
@@ -8,16 +9,20 @@ Verificar que todas las funcionalidades funcionan antes del pitch.
 ## 📝 **Checklist de Testing (10 minutos)**
 
 ### **1. Servidor Local** ✅
+
 ```bash
 npm run dev
 ```
+
 - Abrir http://localhost:3000
 - Verificar que carga sin errores en consola
 
 ---
 
 ### **2. Landing Page** ✅
+
 **Qué verificar:**
+
 - [ ] Hero section visible
 - [ ] Estadísticas muestran números
 - [ ] Trending markets se renderizan (3 markets)
@@ -25,6 +30,7 @@ npm run dev
 - [ ] Responsive en mobile (F12 → toggle device)
 
 **Cómo probar:**
+
 1. Refresh página
 2. Scroll down
 3. Click en "View All Markets" → redirect a `/markets`
@@ -32,7 +38,9 @@ npm run dev
 ---
 
 ### **3. Wallet Connection** ✅
+
 **Qué verificar:**
+
 - [ ] Click en "Connect Wallet" abre modal Privy
 - [ ] Seleccionar wallet (Phantom/Solflare)
 - [ ] Modal se cierra
@@ -40,6 +48,7 @@ npm run dev
 - [ ] Botón cambia a wallet address truncada
 
 **Cómo probar:**
+
 1. Click "Connect Wallet"
 2. En Privy modal, seleccionar "Phantom"
 3. Confirmar en extensión Phantom
@@ -50,7 +59,9 @@ npm run dev
 ---
 
 ### **4. Markets Listing** ✅
+
 **Qué verificar:**
+
 - [ ] `/markets` muestra lista de mercados
 - [ ] Cada market card tiene:
   - Título
@@ -61,6 +72,7 @@ npm run dev
 - [ ] Click en market → redirect a `/market/[id]`
 
 **Cómo probar:**
+
 1. Navegar a http://localhost:3000/markets
 2. Verificar que se ven 3 markets default
 3. Click en primer market
@@ -68,7 +80,9 @@ npm run dev
 ---
 
 ### **5. Trading Flow** ✅
+
 **Qué verificar:**
+
 - [ ] Market page carga con detalles
 - [ ] TradingPanel visible a la derecha
 - [ ] OrderBook muestra bids/asks
@@ -76,6 +90,7 @@ npm run dev
 - [ ] Positions está vacío (primera vez)
 
 **Cómo probar (CON wallet conectada):**
+
 1. En market page, seleccionar "Yes"
 2. Ingresar amount: "10"
 3. Verificar que "Estimated Shares" se calcula
@@ -91,6 +106,7 @@ npm run dev
    - Probability del market cambió ligeramente
 
 **Cómo probar (SIN wallet - simulación):**
+
 1. Click "Connect Wallet to Trade"
 2. Modal Privy se abre (puedes cerrar)
 3. Botón dice "Connect Wallet to Trade"
@@ -98,13 +114,16 @@ npm run dev
 ---
 
 ### **6. Market Creation** ✅
+
 **Qué verificar:**
+
 - [ ] `/create-market` carga form
 - [ ] Todos los campos editables
 - [ ] Puede agregar/remover options
 - [ ] Botón "Create Market" habilitado cuando form válido
 
 **Cómo probar (CON wallet conectada):**
+
 1. Navegar a http://localhost:3000/create-market
 2. Llenar:
    - Question: "Will it rain tomorrow?"
@@ -126,13 +145,16 @@ npm run dev
 ---
 
 ### **7. LocalStorage Persistence** ✅
+
 **Qué verificar:**
+
 - [ ] Refresh página no pierde data
 - [ ] Markets creados persisten
 - [ ] Trades persisten
 - [ ] Positions persisten
 
 **Cómo probar:**
+
 1. Después de crear market y hacer trade
 2. Presionar F5 (refresh)
 3. Navegar a `/markets` → market creado sigue ahí
@@ -146,7 +168,9 @@ npm run dev
 ---
 
 ### **8. Toast Notifications** ✅
+
 **Qué verificar:**
+
 - [ ] Loading toast aparece
 - [ ] Success/Error toast reemplaza loading
 - [ ] Toasts tienen estilo dark
@@ -154,6 +178,7 @@ npm run dev
 - [ ] Toasts se auto-dismiss después de 6seg
 
 **Cómo probar:**
+
 1. Ejecutar cualquier trade o market creation
 2. Observar secuencia de toasts
 3. Click en "View on Solana Explorer"
@@ -163,13 +188,16 @@ npm run dev
 ---
 
 ### **9. Explorer Links** ✅
+
 **Qué verificar:**
+
 - [ ] Trade success toast tiene link
 - [ ] Market creation toast tiene link
 - [ ] Links tienen formato: `https://explorer.solana.com/tx/{signature}?cluster=devnet`
 - [ ] Signature es 88 caracteres alfanuméricos
 
 **Cómo probar:**
+
 1. Después de trade, copiar link del toast
 2. Pegar en notepad
 3. Verificar formato:
@@ -181,13 +209,16 @@ npm run dev
 ---
 
 ### **10. Mobile Responsive** ✅
+
 **Qué verificar:**
+
 - [ ] Landing page se ve bien en móvil
 - [ ] Markets page muestra cards en columna
 - [ ] Market page: trading panel abajo (no al lado)
 - [ ] Navbar colapsa a hamburger menu
 
 **Cómo probar:**
+
 1. F12 → Toggle device toolbar (Ctrl+Shift+M)
 2. Seleccionar "iPhone 12 Pro"
 3. Navegar por todas las páginas
@@ -198,22 +229,29 @@ npm run dev
 ## 🐛 **Errores Comunes y Soluciones**
 
 ### **Error: "useWallets was called outside the PrivyProvider"**
+
 **Solución:** Esto es normal durante build, pero no afecta el funcionamiento. Puedes ignorarlo.
 
 ### **Error: Wallet no conecta**
-**Solución:** 
+
+**Solución:**
+
 1. Verificar que Phantom está instalado
 2. Refresh página
 3. Asegurarte que Phantom está en "Devnet" o "Mainnet" (no importa cuál)
 
 ### **Error: Toast no aparece**
+
 **Solución:**
+
 1. Abrir DevTools (F12) → Console
 2. Buscar errores de React
 3. Verificar que `react-hot-toast` está instalado: `npm list react-hot-toast`
 
 ### **Error: localStorage no persiste**
+
 **Solución:**
+
 1. Verificar que no estás en modo incógnito
 2. F12 → Application → Clear site data → Solo desmarcar "Local Storage"
 3. Refresh
@@ -223,6 +261,7 @@ npm run dev
 ## ✅ **Test Exitoso = Demo Ready**
 
 Si pasaste todos los checks, tu demo está lista para:
+
 - Presentación en hackathon
 - Video de demostración
 - Deploy a producción (Vercel)
@@ -254,6 +293,7 @@ npm install --legacy-peer-deps
 ## 📊 **Métricas de Performance**
 
 Para el pitch, puedes mencionar:
+
 - **Build time:** < 30 segundos
 - **First load JS:** 128 KB
 - **Time to Interactive:** < 2 segundos
@@ -265,6 +305,7 @@ Para el pitch, puedes mencionar:
 ## 🎬 **Listo para Grabar Video Demo**
 
 Si necesitas grabar un video:
+
 1. Usa OBS Studio o Loom
 2. Graba en 1080p
 3. Duración: 2 minutos máximo
@@ -278,4 +319,9 @@ Si necesitas grabar un video:
 ---
 
 **¡Todo listo! 🎉**
+
+
+
+
+
 

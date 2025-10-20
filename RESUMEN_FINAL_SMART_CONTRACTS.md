@@ -265,3 +265,9 @@ B) Usar frontend mock y enfocarte en pitch (recomendado)
 C) Probar Solana Playground (30 min, middle ground)
 
 **Tu proyecto ya está en excelente estado. ¡Felicidades! 🚀**
+
+
+
+
+
+

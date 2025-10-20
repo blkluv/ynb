@@ -289,3 +289,9 @@ anchor build
 **Status:** ✅ **Pusheado, esperando Vercel redeploy**  
 **ETA:** ~2-3 minutos  
 **Confianza:** 95% (fix arquitectónico correcto)
+
+
+
+
+
+

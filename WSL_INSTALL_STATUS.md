@@ -143,3 +143,9 @@ anchor deploy --provider.cluster devnet
 ---
 
 **¿Quieres que te guíe comando por comando o prefieres ejecutar todo el script de una vez?**
+
+
+
+
+
+

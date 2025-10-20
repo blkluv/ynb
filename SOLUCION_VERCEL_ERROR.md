@@ -152,3 +152,6 @@ Application error: a client-side exception has occurred
 
 **Última actualización:** ${new Date().toLocaleString('es-ES')}
 **Versión:** 1.0.0
+
+
+

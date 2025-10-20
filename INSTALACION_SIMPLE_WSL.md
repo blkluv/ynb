@@ -167,3 +167,9 @@ wsl -u root bash -c 'export PATH="$HOME/.cargo/bin:$PATH" && cargo install --git
 ---
 
 **¡Con este método NO necesitarás contraseña en ningún momento!** 🎉
+
+
+
+
+
+

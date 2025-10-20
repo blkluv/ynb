@@ -107,7 +107,7 @@ export default function CreateMarketForm() {
     }
 
     setIsSubmitting(true)
-    
+
     // Show loading toast
     const loadingToast = toast.loading('Creating market on Solana...')
 
@@ -133,15 +133,17 @@ export default function CreateMarketForm() {
       })
 
       console.log('Market created successfully:', newMarket)
-      
+
       // Dismiss loading toast
       toast.dismiss(loadingToast)
-      
+
       // Show success toast
       toast.success(
         (t) => (
           <div className="flex flex-col gap-1">
-            <span className="font-semibold">Market Created Successfully! 🎉</span>
+            <span className="font-semibold">
+              Market Created Successfully! 🎉
+            </span>
             <span className="text-sm">{form.question}</span>
             <a
               href={newMarket.explorerUrl}
@@ -482,9 +484,9 @@ export default function CreateMarketForm() {
           </form>
         </div>
       </div>
-      
+
       {/* Toast Notifications Container */}
-      <Toaster 
+      <Toaster
         position="top-right"
         toastOptions={{
           style: {

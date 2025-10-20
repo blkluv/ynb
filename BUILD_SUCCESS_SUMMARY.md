@@ -267,3 +267,9 @@ El proyecto está listo para Vercel. Todos los errores de TypeScript están resu
 
 **¡Ahora ve a Vercel y verifica el deploy! 🚀**
 
+
+
+
+
+
+

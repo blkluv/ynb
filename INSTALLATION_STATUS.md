@@ -117,3 +117,9 @@ anchor deploy --provider.cluster devnet
 A) Instalar Solana manualmente en Windows
 B) Usar WSL (Ubuntu) - **Recomendado**
 C) Continuar sin smart contracts por ahora
+
+
+
+
+
+

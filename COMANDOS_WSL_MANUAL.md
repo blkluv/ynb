@@ -367,3 +367,9 @@ anchor build
 ---
 
 **Ejecuta estos comandos uno por uno en tu terminal de WSL Ubuntu. ¡Buena suerte! 🚀**
+
+
+
+
+
+

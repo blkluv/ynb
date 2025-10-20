@@ -239,3 +239,9 @@ Después del deploy, tu sitio tendrá:
 ---
 
 **¡El fix está aplicado y commiteado! Vercel lo desplegará automáticamente. 🚀**
+
+
+
+
+
+

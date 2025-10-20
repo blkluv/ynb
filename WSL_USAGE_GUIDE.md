@@ -359,3 +359,9 @@ Después de que termine la instalación:
 ---
 
 **¡La instalación está en progreso! Te notificaré cuando termine. ⏳**
+
+
+
+
+
+

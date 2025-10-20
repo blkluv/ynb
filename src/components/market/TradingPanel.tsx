@@ -1,53 +1,66 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { MarketOption, TradeType } from '@/types/market';
-import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { useWallet } from '@/hooks/useWallet';
-import { MarketService } from '@/lib/marketService';
-import toast, { Toaster } from 'react-hot-toast';
+import React, { useState } from 'react'
+import { MarketOption, TradeType } from '@/types/market'
+import { ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/solid'
+import { InformationCircleIcon } from '@heroicons/react/24/outline'
+import { useWallet } from '@/hooks/useWallet'
+import { MarketService } from '@/lib/marketService'
+import toast, { Toaster } from 'react-hot-toast'
 
 interface TradingPanelProps {
-  marketId: string;
-  options: MarketOption[];
-  tradingFee: number;
-  onTrade?: (optionId: string, type: TradeType, amount: number, shares: number) => Promise<void>;
+  marketId: string
+  options: MarketOption[]
+  tradingFee: number
+  onTrade?: (
+    optionId: string,
+    type: TradeType,
+    amount: number,
+    shares: number
+  ) => Promise<void>
 }
 
-export default function TradingPanel({ marketId, options, tradingFee, onTrade }: TradingPanelProps) {
-  const { isConnected, address, connect } = useWallet();
-  const [selectedOption, setSelectedOption] = useState<string>(options[0]?.id || '');
-  const [tradeType, setTradeType] = useState<TradeType>(TradeType.BUY);
-  const [amount, setAmount] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+export default function TradingPanel({
+  marketId,
+  options,
+  tradingFee,
+  onTrade,
+}: TradingPanelProps) {
+  const { isConnected, address, connect } = useWallet()
+  const [selectedOption, setSelectedOption] = useState<string>(
+    options[0]?.id || ''
+  )
+  const [tradeType, setTradeType] = useState<TradeType>(TradeType.BUY)
+  const [amount, setAmount] = useState<string>('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const selectedOptionData = options.find(opt => opt.id === selectedOption);
-  const currentPrice = selectedOptionData?.probability || 0;
-  const amountNum = parseFloat(amount) || 0;
-  const estimatedShares = amountNum / currentPrice;
-  const fee = amountNum * (tradingFee / 100);
-  const totalCost = tradeType === TradeType.BUY ? amountNum + fee : amountNum - fee;
+  const selectedOptionData = options.find((opt) => opt.id === selectedOption)
+  const currentPrice = selectedOptionData?.probability || 0
+  const amountNum = parseFloat(amount) || 0
+  const estimatedShares = amountNum / currentPrice
+  const fee = amountNum * (tradingFee / 100)
+  const totalCost =
+    tradeType === TradeType.BUY ? amountNum + fee : amountNum - fee
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+    e.preventDefault()
+
     // Check wallet connection first
     if (!isConnected) {
-      await connect();
-      return;
+      await connect()
+      return
     }
 
-    if (!selectedOption || amountNum <= 0 || !address) return;
+    if (!selectedOption || amountNum <= 0 || !address) return
 
-    setIsSubmitting(true);
-    
+    setIsSubmitting(true)
+
     // Show loading toast
-    const loadingToast = toast.loading('Confirming transaction on Solana...');
-    
+    const loadingToast = toast.loading('Confirming transaction on Solana...')
+
     try {
-      console.log('Trading with wallet:', address);
-      
+      console.log('Trading with wallet:', address)
+
       // Execute trade through service
       const trade = await MarketService.executeTrade(
         marketId,
@@ -55,26 +68,25 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
         tradeType,
         amountNum,
         address
-      );
-      
-      console.log('Trade executed:', trade);
-      
+      )
+
+      console.log('Trade executed:', trade)
+
       // Dismiss loading toast
-      toast.dismiss(loadingToast);
-      
+      toast.dismiss(loadingToast)
+
       // Show success toast with transaction link
       toast.success(
         (t) => (
           <div className="flex flex-col gap-1">
-            <span className="font-semibold">
-              Transaction Confirmed! ✅
-            </span>
+            <span className="font-semibold">Transaction Confirmed! ✅</span>
             <span className="text-sm">
-              {tradeType === TradeType.BUY ? 'Bought' : 'Sold'} {trade.shares.toFixed(2)} shares
+              {tradeType === TradeType.BUY ? 'Bought' : 'Sold'}{' '}
+              {trade.shares.toFixed(2)} shares
             </span>
-            <a 
-              href={trade.explorerUrl} 
-              target="_blank" 
+            <a
+              href={trade.explorerUrl}
+              target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-purple-400 hover:text-purple-300 underline"
             >
@@ -83,26 +95,27 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
           </div>
         ),
         { duration: 6000 }
-      );
-      
+      )
+
       // Call custom onTrade callback if provided
       if (onTrade) {
-        await onTrade(selectedOption, tradeType, amountNum, trade.shares);
+        await onTrade(selectedOption, tradeType, amountNum, trade.shares)
       }
-      
-      setAmount('');
-      
+
+      setAmount('')
     } catch (error) {
-      console.error('Trade error:', error);
-      toast.dismiss(loadingToast);
+      console.error('Trade error:', error)
+      toast.dismiss(loadingToast)
       toast.error(
-        `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Transaction failed: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
         { duration: 5000 }
-      );
+      )
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
@@ -139,7 +152,9 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
 
         {/* Option Selector */}
         <div>
-          <label className="block text-sm font-medium mb-2">Select Outcome</label>
+          <label className="block text-sm font-medium mb-2">
+            Select Outcome
+          </label>
           <select
             value={selectedOption}
             onChange={(e) => setSelectedOption(e.target.value)}
@@ -173,9 +188,7 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
 
         {/* Amount Input */}
         <div>
-          <label className="block text-sm font-medium mb-2">
-            Amount (SOL)
-          </label>
+          <label className="block text-sm font-medium mb-2">Amount (SOL)</label>
           <div className="relative">
             <input
               type="number"
@@ -186,7 +199,9 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
               placeholder="0.00"
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white pr-16"
             />
-            <span className="absolute right-4 top-3.5 text-gray-400 font-medium">SOL</span>
+            <span className="absolute right-4 top-3.5 text-gray-400 font-medium">
+              SOL
+            </span>
           </div>
         </div>
 
@@ -209,11 +224,15 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
           <div className="bg-gray-900/50 rounded-lg p-4 border border-gray-700 space-y-2">
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-400">Estimated Shares</span>
-              <span className="text-white font-medium">{estimatedShares.toFixed(2)}</span>
+              <span className="text-white font-medium">
+                {estimatedShares.toFixed(2)}
+              </span>
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-400">Trading Fee ({tradingFee}%)</span>
-              <span className="text-white font-medium">{fee.toFixed(4)} SOL</span>
+              <span className="text-white font-medium">
+                {fee.toFixed(4)} SOL
+              </span>
             </div>
             <div className="border-t border-gray-700 pt-2 mt-2">
               <div className="flex items-center justify-between">
@@ -241,7 +260,9 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={(isConnected && (!selectedOption || amountNum <= 0)) || isSubmitting}
+          disabled={
+            (isConnected && (!selectedOption || amountNum <= 0)) || isSubmitting
+          }
           className={`w-full py-4 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
             !isConnected
               ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg'
@@ -258,13 +279,15 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
           ) : !isConnected ? (
             'Connect Wallet to Trade'
           ) : (
-            `${tradeType === TradeType.BUY ? 'Buy' : 'Sell'} ${estimatedShares > 0 ? estimatedShares.toFixed(2) : ''} Shares`
+            `${tradeType === TradeType.BUY ? 'Buy' : 'Sell'} ${
+              estimatedShares > 0 ? estimatedShares.toFixed(2) : ''
+            } Shares`
           )}
         </button>
       </form>
-      
+
       {/* Toast Notifications Container */}
-      <Toaster 
+      <Toaster
         position="top-right"
         toastOptions={{
           style: {
@@ -287,5 +310,5 @@ export default function TradingPanel({ marketId, options, tradingFee, onTrade }:
         }}
       />
     </div>
-  );
+  )
 }

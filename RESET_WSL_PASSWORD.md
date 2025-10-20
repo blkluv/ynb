@@ -186,3 +186,9 @@ wsl
 ---
 
 **Elige la opción que prefieras y continúa con la instalación! 🚀**
+
+
+
+
+
+

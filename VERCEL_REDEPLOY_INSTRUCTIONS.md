@@ -211,3 +211,9 @@ git push origin main
 **Última actualización:** 2025-10-18 21:58 UTC  
 **Commit fix:** `src/providers/PrivyProvider.tsx`  
 **Deploy target:** Vercel Production
+
+
+
+
+
+

@@ -284,3 +284,9 @@ Has completado exitosamente:
 
 **¿Siguiente paso?** Configura Privy o continúa con los smart contracts. **¡Estás listo para el hackathon!** 🏆
 
+
+
+
+
+
+

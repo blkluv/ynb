@@ -104,3 +104,9 @@ echo "  4. Build:          anchor build"
 echo "  5. Deploy:         anchor deploy --provider.cluster devnet"
 echo ""
 
+
+
+
+
+
+

@@ -336,3 +336,9 @@ Solana Explorer (Blockchain explorer)
 **Status general:** 🟢 On track  
 **Confianza de completar MVP:** 95%  
 **Tiempo restante estimado:** ~6-8 horas de trabajo
+
+
+
+
+
+

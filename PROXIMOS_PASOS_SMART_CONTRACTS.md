@@ -301,3 +301,9 @@ wsl bash -c "source ~/.cargo/env && solana airdrop 2"
 ---
 
 **Mientras esperamos la instalación, ¿tienes alguna pregunta sobre el proceso o quieres que prepare algo más?**
+
+
+
+
+
+

@@ -13,6 +13,7 @@
 ### **Frontend (Next.js + TypeScript + Tailwind)**
 
 #### 1. Landing Page ✅
+
 - Hero section con CTA
 - Estadísticas en tiempo real (volumen, mercados, usuarios)
 - Trending markets
@@ -20,12 +21,14 @@
 - Responsive design
 
 #### 2. Wallet Integration ✅
+
 - Privy integration completa
 - Conexión con wallets Solana
 - Estado de conexión visual
 - Auto-connect workflow
 
 #### 3. Trading Interface ✅
+
 - **TradingPanel** con Buy/Sell
 - Cálculo de shares en tiempo real
 - Trading fees display
@@ -36,6 +39,7 @@
 - Transaction signatures realistas (88 caracteres)
 
 #### 4. Market Creation ✅
+
 - Formulario completo de creación
 - Binary / Categorical / Scalar markets
 - Custom options
@@ -44,6 +48,7 @@
 - Redirect automático al market creado
 
 #### 5. Market Display ✅
+
 - Individual market pages
 - Real-time probability updates
 - Volume y participation stats
@@ -51,18 +56,21 @@
 - Resolution date countdown
 
 #### 6. Order Book ✅
+
 - Bids y Asks visuales
 - Spread calculation
 - Real-time updates
 - Price levels
 
 #### 7. Trade History ✅
+
 - User trades listing
 - Buy/Sell indicators
 - Timestamp formatting
 - Transaction signatures con links a Explorer
 
 #### 8. User Positions ✅
+
 - Active positions display
 - P&L calculation
 - Profit/Loss percentage
@@ -73,6 +81,7 @@
 ## 🔧 **Mejoras Técnicas Implementadas**
 
 ### **LocalStorage Persistence**
+
 ```typescript
 // Data persiste entre reloads
 - markets → localStorage
@@ -81,6 +90,7 @@
 ```
 
 ### **Realistic Transaction Simulation**
+
 ```typescript
 // Delays realistas de blockchain
 - Trade execution: 1.5-3 segundos
@@ -91,11 +101,13 @@ generateSolanaSignature() // 88 caracteres, formato correcto
 ```
 
 ### **Explorer Links**
+
 ```typescript
 https://explorer.solana.com/tx/{signature}?cluster=devnet
 ```
 
 ### **Toast Notifications**
+
 - React-hot-toast integrado
 - Themed para dark mode
 - Loading → Success/Error flow
@@ -106,18 +118,21 @@ https://explorer.solana.com/tx/{signature}?cluster=devnet
 ## 🚀 **Cómo Funciona (Demo Flow)**
 
 ### **1. Conectar Wallet**
+
 1. User clickea "Connect Wallet"
 2. Privy modal aparece
 3. Selecciona wallet (Phantom, Solflare, etc.)
 4. Wallet conectada → address visible
 
 ### **2. Explorar Mercados**
+
 1. Landing page muestra trending markets
 2. Click en "View All Markets" → `/markets`
 3. Lista completa de mercados activos
 4. Click en market → página individual
 
 ### **3. Hacer Trade**
+
 1. En market page, selecciona Yes/No
 2. Ingresa amount (ej: 10 SOL)
 3. Click "Buy Shares"
@@ -127,6 +142,7 @@ https://explorer.solana.com/tx/{signature}?cluster=devnet
 7. Probability del market se actualiza
 
 ### **4. Crear Market**
+
 1. Click "Create Market" en navbar
 2. Llena formulario:
    - Question
@@ -148,7 +164,7 @@ https://explorer.solana.com/tx/{signature}?cluster=devnet
 
 1. **Landing Page** → Profesional, clean, modern
 2. **Wallet Connection** → Smooth UX con Privy
-3. **Trading Flow** → 
+3. **Trading Flow** →
    - Seleccionar market
    - Conectar wallet
    - Ejecutar trade
@@ -166,23 +182,26 @@ https://explorer.solana.com/tx/{signature}?cluster=devnet
 
 ### **Elevator Pitch (30 segundos)**
 
-> "PrismaFi es una plataforma de prediction markets descentralizada en Solana, 
-> donde usuarios predicen el futuro y ganan tokens por acertar. Hemos construido 
-> un frontend completo con wallet integration, trading interface, y una UX 
+> "PrismaFi es una plataforma de prediction markets descentralizada en Solana,
+> donde usuarios predicen el futuro y ganan tokens por acertar. Hemos construido
+> un frontend completo con wallet integration, trading interface, y una UX
 > impecable que simula transacciones reales on-chain."
 
 ### **Demo Script (2 minutos)**
 
 **[0:00-0:15]** Mostrar landing page
+
 - "Esta es PrismaFi, nuestro prediction market en Solana"
 - Scroll para mostrar mercados trending
 
 **[0:15-0:30]** Conectar wallet
+
 - Click "Connect Wallet"
 - Privy modal
 - Wallet conectada
 
 **[0:30-1:00]** Ejecutar trade
+
 - Click en market "Bitcoin $100k"
 - Seleccionar "Yes"
 - Ingresar amount "10 SOL"
@@ -192,6 +211,7 @@ https://explorer.solana.com/tx/{signature}?cluster=devnet
 - Position actualizada
 
 **[1:00-1:30]** Crear market
+
 - Click "Create Market"
 - Llenar form rápido (pre-preparado)
 - Submit
@@ -199,6 +219,7 @@ https://explorer.solana.com/tx/{signature}?cluster=devnet
 - Redirect a market creado
 
 **[1:30-2:00]** Wrap-up
+
 - "Frontend completo con persistencia, transacciones simuladas, y UX profesional"
 - "Smart contracts en desarrollo, listos para deploy"
 - "Todo open-source, todo funcional"
@@ -276,6 +297,7 @@ src/
 ## 🔮 **Roadmap Post-Hackathon**
 
 ### **Fase 1: Smart Contracts (1-2 semanas)**
+
 - ✅ Código Anchor ya escrito
 - ⏳ Deploy a Devnet
 - ⏳ Testing en Devnet
@@ -283,12 +305,14 @@ src/
 - ⏳ Deploy a Mainnet
 
 ### **Fase 2: Integración Real (1 semana)**
+
 - Conectar frontend con program ID real
 - Reemplazar `MarketService` simulado con llamadas RPC
 - Integrar Anchor IDL
 - Testing E2E completo
 
 ### **Fase 3: Features Avanzados (2-3 semanas)**
+
 - Liquidity pools
 - Market resolution automática (oracles)
 - AMM mejorado
@@ -296,6 +320,7 @@ src/
 - Governance token
 
 ### **Fase 4: Go-to-Market**
+
 - Marketing campaign
 - Community building
 - Partnerships con proyectos de Solana
@@ -306,6 +331,7 @@ src/
 ## 🎓 **Lo Que Aprendimos**
 
 ### **Técnico**
+
 1. Privy es excelente para wallet auth en Solana
 2. LocalStorage + React state = UX rápida
 3. Toast notifications mejoran la percepción de "transacción real"
@@ -313,12 +339,14 @@ src/
 5. Next.js 14 App Router es poderoso pero tiene quirks con SSR
 
 ### **Producto**
+
 1. Una UX pulida vale más que features a medias
 2. Los usuarios valoran la velocidad y feedback inmediato
 3. Links a Explorer (aunque sean falsos) generan confianza
 4. Prediction markets necesitan data real-time y visual
 
 ### **Hackathon**
+
 1. Scope pequeño, ejecución perfecta > scope grande, ejecución mediocre
 2. Demo funcional > código perfecto
 3. Priorizar lo que se puede mostrar en 2 minutos
@@ -342,6 +370,7 @@ src/
 ## 🎬 **Demo Checklist (Antes de Presentar)**
 
 ### **Pre-Demo Setup (5 minutos antes)**
+
 - [ ] Abrir https://cypherpunk-hackathon2025.vercel.app
 - [ ] Clear localStorage (para demo limpia)
 - [ ] Tener wallet Phantom instalada y con SOL testnet
@@ -353,18 +382,18 @@ src/
   - Solana Explorer (para mostrar que links funcionan)
 
 ### **Durante Demo**
+
 - [ ] Hablar mientras cargan las "transacciones" (explicar qué pasa)
 - [ ] Click en Explorer link para mostrar que es Solana real (aunque tx no existe)
 - [ ] Mencionar persistencia (refresh página, data sigue)
 - [ ] Destacar notificaciones y feedback visual
 
 ### **Q&A Preparado**
-- **"¿Los smart contracts funcionan?"** 
+
+- **"¿Los smart contracts funcionan?"**
   → "Están escritos en Anchor (Rust), listos para deploy. Por temas de tiempo del hackathon, presentamos el frontend funcional."
-  
 - **"¿La data persiste?"**
   → "Sí, usamos localStorage. En producción, irá directo a blockchain."
-  
 - **"¿Cuánto falta para producción?"**
   → "1-2 semanas para deploy de contratos, 1 semana para integración. El frontend ya está production-ready."
 
@@ -373,6 +402,7 @@ src/
 ## 🚀 **Siguiente Paso Inmediato**
 
 **Mañana (con energía fresca):**
+
 1. Usar GitHub Codespaces
 2. Instalar Rust + Anchor (funcionará sin problemas en Linux)
 3. `anchor build`
@@ -386,6 +416,7 @@ src/
 ## 🎯 **Conclusión**
 
 ### **Lo que tenemos HOY:**
+
 - ✅ Frontend completo y profesional
 - ✅ Wallet integration funcional
 - ✅ Trading flow end-to-end
@@ -398,6 +429,7 @@ src/
 - ✅ Zero errores de TypeScript
 
 ### **El Pitch en una frase:**
+
 **"PrismaFi es un prediction market en Solana con una UX tan buena que parece que ya está en Mainnet."**
 
 ---
@@ -411,4 +443,9 @@ src/
 ---
 
 **¡A ganar este hackathon! 🏆🚀**
+
+
+
+
+
 

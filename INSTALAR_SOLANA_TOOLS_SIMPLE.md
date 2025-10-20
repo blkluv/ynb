@@ -145,3 +145,9 @@ wsl bash -c "~/.cargo/bin/avm list && ~/.cargo/bin/avm use 0.29.0"
 - **A)** Sí, ejecuta el comando completo (15-20 min, automático)
 - **B)** Paso a paso (verificando cada etapa)
 - **C)** Solo instalar lo que falta (Rust + fix Anchor)
+
+
+
+
+
+

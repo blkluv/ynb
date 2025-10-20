@@ -272,3 +272,9 @@ cp target/idl/prediction_market.json ../src/lib/idl/
 **Commit:** `4b3eb56`  
 **Status:** ✅ **Fix pusheado, esperando redeploy automático**  
 **ETA:** ~2-3 minutos desde el push
+
+
+
+
+
+

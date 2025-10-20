@@ -134,3 +134,9 @@ Si quieres que lo arregle ahora mismo, dime cuál opción prefieres:
 - ✅ Código correcto, solo falta configuración
 
 **Tiempo para arreglar:** 2-5 minutos
+
+
+
+
+
+
