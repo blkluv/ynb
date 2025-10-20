@@ -12,12 +12,15 @@
 ## PASO 2: Copiar el Código (3 min)
 
 ### 2.1 Ubicación del Archivo Local
+
 Tu smart contract está aquí:
+
 ```
 📁 prediction-market-contract/programs/prediction_market/src/lib.rs
 ```
 
 ### 2.2 Copiar a Playground
+
 1. Abre `lib.rs` local (392 líneas)
 2. **Selecciona TODO el contenido** (Ctrl+A)
 3. **Copia** (Ctrl+C)
@@ -54,11 +57,13 @@ anchor-spl = "0.30.1"
 ## PASO 4: Build y Deploy (5 min)
 
 ### 4.1 Build
+
 1. Click en el botón **"Build"** (arriba a la derecha, ícono de martillo 🔨)
 2. Espera 1-2 minutos (verás logs en la consola inferior)
 3. Deberías ver: ✅ `Build successful`
 
 ### 4.2 Deploy
+
 1. Click en **"Deploy"** (ícono de cohete 🚀, junto a Build)
 2. Solana Playground te preguntará si quieres deployar a **Devnet** → Click "Yes"
 3. Espera 30-60 segundos
@@ -101,18 +106,24 @@ Ahora ve a **PASO 6** en la guía principal para conectar el frontend.
 ## 🆘 Troubleshooting
 
 ### Error: "Out of SOL"
+
 **Solución:** Solana Playground te da SOL automáticamente en Devnet. Si no, usa:
+
 - https://faucet.solana.com/
 - Pide 2 SOL para tu wallet de Playground
 
 ### Error: "Build failed"
+
 **Solución:**
+
 1. Verifica que copiaste **TODO** el contenido de `lib.rs` (392 líneas)
 2. Verifica que `Cargo.toml` está correcto (arriba)
 3. Revisa la consola de Playground para errores específicos
 
 ### Error: "Deploy failed"
+
 **Solución:**
+
 1. Asegúrate de tener SOL en tu wallet de Playground
 2. Intenta hacer Build nuevamente antes de Deploy
 3. Espera 30 segundos y reintenta
@@ -131,4 +142,3 @@ Ahora ve a **PASO 6** en la guía principal para conectar el frontend.
 ## 🎯 Una vez tengas el Program ID
 
 Pasa al siguiente archivo: `CONECTAR_FRONTEND_GUIA.md`
-

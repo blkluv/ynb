@@ -1,6 +1,7 @@
 # 🔗 Guía Completa: Conectar Frontend con Smart Contract
 
 ## Pre-requisitos
+
 ✅ Ya deployaste el contrato en Solana Playground (siguiendo `GUIA_SOLANA_PLAYGROUND_DEPLOY.md`)  
 ✅ Tienes el **Program ID** (ej: `7PZf8wZqG5t3H9xKvN4M8rY2wXq1Q3nC6sD9xJ2vL4kA`)  
 ✅ Tienes el **IDL JSON** descargado/copiado
@@ -10,11 +11,13 @@
 ## PASO 1: Actualizar Program ID (2 min)
 
 ### 1.1 Ubicación del Archivo
+
 ```
 📁 prediction-market/src/lib/solana/programId.ts
 ```
 
 ### 1.2 Reemplazar el Program ID
+
 Abre el archivo y **actualiza la línea 23**:
 
 ```typescript
@@ -25,7 +28,7 @@ export const PROGRAM_ID = new PublicKey(
 
 // DESPUÉS (tu Program ID real de Playground)
 export const PROGRAM_ID = new PublicKey(
-  'TU_PROGRAM_ID_AQUI'  // ← Pega el que te dio Solana Playground
+  'TU_PROGRAM_ID_AQUI' // ← Pega el que te dio Solana Playground
 )
 ```
 
@@ -36,6 +39,7 @@ export const PROGRAM_ID = new PublicKey(
 ## PASO 2: Actualizar el IDL (3 min)
 
 ### 2.1 Ubicación del Archivo
+
 ```
 📁 prediction-market/src/lib/solana/idl.ts
 ```
@@ -48,22 +52,23 @@ export const PROGRAM_ID = new PublicKey(
 4. **Reemplaza** el objeto `IDL` en el archivo (desde la línea 10)
 
 **Estructura esperada:**
+
 ```typescript
 export const IDL = {
-  "version": "0.1.0",
-  "name": "prediction_market",
-  "instructions": [
+  version: '0.1.0',
+  name: 'prediction_market',
+  instructions: [
     // ... (todo lo que copiaste de Playground)
   ],
-  "accounts": [
+  accounts: [
     // ...
   ],
-  "events": [
+  events: [
     // ...
   ],
-  "errors": [
+  errors: [
     // ...
-  ]
+  ],
 } as const
 ```
 
@@ -123,7 +128,9 @@ export default function TestContractPage() {
       )}
 
       <div className="bg-gray-100 p-4 rounded-lg">
-        <h2 className="text-xl font-semibold mb-4">Markets Found: {markets.length}</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          Markets Found: {markets.length}
+        </h2>
         <pre className="text-sm overflow-auto">
           {JSON.stringify(markets, null, 2)}
         </pre>
@@ -136,6 +143,7 @@ export default function TestContractPage() {
 ### 4.2 Probar en el Navegador
 
 1. Inicia tu servidor de desarrollo:
+
    ```bash
    npm run dev
    ```
@@ -190,7 +198,10 @@ export default function MarketsPage() {
       ) : (
         <div className="grid gap-4">
           {markets.map((market) => (
-            <div key={market.publicKey.toString()} className="border p-4 rounded-lg">
+            <div
+              key={market.publicKey.toString()}
+              className="border p-4 rounded-lg"
+            >
               <h2 className="text-xl font-semibold">{market.question}</h2>
               <p className="text-gray-600">{market.description}</p>
               <div className="mt-4 flex gap-4">
@@ -372,33 +383,33 @@ NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
 ```typescript
 const {
   // State
-  markets,           // Array de todos los mercados
-  userPositions,     // Array de posiciones del usuario
-  loading,           // Boolean de loading state
-  error,             // String de error (null si no hay error)
+  markets, // Array de todos los mercados
+  userPositions, // Array de posiciones del usuario
+  loading, // Boolean de loading state
+  error, // String de error (null si no hay error)
 
   // Actions
-  createMarket,      // (params) => Promise<string> - Crea un mercado
-  placeBet,          // (params) => Promise<string> - Coloca una apuesta
-  resolveMarket,     // (marketId, outcome) => Promise<string> - Resuelve mercado
-  claimWinnings,     // (marketId) => Promise<string> - Reclama ganancias
+  createMarket, // (params) => Promise<string> - Crea un mercado
+  placeBet, // (params) => Promise<string> - Coloca una apuesta
+  resolveMarket, // (marketId, outcome) => Promise<string> - Resuelve mercado
+  claimWinnings, // (marketId) => Promise<string> - Reclama ganancias
 
   // Queries
-  fetchMarkets,      // () => Promise<void> - Refresca todos los mercados
-  fetchUserPositions,// () => Promise<void> - Refresca posiciones del usuario
-  fetchMarket,       // (marketId) => Promise<Market | null> - Obtiene 1 mercado
+  fetchMarkets, // () => Promise<void> - Refresca todos los mercados
+  fetchUserPositions, // () => Promise<void> - Refresca posiciones del usuario
+  fetchMarket, // (marketId) => Promise<Market | null> - Obtiene 1 mercado
   fetchUserPosition, // (marketId) => Promise<Position | null> - Obtiene 1 posición
 
   // Utils
-  isConnected,       // Boolean
-  publicKey,         // PublicKey | null
+  isConnected, // Boolean
+  publicKey, // PublicKey | null
   utils: {
-    lamportsToSOL,   // (lamports) => number
-    solToLamports,   // (sol) => BN
+    lamportsToSOL, // (lamports) => number
+    solToLamports, // (sol) => BN
     calculateYesPrice, // (yesAmount, noAmount) => number
-    formatTimestamp,   // (timestamp) => string
-    isMarketExpired,   // (endTime) => boolean
-  }
+    formatTimestamp, // (timestamp) => string
+    isMarketExpired, // (endTime) => boolean
+  },
 } = useContract()
 ```
 
@@ -407,18 +418,23 @@ const {
 ## 🆘 Troubleshooting
 
 ### Error: "Program ID not found"
+
 **Solución:** Verifica que el Program ID en `programId.ts` sea exactamente el que te dio Solana Playground.
 
 ### Error: "IDL doesn't match"
+
 **Solución:** Re-copia el IDL completo desde Playground al archivo `idl.ts`.
 
 ### Error: "Wallet not connected"
+
 **Solución:** Asegúrate de conectar tu wallet (Phantom) antes de llamar métodos del contrato.
 
 ### Error: "Insufficient funds"
+
 **Solución:** Necesitas SOL en Devnet. Ve a https://faucet.solana.com/ y solicita 1-2 SOL.
 
 ### Markets array está vacío
+
 **Solución:** Esto es normal si acabas de deployar. Usa la página de Create Market para crear el primer mercado.
 
 ---
@@ -428,6 +444,7 @@ const {
 Ahora tu frontend está 100% conectado al smart contract deployado en Solana Devnet.
 
 **Próximos pasos:**
+
 1. Crea tu primer mercado desde la UI
 2. Coloca apuestas de prueba
 3. Resuelve el mercado (después de que expire)
@@ -450,6 +467,7 @@ prediction-market/
 ```
 
 **Todos estos archivos YA están creados. Solo necesitas:**
+
 1. Actualizar el Program ID
 2. Actualizar el IDL
 3. Empezar a usar `useContract()` en tus componentes
@@ -457,4 +475,3 @@ prediction-market/
 ---
 
 **¡Buena suerte con tu hackathon! 🚀**
-

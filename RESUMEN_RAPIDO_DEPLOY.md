@@ -1,6 +1,7 @@
 # 🚀 RESUMEN RÁPIDO: Deploy y Conexión
 
 ## ❓ TU PREGUNTA
+
 > "¿Dónde pego el archivo lib.rs del despliegue en este proyecto para enlazar el frontend y la terminal en Solana Playground?"
 
 ---
@@ -25,11 +26,13 @@ graph LR
 ### **1. Copiar `lib.rs` A Solana Playground** (3 min)
 
 **Archivo local:**
+
 ```
 📁 prediction-market-contract/programs/prediction_market/src/lib.rs
 ```
 
 **Dónde pegarlo:**
+
 1. Abre https://beta.solpg.io/
 2. Create New Project → Anchor
 3. Abre el archivo `src/lib.rs` en Playground
@@ -46,6 +49,7 @@ graph LR
 3. Click en **Deploy** (🚀)
 4. Confirma "Devnet"
 5. **COPIA** el Program ID que aparece:
+
    ```
    Program ID: 7PZf8wZqG5t3H9xKvN4M8rY2wXq1Q3nC6sD9xJ2vL4kA
    ```
@@ -59,25 +63,29 @@ graph LR
 #### 3.1 Pegar Program ID
 
 **Archivo:**
+
 ```
 📁 prediction-market/src/lib/solana/programId.ts
 ```
 
 **Línea 23:**
+
 ```typescript
 export const PROGRAM_ID = new PublicKey(
-  'PEGA_AQUI_TU_PROGRAM_ID'  // ← El que te dio Playground
+  'PEGA_AQUI_TU_PROGRAM_ID' // ← El que te dio Playground
 )
 ```
 
 #### 3.2 Pegar IDL
 
 **Archivo:**
+
 ```
 📁 prediction-market/src/lib/solana/idl.ts
 ```
 
 **Línea 10:**
+
 ```typescript
 export const IDL = {
   // PEGA AQUI TODO EL JSON que copiaste del tab "IDL" de Playground
@@ -117,6 +125,7 @@ prediction-market/src/
 ```
 
 **Solo necesitas actualizar 2 líneas:**
+
 1. Program ID en `programId.ts`
 2. IDL completo en `idl.ts`
 
@@ -184,4 +193,3 @@ Si quieres el paso a paso detallado, lee en orden:
 **¿Dudas?** → Pregúntame lo que sea
 
 **¡Vamos con todo! 🚀**
-
