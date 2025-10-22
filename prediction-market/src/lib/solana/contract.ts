@@ -13,7 +13,7 @@ import {
   LAMPORTS_PER_SOL,
 } from '@solana/web3.js'
 import { AnchorProvider, Program, BN, web3 } from '@coral-xyz/anchor'
-import { IDL, PredictionMarketIDL } from './idl'
+import { IDL } from './idl'
 import { PROGRAM_ID, getCurrentRpcEndpoint } from './programId'
 
 // ============================================================================
