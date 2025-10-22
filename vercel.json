@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
+  "buildCommand": "cd prediction-market && npm run build",
+  "outputDirectory": "prediction-market/.next",
   "framework": "nextjs",
-  "installCommand": "npm install --legacy-peer-deps"
+  "installCommand": "cd prediction-market && npm install --legacy-peer-deps"
 }
