@@ -58,3 +58,6 @@ echo ""
 echo "🔄 Recuerda reiniciar el servidor de desarrollo:"
 echo "   cd prediction-market && npm run dev"
 
+
+
+

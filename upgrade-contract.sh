@@ -41,3 +41,6 @@ echo "🔗 Explorador: https://explorer.solana.com/address/$PROGRAM_ID?cluster=d
 echo ""
 echo "📝 El contrato ahora tiene el Program ID correcto en declare_id!"
 
+
+
+

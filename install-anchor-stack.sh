@@ -69,3 +69,6 @@ echo ""
 echo "💡 Para usar en nuevas sesiones, ejecuta:"
 echo "   source ~/.bashrc"
 
+
+
+

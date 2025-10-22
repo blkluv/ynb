@@ -1,0 +1,398 @@
+// ============================================================================
+// PRISMAFI - PREDICTION MARKET SMART CONTRACT
+// Deploy en Solana Playground: https://beta.solpg.io/
+// ============================================================================
+
+use anchor_lang::prelude::*;
+use sha2::{Sha256, Digest};
+
+// NOTA: Playground actualizará automáticamente este Program ID después del primer build
+// Si da error, copia el Program ID de Anchor.toml y pégalo aquí
+declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+
+#[program]
+pub mod prediction_market {
+    use super::*;
+
+    /// Initialize a new prediction market
+    pub fn create_market(
+        ctx: Context<CreateMarket>,
+        question: String,
+        description: String,
+        end_time: i64,
+        category: String,
+    ) -> Result<()> {
+        require!(question.len() <= 200, PredictionMarketError::QuestionTooLong);
+        require!(description.len() <= 1000, PredictionMarketError::DescriptionTooLong);
+        require!(category.len() <= 50, PredictionMarketError::CategoryTooLong);
+        require!(end_time > Clock::get()?.unix_timestamp, PredictionMarketError::InvalidEndTime);
+
+        let market = &mut ctx.accounts.market;
+        market.authority = ctx.accounts.authority.key();
+        market.question = question;
+        market.description = description;
+        market.end_time = end_time;
+        market.category = category;
+        market.total_yes_amount = 0;
+        market.total_no_amount = 0;
+        market.resolved = false;
+        market.winning_outcome = None;
+        market.created_at = Clock::get()?.unix_timestamp;
+        market.bump = ctx.bumps.market;
+
+        emit!(MarketCreated {
+            market: market.key(),
+            authority: market.authority,
+            question: market.question.clone(),
+            end_time: market.end_time,
+        });
+
+        Ok(())
+    }
+
+    /// Place a bet on YES or NO
+    pub fn place_bet(
+        ctx: Context<PlaceBet>,
+        outcome: bool, // true = YES, false = NO
+        amount: u64,
+    ) -> Result<()> {
+        require!(amount > 0, PredictionMarketError::InvalidAmount);
+        
+        let market = &mut ctx.accounts.market;
+        require!(!market.resolved, PredictionMarketError::MarketResolved);
+        require!(
+            Clock::get()?.unix_timestamp < market.end_time,
+            PredictionMarketError::MarketExpired
+        );
+
+        let position = &mut ctx.accounts.position;
+        
+        // Initialize position on first bet
+        position.user = ctx.accounts.user.key();
+        position.market = market.key();
+        position.outcome = outcome;
+        position.amount = position.amount.checked_add(amount).unwrap();
+        position.claimed = false;
+        position.bump = ctx.bumps.position;
+
+        // Update market totals
+        if outcome {
+            market.total_yes_amount = market.total_yes_amount.checked_add(amount).unwrap();
+        } else {
+            market.total_no_amount = market.total_no_amount.checked_add(amount).unwrap();
+        }
+
+        // Transfer SOL from user to market vault
+        let cpi_context = CpiContext::new(
+            ctx.accounts.system_program.to_account_info(),
+            anchor_lang::system_program::Transfer {
+                from: ctx.accounts.user.to_account_info(),
+                to: ctx.accounts.market_vault.to_account_info(),
+            },
+        );
+        anchor_lang::system_program::transfer(cpi_context, amount)?;
+
+        emit!(BetPlaced {
+            market: market.key(),
+            user: ctx.accounts.user.key(),
+            outcome,
+            amount,
+            total_yes: market.total_yes_amount,
+            total_no: market.total_no_amount,
+        });
+
+        Ok(())
+    }
+
+    /// Resolve the market (only authority)
+    pub fn resolve_market(
+        ctx: Context<ResolveMarket>,
+        winning_outcome: bool, // true = YES won, false = NO won
+    ) -> Result<()> {
+        let market = &mut ctx.accounts.market;
+        
+        require!(!market.resolved, PredictionMarketError::AlreadyResolved);
+        require!(
+            Clock::get()?.unix_timestamp >= market.end_time,
+            PredictionMarketError::MarketNotExpired
+        );
+        require!(
+            ctx.accounts.authority.key() == market.authority,
+            PredictionMarketError::Unauthorized
+        );
+
+        market.resolved = true;
+        market.winning_outcome = Some(winning_outcome);
+
+        emit!(MarketResolved {
+            market: market.key(),
+            winning_outcome,
+            total_yes: market.total_yes_amount,
+            total_no: market.total_no_amount,
+        });
+
+        Ok(())
+    }
+
+    /// Claim winnings
+    pub fn claim_winnings(ctx: Context<ClaimWinnings>) -> Result<()> {
+        let market = &ctx.accounts.market;
+        let position = &mut ctx.accounts.position;
+
+        require!(market.resolved, PredictionMarketError::MarketNotResolved);
+        require!(!position.claimed, PredictionMarketError::AlreadyClaimed);
+        require!(
+            position.user == ctx.accounts.user.key(),
+            PredictionMarketError::Unauthorized
+        );
+
+        let winning_outcome = market.winning_outcome.unwrap();
+        require!(
+            position.outcome == winning_outcome,
+            PredictionMarketError::LosingPosition
+        );
+
+        // Calculate winnings: (user_amount / winning_total) * total_pool
+        let total_pool = market.total_yes_amount + market.total_no_amount;
+        let winning_total = if winning_outcome {
+            market.total_yes_amount
+        } else {
+            market.total_no_amount
+        };
+
+        let winnings = (position.amount as u128)
+            .checked_mul(total_pool as u128)
+            .unwrap()
+            .checked_div(winning_total as u128)
+            .unwrap() as u64;
+
+        // Transfer winnings from vault to user using proper CPI
+        let vault_seeds = &[
+            b"vault",
+            market.key().as_ref(),
+            &[ctx.bumps.market_vault],
+        ];
+        let signer = &[&vault_seeds[..]];
+
+        let cpi_context = CpiContext::new_with_signer(
+            ctx.accounts.system_program.to_account_info(),
+            anchor_lang::system_program::Transfer {
+                from: ctx.accounts.market_vault.to_account_info(),
+                to: ctx.accounts.user.to_account_info(),
+            },
+            signer,
+        );
+        anchor_lang::system_program::transfer(cpi_context, winnings)?;
+
+        position.claimed = true;
+
+        emit!(WinningsClaimed {
+            market: market.key(),
+            user: ctx.accounts.user.key(),
+            amount: winnings,
+        });
+
+        Ok(())
+    }
+}
+
+// ============================================================================
+// Accounts
+// ============================================================================
+
+#[derive(Accounts)]
+#[instruction(question: String)]
+pub struct CreateMarket<'info> {
+    #[account(
+        init,
+        payer = authority,
+        space = 8 + Market::INIT_SPACE,
+        seeds = [b"market", authority.key().as_ref(), &Sha256::digest(question.as_bytes())[..]],
+        bump
+    )]
+    pub market: Account<'info, Market>,
+    
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct PlaceBet<'info> {
+    #[account(mut)]
+    pub market: Account<'info, Market>,
+    
+    #[account(
+        init_if_needed,
+        payer = user,
+        space = 8 + UserPosition::INIT_SPACE,
+        seeds = [b"position", market.key().as_ref(), user.key().as_ref()],
+        bump
+    )]
+    pub position: Account<'info, UserPosition>,
+    
+    /// CHECK: This is the market vault that holds all bets
+    #[account(
+        mut,
+        seeds = [b"vault", market.key().as_ref()],
+        bump
+    )]
+    pub market_vault: AccountInfo<'info>,
+    
+    #[account(mut)]
+    pub user: Signer<'info>,
+    
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct ResolveMarket<'info> {
+    #[account(mut)]
+    pub market: Account<'info, Market>,
+    
+    pub authority: Signer<'info>,
+}
+
+#[derive(Accounts)]
+pub struct ClaimWinnings<'info> {
+    #[account(mut)]
+    pub market: Account<'info, Market>,
+    
+    #[account(mut)]
+    pub position: Account<'info, UserPosition>,
+    
+    /// CHECK: This is the market vault
+    #[account(
+        mut,
+        seeds = [b"vault", market.key().as_ref()],
+        bump
+    )]
+    pub market_vault: AccountInfo<'info>,
+    
+    #[account(mut)]
+    pub user: Signer<'info>,
+    
+    pub system_program: Program<'info, System>,
+}
+
+// ============================================================================
+// State
+// ============================================================================
+
+#[account]
+#[derive(InitSpace)]
+pub struct Market {
+    pub authority: Pubkey,          // 32
+    #[max_len(200)]
+    pub question: String,            // 4 + 200
+    #[max_len(1000)]
+    pub description: String,         // 4 + 1000
+    #[max_len(50)]
+    pub category: String,            // 4 + 50
+    pub end_time: i64,               // 8
+    pub total_yes_amount: u64,       // 8
+    pub total_no_amount: u64,        // 8
+    pub resolved: bool,              // 1
+    pub winning_outcome: Option<bool>, // 1 + 1
+    pub created_at: i64,             // 8
+    pub bump: u8,                    // 1
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct UserPosition {
+    pub user: Pubkey,                // 32
+    pub market: Pubkey,              // 32
+    pub outcome: bool,               // 1 (true = YES, false = NO)
+    pub amount: u64,                 // 8
+    pub claimed: bool,               // 1
+    pub bump: u8,                    // 1
+}
+
+// ============================================================================
+// Events
+// ============================================================================
+
+#[event]
+pub struct MarketCreated {
+    pub market: Pubkey,
+    pub authority: Pubkey,
+    pub question: String,
+    pub end_time: i64,
+}
+
+#[event]
+pub struct BetPlaced {
+    pub market: Pubkey,
+    pub user: Pubkey,
+    pub outcome: bool,
+    pub amount: u64,
+    pub total_yes: u64,
+    pub total_no: u64,
+}
+
+#[event]
+pub struct MarketResolved {
+    pub market: Pubkey,
+    pub winning_outcome: bool,
+    pub total_yes: u64,
+    pub total_no: u64,
+}
+
+#[event]
+pub struct WinningsClaimed {
+    pub market: Pubkey,
+    pub user: Pubkey,
+    pub amount: u64,
+}
+
+// ============================================================================
+// Errors
+// ============================================================================
+
+#[error_code]
+pub enum PredictionMarketError {
+    #[msg("Question too long (max 200 characters)")]
+    QuestionTooLong,
+    
+    #[msg("Description too long (max 1000 characters)")]
+    DescriptionTooLong,
+    
+    #[msg("Category too long (max 50 characters)")]
+    CategoryTooLong,
+    
+    #[msg("End time must be in the future")]
+    InvalidEndTime,
+    
+    #[msg("Invalid bet amount")]
+    InvalidAmount,
+    
+    #[msg("Market is already resolved")]
+    MarketResolved,
+    
+    #[msg("Market has expired")]
+    MarketExpired,
+    
+    #[msg("Cannot change outcome after first bet")]
+    OutcomeMismatch,
+    
+    #[msg("Market is already resolved")]
+    AlreadyResolved,
+    
+    #[msg("Market has not expired yet")]
+    MarketNotExpired,
+    
+    #[msg("Unauthorized")]
+    Unauthorized,
+    
+    #[msg("Market is not resolved yet")]
+    MarketNotResolved,
+    
+    #[msg("Winnings already claimed")]
+    AlreadyClaimed,
+    
+    #[msg("This is a losing position")]
+    LosingPosition,
+}
+

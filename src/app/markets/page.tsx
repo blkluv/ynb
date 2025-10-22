@@ -1,347 +1,200 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import Layout from '@/components/layout/Layout';
-import MarketCard from '@/components/market/MarketCard';
+import { useState } from 'react'
+import Link from 'next/link'
 import {
-  MarketQuestion,
-  MarketCategory,
-  OutcomeType,
-  MarketStatus
-} from '@/types/market';
-import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { PlusIcon } from '@heroicons/react/24/solid';
-import Link from 'next/link';
-import { MarketService } from '@/lib/marketService';
+  useMockPredictionMarket,
+  formatSOL,
+  formatPercentage,
+  getTimeRemaining,
+} from '@/hooks/useMockPredictionMarket'
 
 export default function MarketsPage() {
-  const [markets, setMarkets] = useState<MarketQuestion[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [sortBy, setSortBy] = useState('volume');
-  const [showFilters, setShowFilters] = useState(false);
+  const { markets, balance, userPositions, isMockMode } =
+    useMockPredictionMarket()
+  const [filter, setFilter] = useState<'all' | 'active' | 'resolved'>('active')
 
-  useEffect(() => {
-    const loadMarkets = async () => {
-      try {
-        setLoading(true);
-        const marketsData = await MarketService.getMarkets();
-        setMarkets(marketsData);
-      } catch (error) {
-        console.error('Error loading markets:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadMarkets();
-  }, []);
-
-  // Mock data fallback - In production, this would come from API/blockchain
-  const mockMarkets: MarketQuestion[] = [
-  {
-    id: '1',
-    question: 'Will Bitcoin reach $100,000 by December 31, 2024?',
-    description: 'This market will resolve to YES if Bitcoin (BTC) reaches or exceeds $100,000 USD on any major exchange.',
-    category: MarketCategory.CRYPTO,
-    resolutionDate: '2024-12-31T23:59:59Z',
-    resolutionSource: 'https://www.coingecko.com/en/coins/bitcoin',
-    outcomeType: OutcomeType.BINARY,
-    options: [
-      { id: 'yes', text: 'Yes', probability: 0.65, volume: 12500 },
-      { id: 'no', text: 'No', probability: 0.35, volume: 8300 }
-    ],
-    creator: '0x1234...5678',
-    createdAt: '2024-01-15T10:00:00Z',
-    status: MarketStatus.ACTIVE,
-    volume: 20800,
-    participants: 342,
-    fees: { creationFee: 0.5, tradingFee: 0.5, resolutionFee: 1.0 }
-  },
-  {
-    id: '2',
-    question: 'Will AI replace 50% of software developers by 2030?',
-    description: 'Market resolves YES if credible studies show AI has replaced at least 50% of traditional software development roles.',
-    category: MarketCategory.TECHNOLOGY,
-    resolutionDate: '2030-12-31T23:59:59Z',
-    resolutionSource: 'https://www.example.com/ai-study',
-    outcomeType: OutcomeType.BINARY,
-    options: [
-      { id: 'yes', text: 'Yes', probability: 0.28, volume: 5200 },
-      { id: 'no', text: 'No', probability: 0.72, volume: 13400 }
-    ],
-    creator: '0x2345...6789',
-    createdAt: '2024-02-01T10:00:00Z',
-    status: MarketStatus.ACTIVE,
-    volume: 18600,
-    participants: 267,
-    fees: { creationFee: 0.5, tradingFee: 0.5, resolutionFee: 1.0 }
-  },
-  {
-    id: '3',
-    question: 'Who will win the 2024 US Presidential Election?',
-    description: 'Market resolves based on the official Electoral College results.',
-    category: MarketCategory.POLITICS,
-    resolutionDate: '2024-11-06T23:59:59Z',
-    resolutionSource: 'https://www.example.com/election-results',
-    outcomeType: OutcomeType.CATEGORICAL,
-    options: [
-      { id: 'dem', text: 'Democratic Candidate', probability: 0.52, volume: 15600 },
-      { id: 'rep', text: 'Republican Candidate', probability: 0.46, volume: 13800 },
-      { id: 'other', text: 'Other', probability: 0.02, volume: 600 }
-    ],
-    creator: '0x3456...7890',
-    createdAt: '2024-01-20T10:00:00Z',
-    status: MarketStatus.ACTIVE,
-    volume: 30000,
-    participants: 521,
-    fees: { creationFee: 0.5, tradingFee: 0.5, resolutionFee: 1.0 }
-  },
-  {
-    id: '4',
-    question: 'Will Ethereum reach $5,000 by June 2024?',
-    description: 'Resolves YES if ETH hits $5,000 on major exchanges before the deadline.',
-    category: MarketCategory.CRYPTO,
-    resolutionDate: '2024-06-30T23:59:59Z',
-    resolutionSource: 'https://www.coingecko.com/en/coins/ethereum',
-    outcomeType: OutcomeType.BINARY,
-    options: [
-      { id: 'yes', text: 'Yes', probability: 0.42, volume: 8900 },
-      { id: 'no', text: 'No', probability: 0.58, volume: 12300 }
-    ],
-    creator: '0x4567...8901',
-    createdAt: '2024-03-01T10:00:00Z',
-    status: MarketStatus.ACTIVE,
-    volume: 21200,
-    participants: 389,
-    fees: { creationFee: 0.5, tradingFee: 0.5, resolutionFee: 1.0 }
-  },
-  {
-    id: '5',
-    question: 'Will there be a new iPhone release in September 2024?',
-    description: 'Market resolves YES if Apple announces a new iPhone model in September 2024.',
-    category: MarketCategory.TECHNOLOGY,
-    resolutionDate: '2024-09-30T23:59:59Z',
-    resolutionSource: 'https://www.apple.com',
-    outcomeType: OutcomeType.BINARY,
-    options: [
-      { id: 'yes', text: 'Yes', probability: 0.89, volume: 17800 },
-      { id: 'no', text: 'No', probability: 0.11, volume: 2200 }
-    ],
-    creator: '0x5678...9012',
-    createdAt: '2024-01-10T10:00:00Z',
-    status: MarketStatus.ACTIVE,
-    volume: 20000,
-    participants: 412,
-    fees: { creationFee: 0.5, tradingFee: 0.5, resolutionFee: 1.0 }
-  },
-  {
-    id: '6',
-    question: 'Will global temperatures increase by 1.5°C by 2025?',
-    description: 'Based on IPCC official reports and measurements.',
-    category: MarketCategory.WEATHER,
-    resolutionDate: '2025-12-31T23:59:59Z',
-    resolutionSource: 'https://www.ipcc.ch',
-    outcomeType: OutcomeType.BINARY,
-    options: [
-      { id: 'yes', text: 'Yes', probability: 0.73, volume: 9200 },
-      { id: 'no', text: 'No', probability: 0.27, volume: 3400 }
-    ],
-    creator: '0x6789...0123',
-    createdAt: '2024-02-15T10:00:00Z',
-    status: MarketStatus.ACTIVE,
-    volume: 12600,
-    participants: 198,
-    fees: { creationFee: 0.5, tradingFee: 0.5, resolutionFee: 1.0 }
-  }
-];
-
-const categories = [
-  { value: 'all', label: 'All Markets', emoji: '🌐' },
-  { value: MarketCategory.CRYPTO, label: 'Crypto', emoji: '₿' },
-  { value: MarketCategory.TECHNOLOGY, label: 'Technology', emoji: '💻' },
-  { value: MarketCategory.POLITICS, label: 'Politics', emoji: '🏛️' },
-  { value: MarketCategory.SPORTS, label: 'Sports', emoji: '⚽' },
-  { value: MarketCategory.ECONOMICS, label: 'Economics', emoji: '📈' },
-  { value: MarketCategory.WEATHER, label: 'Weather', emoji: '🌤️' },
-  { value: MarketCategory.ENTERTAINMENT, label: 'Entertainment', emoji: '🎬' },
-  { value: MarketCategory.OTHER, label: 'Other', emoji: '📊' }
-];
-
-const sortOptions = [
-  { value: 'volume', label: 'Highest Volume' },
-  { value: 'participants', label: 'Most Participants' },
-  { value: 'newest', label: 'Newest' },
-  { value: 'ending-soon', label: 'Ending Soon' }
-];
-
-  const filteredMarkets = markets
-    .filter(market => {
-      const matchesSearch = market.question.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedCategory === 'all' || market.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'volume':
-          return b.volume - a.volume;
-        case 'participants':
-          return b.participants - a.participants;
-        case 'newest':
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        case 'ending-soon':
-          return new Date(a.resolutionDate).getTime() - new Date(b.resolutionDate).getTime();
-        default:
-          return 0;
-      }
-    });
-
-  if (loading) {
-    return (
-      <Layout>
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  const filteredMarkets = markets.filter((market) => {
+    if (filter === 'active') return !market.resolved
+    if (filter === 'resolved') return market.resolved
+    return true
+  })
 
   return (
-    <Layout>
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Explore Markets</h1>
-            <p className="text-gray-400">
-              Discover and trade on prediction markets across various categories
-            </p>
-          </div>
-          <Link href="/create-market">
-            <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-lg transition-all shadow-lg hover:shadow-purple-500/30">
-              <PlusIcon className="w-5 h-5" />
-              Create Market
-            </button>
-          </Link>
-        </div>
-
-        {/* Search and Filter Bar */}
-        <div className="bg-gray-800 rounded-lg p-4 mb-6 border border-gray-700">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Search */}
-            <div className="flex-1 relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search markets..."
-                className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              />
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      {/* Header */}
+      <header className="border-b border-white/10 bg-black/20 backdrop-blur-lg">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <h1 className="text-3xl font-bold text-white">
+                🔮{' '}
+                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  PrismaFi
+                </span>
+              </h1>
+              {isMockMode && (
+                <span className="rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-semibold text-yellow-300 border border-yellow-500/30">
+                  DEMO MODE
+                </span>
+              )}
             </div>
-
-            {/* Sort */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            >
-              {sortOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-
-            {/* Filter Toggle */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-lg font-medium transition-all ${
-                showFilters
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              }`}
-            >
-              <FunnelIcon className="w-5 h-5" />
-              Filters
-            </button>
-          </div>
-
-          {/* Category Filters */}
-          {showFilters && (
-            <div className="mt-4 pt-4 border-t border-gray-700">
-              <div className="flex flex-wrap gap-2">
-                {categories.map(category => (
-                  <button
-                    key={category.value}
-                    onClick={() => setSelectedCategory(category.value)}
-                    className={`px-4 py-2 rounded-lg font-medium text-sm transition-all ${
-                      selectedCategory === category.value
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                    }`}
-                  >
-                    {category.emoji} {category.label}
-                  </button>
-                ))}
+            <div className="flex items-center space-x-4">
+              <div className="rounded-lg bg-white/10 px-4 py-2 backdrop-blur">
+                <p className="text-sm text-gray-300">Tu Balance</p>
+                <p className="text-xl font-bold text-white">
+                  {formatSOL(balance)}
+                </p>
               </div>
+              <Link
+                href="/markets/my-positions"
+                className="rounded-lg bg-purple-600 px-4 py-2 font-semibold text-white hover:bg-purple-700 transition"
+              >
+                Mis Posiciones ({userPositions.length})
+              </Link>
             </div>
-          )}
-        </div>
-
-        {/* Stats Summary */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-            <div className="text-gray-400 text-sm mb-1">Total Markets</div>
-            <div className="text-white text-2xl font-bold">{filteredMarkets.length}</div>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-            <div className="text-gray-400 text-sm mb-1">Total Volume</div>
-            <div className="text-white text-2xl font-bold">
-              ${(filteredMarkets.reduce((sum, m) => sum + m.volume, 0) / 1000).toFixed(0)}k
-            </div>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-            <div className="text-gray-400 text-sm mb-1">Active Traders</div>
-            <div className="text-white text-2xl font-bold">
-              {filteredMarkets.reduce((sum, m) => sum + m.participants, 0)}
-            </div>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
-            <div className="text-gray-400 text-sm mb-1">Avg. Fee</div>
-            <div className="text-white text-2xl font-bold">0.5%</div>
           </div>
         </div>
+      </header>
 
-        {/* Markets Grid */}
-        {filteredMarkets.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredMarkets.map(market => (
-              <MarketCard key={market.id} market={market} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-16">
-            <h3 className="text-xl font-semibold text-gray-400 mb-2">No markets found</h3>
-            <p className="text-gray-500 mb-6">
-              Try adjusting your search or filters
+      {/* Filters */}
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setFilter('all')}
+            className={`rounded-lg px-4 py-2 font-semibold transition ${
+              filter === 'all'
+                ? 'bg-white text-purple-900'
+                : 'bg-white/10 text-white hover:bg-white/20'
+            }`}
+          >
+            Todos ({markets.length})
+          </button>
+          <button
+            onClick={() => setFilter('active')}
+            className={`rounded-lg px-4 py-2 font-semibold transition ${
+              filter === 'active'
+                ? 'bg-white text-purple-900'
+                : 'bg-white/10 text-white hover:bg-white/20'
+            }`}
+          >
+            Activos ({markets.filter((m) => !m.resolved).length})
+          </button>
+          <button
+            onClick={() => setFilter('resolved')}
+            className={`rounded-lg px-4 py-2 font-semibold transition ${
+              filter === 'resolved'
+                ? 'bg-white text-purple-900'
+                : 'bg-white/10 text-white hover:bg-white/20'
+            }`}
+          >
+            Resueltos ({markets.filter((m) => m.resolved).length})
+          </button>
+        </div>
+      </div>
+
+      {/* Markets Grid */}
+      <div className="container mx-auto px-4 pb-12">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredMarkets.map((market) => {
+            const userPosition = userPositions.find(
+              (p) => p.marketId === market.id
+            )
+
+            return (
+              <Link
+                key={market.id}
+                href={`/markets/${market.id}`}
+                className="group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-white/30 transition-all duration-300 hover:scale-105"
+              >
+                {/* Status Badge */}
+                <div className="absolute top-4 right-4 z-10">
+                  {market.resolved ? (
+                    <span className="rounded-full bg-gray-500/80 px-3 py-1 text-xs font-semibold text-white">
+                      Resuelto
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-green-500/80 px-3 py-1 text-xs font-semibold text-white">
+                      Activo
+                    </span>
+                  )}
+                </div>
+
+                {/* User Position Badge */}
+                {userPosition && (
+                  <div className="absolute top-14 right-4 z-10">
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                        userPosition.isYes
+                          ? 'bg-blue-500/80 text-white'
+                          : 'bg-red-500/80 text-white'
+                      }`}
+                    >
+                      Tu apuesta: {userPosition.isYes ? 'SÍ' : 'NO'}
+                    </span>
+                  </div>
+                )}
+
+                <div className="p-6">
+                  {/* Question */}
+                  <h2 className="mb-3 text-xl font-bold text-white line-clamp-2 min-h-[3.5rem]">
+                    {market.question}
+                  </h2>
+
+                  {/* Description */}
+                  <p className="mb-4 text-sm text-gray-300 line-clamp-2 min-h-[2.5rem]">
+                    {market.description}
+                  </p>
+
+                  {/* Stats */}
+                  <div className="mb-4 grid grid-cols-2 gap-3">
+                    <div className="rounded-lg bg-blue-500/20 p-3 border border-blue-500/30">
+                      <p className="text-xs text-blue-300 mb-1">SÍ</p>
+                      <p className="text-2xl font-bold text-white">
+                        {formatPercentage(market.yesPrice)}
+                      </p>
+                      <p className="text-xs text-gray-300 mt-1">
+                        {formatSOL(market.totalYesAmount)}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-red-500/20 p-3 border border-red-500/30">
+                      <p className="text-xs text-red-300 mb-1">NO</p>
+                      <p className="text-2xl font-bold text-white">
+                        {formatPercentage(market.noPrice)}
+                      </p>
+                      <p className="text-xs text-gray-300 mt-1">
+                        {formatSOL(market.totalNoAmount)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-between text-sm text-gray-300">
+                    <div className="flex items-center space-x-4">
+                      <span>👥 {market.participants}</span>
+                      <span>💰 {formatSOL(market.volume)}</span>
+                    </div>
+                    <span className="font-semibold text-white">
+                      {getTimeRemaining(market.endTime)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Hover Effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-300" />
+              </Link>
+            )
+          })}
+        </div>
+
+        {filteredMarkets.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-xl text-gray-300">
+              No hay mercados en esta categoría
             </p>
-            <Link href="/create-market">
-              <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-lg transition-all">
-                Create the First Market
-              </button>
-            </Link>
           </div>
         )}
       </div>
-    </Layout>
-  );
+    </div>
+  )
 }
-
-
-
-
-

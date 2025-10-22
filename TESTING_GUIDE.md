@@ -208,3 +208,6 @@ Una vez que Create Market esté 100% funcional:
 4. **View Markets** → Lista de todos los mercados activos
 
 Estos features ya están implementados en el smart contract y solo necesitan UI.
+
+
+

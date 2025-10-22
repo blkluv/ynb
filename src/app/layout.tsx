@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import PrivyProvider from '@/providers/PrivyProvider'
 import '@/styles/globals.css'
 
 export const metadata: Metadata = {
@@ -15,9 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="font-sans antialiased">
-        <PrivyProvider>{children}</PrivyProvider>
-      </body>
+      <body className="font-sans antialiased">{children}</body>
     </html>
   )
 }
