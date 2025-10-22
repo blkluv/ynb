@@ -167,20 +167,10 @@ export function usePredictionMarket(): UsePredictionMarketReturn {
       try {
         const marketPDA = await contractCreateMarket(provider, params)
 
-        toast.success(
-          <div>
-            Market created!
-            <a
-              href={getExplorerLink(marketPDA.toString())}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline ml-2"
-            >
-              View on Explorer
-            </a>
-          </div>,
-          { id: loadingToast }
-        )
+      toast.success(
+        `Market created! View on Explorer: ${getExplorerLink(marketPDA.toString())}`,
+        { id: loadingToast }
+      )
 
         return marketPDA
       } catch (error: any) {
