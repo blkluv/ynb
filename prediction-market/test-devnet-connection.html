@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PrismaFi - Devnet Test</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .container {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+      h1 {
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 32px;
+      }
+      .subtitle {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 16px;
+      }
+      button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 15px;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+      }
+      button:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .info-box {
+        background: #f8f9fa;
+        border-left: 4px solid #667eea;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 8px;
+      }
+      .info-box h3 {
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+      .info-box p {
+        color: #555;
+        line-height: 1.6;
+        font-size: 14px;
+      }
+      .success {
+        background: #d4edda;
+        border-left-color: #28a745;
+        color: #155724;
+      }
+      .success h3 {
+        color: #28a745;
+      }
+      .error {
+        background: #f8d7da;
+        border-left-color: #dc3545;
+        color: #721c24;
+      }
+      .error h3 {
+        color: #dc3545;
+      }
+      .balance {
+        font-size: 24px;
+        font-weight: bold;
+        color: #667eea;
+        margin: 10px 0;
+      }
+      .address {
+        font-family: 'Courier New', monospace;
+        background: #f0f0f0;
+        padding: 10px;
+        border-radius: 5px;
+        word-break: break-all;
+        font-size: 12px;
+        margin: 10px 0;
+      }
+      .step {
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+      .step-number {
+        background: #667eea;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 15px;
+        flex-shrink: 0;
+      }
+      .step-content {
+        flex: 1;
+      }
+      .step-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+      }
+      .step-desc {
+        color: #666;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🔮 PrismaFi Devnet Test</h1>
+      <p class="subtitle">Test your wallet connection on Solana Devnet</p>
+
+      <div class="info-box">
+        <h3>📋 Prerequisites</h3>
+        <p>
+          1. Phantom wallet installed<br />
+          2. Phantom set to <strong>Devnet</strong> mode<br />
+          3. At least 0.1 SOL in Devnet (from faucet)
+        </p>
+      </div>
+
+      <button id="connectBtn" onclick="connectWallet()">
+        🦊 Connect Phantom Wallet
+      </button>
+
+      <div id="walletInfo" style="display: none">
+        <div class="info-box success">
+          <h3>✅ Wallet Connected</h3>
+          <p><strong>Address:</strong></p>
+          <div class="address" id="walletAddress"></div>
+          <p style="margin-top: 10px"><strong>Balance:</strong></p>
+          <div class="balance" id="walletBalance">Loading...</div>
+        </div>
+
+        <button onclick="checkProgramAccount()">
+          🔍 Check Program Deployed
+        </button>
+
+        <button onclick="testTransaction()">
+          🚀 Test Transaction (0.001 SOL)
+        </button>
+
+        <button onclick="openExplorer()">🌐 View in Explorer</button>
+
+        <button onclick="disconnect()" style="background: #dc3545">
+          🔌 Disconnect
+        </button>
+      </div>
+
+      <div id="result"></div>
+
+      <div style="margin-top: 30px">
+        <h3 style="color: #667eea; margin-bottom: 15px">📚 Quick Guide:</h3>
+
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <div class="step-title">Get Devnet SOL</div>
+            <div class="step-desc">
+              Visit
+              <a href="https://faucet.solana.com" target="_blank"
+                >faucet.solana.com</a
+              >
+              and request airdrop
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <div class="step-title">Connect Wallet</div>
+            <div class="step-desc">
+              Click "Connect Phantom Wallet" button above
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <div class="step-title">Test Features</div>
+            <div class="step-desc">
+              Try checking program status and sending test transactions
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const PROGRAM_ID = '6b4kfh6kr9X6ka2H5C1qhK1jdnGmX65Ni85pC5qzLQB7'
+      const DEVNET_RPC = 'https://api.devnet.solana.com'
+      let provider = null
+
+      async function connectWallet() {
+        try {
+          const btn = document.getElementById('connectBtn')
+          btn.disabled = true
+          btn.textContent = 'Connecting...'
+
+          if (!window.solana || !window.solana.isPhantom) {
+            throw new Error(
+              'Phantom wallet not found! Please install it from phantom.app'
+            )
+          }
+
+          provider = window.solana
+          await provider.connect()
+
+          const publicKey = provider.publicKey.toString()
+          document.getElementById('walletAddress').textContent = publicKey
+          document.getElementById('walletInfo').style.display = 'block'
+          btn.style.display = 'none'
+
+          await updateBalance()
+
+          showResult(
+            'success',
+            '✅ Wallet Connected Successfully!',
+            `Address: ${publicKey.slice(0, 4)}...${publicKey.slice(-4)}`
+          )
+        } catch (error) {
+          showResult('error', '❌ Connection Failed', error.message)
+          document.getElementById('connectBtn').disabled = false
+          document.getElementById('connectBtn').textContent =
+            '🦊 Connect Phantom Wallet'
+        }
+      }
+
+      async function updateBalance() {
+        try {
+          const response = await fetch(DEVNET_RPC, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              id: 1,
+              method: 'getBalance',
+              params: [provider.publicKey.toString()],
+            }),
+          })
+          const data = await response.json()
+          const balanceSOL = (data.result.value / 1e9).toFixed(4)
+          document.getElementById(
+            'walletBalance'
+          ).textContent = `${balanceSOL} SOL`
+
+          if (balanceSOL < 0.1) {
+            showResult(
+              'error',
+              '⚠️ Low Balance',
+              `You have ${balanceSOL} SOL. Get more from faucet.solana.com`
+            )
+          }
+        } catch (error) {
+          document.getElementById('walletBalance').textContent =
+            'Error loading balance'
+        }
+      }
+
+      async function checkProgramAccount() {
+        try {
+          showResult('info', '🔍 Checking Program...', 'Querying Devnet...')
+
+          const response = await fetch(DEVNET_RPC, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              id: 1,
+              method: 'getAccountInfo',
+              params: [PROGRAM_ID, { encoding: 'jsonParsed' }],
+            }),
+          })
+          const data = await response.json()
+
+          if (data.result && data.result.value) {
+            const account = data.result.value
+            const isExecutable = account.executable
+            const owner = account.owner
+
+            if (isExecutable) {
+              showResult(
+                'success',
+                '✅ Program Found!',
+                `Program ID: ${PROGRAM_ID}<br>` +
+                  `Executable: Yes<br>` +
+                  `Owner: ${owner}<br>` +
+                  `<a href="https://explorer.solana.com/address/${PROGRAM_ID}?cluster=devnet" target="_blank">View in Explorer</a>`
+              )
+            } else {
+              showResult(
+                'error',
+                '❌ Not a Program',
+                'Account exists but is not executable'
+              )
+            }
+          } else {
+            showResult(
+              'error',
+              '❌ Program Not Found',
+              `No account found at ${PROGRAM_ID} on Devnet. The program may not be deployed yet.`
+            )
+          }
+        } catch (error) {
+          showResult('error', '❌ Check Failed', error.message)
+        }
+      }
+
+      async function testTransaction() {
+        try {
+          showResult(
+            'info',
+            '🚀 Preparing Transaction...',
+            'Please approve in Phantom'
+          )
+
+          // Import Solana web3
+          const script = document.createElement('script')
+          script.src =
+            'https://unpkg.com/@solana/web3.js@latest/lib/index.iife.js'
+          script.onload = async () => {
+            const connection = new solanaWeb3.Connection(
+              DEVNET_RPC,
+              'confirmed'
+            )
+            const transaction = new solanaWeb3.Transaction()
+
+            // Simple memo transaction (no cost)
+            transaction.add(
+              solanaWeb3.SystemProgram.transfer({
+                fromPubkey: provider.publicKey,
+                toPubkey: provider.publicKey,
+                lamports: 1000, // 0.000001 SOL
+              })
+            )
+
+            const { blockhash } = await connection.getLatestBlockhash()
+            transaction.recentBlockhash = blockhash
+            transaction.feePayer = provider.publicKey
+
+            const signed = await provider.signAndSendTransaction(transaction)
+
+            showResult(
+              'success',
+              '✅ Transaction Sent!',
+              `Signature: ${signed.signature}<br>` +
+                `<a href="https://explorer.solana.com/tx/${signed.signature}?cluster=devnet" target="_blank">View in Explorer</a>`
+            )
+
+            await updateBalance()
+          }
+          document.head.appendChild(script)
+        } catch (error) {
+          if (error.message.includes('User rejected')) {
+            showResult(
+              'error',
+              '❌ Transaction Rejected',
+              'You cancelled the transaction'
+            )
+          } else {
+            showResult('error', '❌ Transaction Failed', error.message)
+          }
+        }
+      }
+
+      function openExplorer() {
+        window.open(
+          `https://explorer.solana.com/address/${provider.publicKey.toString()}?cluster=devnet`,
+          '_blank'
+        )
+      }
+
+      function disconnect() {
+        if (provider) {
+          provider.disconnect()
+        }
+        document.getElementById('walletInfo').style.display = 'none'
+        document.getElementById('connectBtn').style.display = 'block'
+        document.getElementById('connectBtn').disabled = false
+        document.getElementById('result').innerHTML = ''
+        provider = null
+      }
+
+      function showResult(type, title, message) {
+        const resultDiv = document.getElementById('result')
+        const className =
+          type === 'success' ? 'success' : type === 'error' ? 'error' : ''
+        resultDiv.innerHTML = `
+                <div class="info-box ${className}">
+                    <h3>${title}</h3>
+                    <p>${message}</p>
+                </div>
+            `
+      }
+
+      // Check if already connected on page load
+      window.addEventListener('load', async () => {
+        if (
+          window.solana &&
+          window.solana.isPhantom &&
+          window.solana.isConnected
+        ) {
+          provider = window.solana
+          const publicKey = provider.publicKey.toString()
+          document.getElementById('walletAddress').textContent = publicKey
+          document.getElementById('walletInfo').style.display = 'block'
+          document.getElementById('connectBtn').style.display = 'none'
+          await updateBalance()
+        }
+      })
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
