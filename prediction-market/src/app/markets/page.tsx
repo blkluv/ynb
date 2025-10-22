@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Layout from '@/components/layout/Layout'
+import WalletInfo from '@/components/wallet/WalletInfo'
+import { useWallet } from '@solana/wallet-adapter-react'
 import {
   MOCK_MARKETS,
   getActiveMarkets,
@@ -14,6 +16,7 @@ import {
 } from '@/lib/mock/markets'
 
 export default function MarketsPage() {
+  const { connected } = useWallet()
   const [markets, setMarkets] = useState<MockMarket[]>(MOCK_MARKETS)
   const [filteredMarkets, setFilteredMarkets] =
     useState<MockMarket[]>(MOCK_MARKETS)
@@ -55,21 +58,26 @@ export default function MarketsPage() {
     <Layout>
       <div className="min-h-screen bg-black py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          {/* Demo Mode Banner */}
-          <div className="mb-6 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-xl p-4">
-            <div className="flex items-center justify-center gap-3">
-              <span className="text-2xl">⚠️</span>
-              <div>
-                <p className="text-yellow-300 font-semibold">
-                  DEMO MODE - Using Mock Data
-                </p>
-                <p className="text-yellow-200/70 text-sm">
-                  This is a demonstration with simulated markets and
-                  transactions
-                </p>
+          {/* Wallet Info or Demo Banner */}
+          {connected ? (
+            <div className="mb-6">
+              <WalletInfo />
+            </div>
+          ) : (
+            <div className="mb-6 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-xl p-4">
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-2xl">⚠️</span>
+                <div>
+                  <p className="text-yellow-300 font-semibold">
+                    DEMO MODE - Using Mock Data
+                  </p>
+                  <p className="text-yellow-200/70 text-sm">
+                    Connect your wallet to interact with live markets on Devnet
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Header */}
           <div className="mb-8">

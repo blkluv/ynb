@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Layout from '@/components/layout/Layout'
+import WalletInfo from '@/components/wallet/WalletInfo'
+import { useWallet } from '@solana/wallet-adapter-react'
 import {
   getMarketById,
   getMarketOdds,
@@ -11,6 +13,7 @@ import {
 import Link from 'next/link'
 
 export default function MarketDetailPage() {
+  const { connected } = useWallet()
   const params = useParams()
   const router = useRouter()
   const marketId = params.id as string
@@ -99,20 +102,26 @@ export default function MarketDetailPage() {
             ← Back to Markets
           </Link>
 
-          {/* Demo Mode Banner */}
-          <div className="mb-6 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-xl p-4">
-            <div className="flex items-center justify-center gap-3">
-              <span className="text-2xl">⚠️</span>
-              <div>
-                <p className="text-yellow-300 font-semibold">
-                  DEMO MODE - Simulated Transaction
-                </p>
-                <p className="text-yellow-200/70 text-sm">
-                  No real funds will be used. This is a demonstration.
-                </p>
+          {/* Wallet Info or Demo Banner */}
+          {connected ? (
+            <div className="mb-6">
+              <WalletInfo />
+            </div>
+          ) : (
+            <div className="mb-6 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-xl p-4">
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-2xl">⚠️</span>
+                <div>
+                  <p className="text-yellow-300 font-semibold">
+                    DEMO MODE - Simulated Transaction
+                  </p>
+                  <p className="text-yellow-200/70 text-sm">
+                    Connect your wallet to place real bets on Devnet
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Main Content */}
