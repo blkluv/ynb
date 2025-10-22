@@ -27,12 +27,18 @@ export default function MarketsPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <h1 className="text-3xl font-bold text-white">
-                🔮{' '}
-                <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  PrismaFi
-                </span>
-              </h1>
+              <div className="flex items-center space-x-3">
+                <img
+                  src="/images/prismafi-logo.svg"
+                  alt="PrismaFi"
+                  className="h-10 w-10"
+                />
+                <h1 className="text-3xl font-bold text-white">
+                  <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    PrismaFi
+                  </span>
+                </h1>
+              </div>
               {isMockMode && (
                 <span className="rounded-full bg-yellow-500/20 px-3 py-1 text-xs font-semibold text-yellow-300 border border-yellow-500/30">
                   DEMO MODE
@@ -46,6 +52,12 @@ export default function MarketsPage() {
                   {formatSOL(balance)}
                 </p>
               </div>
+              <Link
+                href="/create-market"
+                className="rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 transition"
+              >
+                + Crear Mercado
+              </Link>
               <Link
                 href="/markets/my-positions"
                 className="rounded-lg bg-purple-600 px-4 py-2 font-semibold text-white hover:bg-purple-700 transition"

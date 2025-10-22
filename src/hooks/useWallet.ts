@@ -1,75 +1,80 @@
 'use client'
 
-import { usePrivy, useWallets } from '@privy-io/react-auth'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
+/**
+ * Mock Wallet Hook for Demo Mode
+ * Simulates wallet connection without Privy
+ */
 export function useWallet() {
-  const { ready, authenticated, user, login, logout } = usePrivy()
+  const [connected, setConnected] = useState(false)
 
-  const { wallets } = useWallets()
-
-  // Get the primary Solana wallet
-  const solanaWallet = useMemo(() => {
-    return wallets.find((wallet) => wallet.walletClientType === 'solana')
-  }, [wallets])
-
-  // Get wallet address
+  // Mock Solana address
   const address = useMemo(() => {
-    return solanaWallet?.address || null
-  }, [solanaWallet])
+    return connected ? 'CEZVkMNmWtmLPNGjieSCAbARsh9JmULvKtGap2AECUpF' : null
+  }, [connected])
 
-  // Check if wallet is connected
-  const isConnected = useMemo(() => {
-    return authenticated && !!address
-  }, [authenticated, address])
-
-  // Connect wallet function
+  // Connect wallet function (mock)
   const connect = useCallback(async () => {
     try {
-      await login()
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      setConnected(true)
     } catch (error) {
       console.error('Error connecting wallet:', error)
       throw error
     }
-  }, [login])
+  }, [])
 
-  // Disconnect wallet function
+  // Disconnect wallet function (mock)
   const disconnect = useCallback(async () => {
     try {
-      await logout()
+      await new Promise((resolve) => setTimeout(resolve, 300))
+      setConnected(false)
     } catch (error) {
       console.error('Error disconnecting wallet:', error)
       throw error
     }
-  }, [logout])
+  }, [])
 
-  // Get user info
+  // Get user info (mock)
   const userInfo = useMemo(() => {
-    if (!user) return null
+    if (!connected) return null
 
     return {
-      id: user.id,
-      email: user.email?.address || null,
-      wallets: user.linkedAccounts
-        .filter((account) => account.type === 'wallet')
-        .map((account) => ({
-          address: account.address,
-          chainType: account.chainType,
-          verified: account.verifiedAt !== null,
-        })),
-      createdAt: user.createdAt,
+      id: 'demo-user-123',
+      email: 'demo@prismafi.com',
+      wallets: [
+        {
+          address: 'CEZVkMNmWtmLPNGjieSCAbARsh9JmULvKtGap2AECUpF',
+          chainType: 'solana',
+          verified: true,
+        },
+      ],
+      createdAt: new Date().toISOString(),
     }
-  }, [user])
+  }, [connected])
 
   return {
     // State
-    ready,
-    isConnected,
+    ready: true,
+    isConnected: connected,
     address,
-    wallet: solanaWallet,
-    wallets,
+    wallet: connected
+      ? {
+          address: 'CEZVkMNmWtmLPNGjieSCAbARsh9JmULvKtGap2AECUpF',
+          walletClientType: 'solana',
+        }
+      : null,
+    wallets: connected
+      ? [
+          {
+            address: 'CEZVkMNmWtmLPNGjieSCAbARsh9JmULvKtGap2AECUpF',
+            walletClientType: 'solana',
+          },
+        ]
+      : [],
     user: userInfo,
-    authenticated,
+    authenticated: connected,
 
     // Actions
     connect,
