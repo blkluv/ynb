@@ -357,3 +357,4 @@ docker run --rm -v "$(pwd)":/workspace solanalabs/solana:v1.18.0 anchor build
 3. Sigue los pasos 1-14
 4. Reporta cualquier error para ayuda inmediata
 
+

@@ -307,3 +307,15 @@ wsl bash -c "source ~/.cargo/env && solana airdrop 2"
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+

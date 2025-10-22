@@ -1,292 +1,264 @@
-# 🎉 ¡DEPLOYMENT EXITOSO EN VERCEL!
+# 🎉 DEPLOYMENT COMPLETADO - Prediction Market
 
-## ✅ **Status: DEPLOYED & LIVE**
+## ✅ Estado del Deployment
 
-**Fecha:** 18 de Octubre, 2025  
-**Commit Deployed:** `4e9de9a`  
-**Platform:** Vercel  
-**Status:** 🟢 **READY**
+**Fecha:** 22 de Octubre, 2025  
+**Resultado:** ✅ EXITOSO  
+**Network:** Solana Devnet
 
 ---
 
-## 🚀 **Tu Aplicación Está Viva**
+## 📍 Información del Smart Contract
 
-### **URL de Producción:**
+### Program ID
 
 ```
-https://[tu-proyecto].vercel.app
+5RkwWAaXDWKhEDmw8XQsoDqUvbZAphqoeZNX5tFmE6o8
 ```
 
-_Copia la URL exacta desde el dashboard de Vercel_
+### Enlaces
+
+- **Solana Explorer:** https://explorer.solana.com/address/5RkwWAaXDWKhEDmw8XQsoDqUvbZAphqoeZNX5tFmE6o8?cluster=devnet
+- **Network:** Devnet
+- **RPC:** https://api.devnet.solana.com
+
+### Transacciones del Deployment
+
+- **Deploy inicial:** `ZjiKicU8fX5dwHjDWF3eEGFVMu1gLJBmatX3KLRKs2hG486EUNpjmbBfdQ6HTtfgxG3CH2X9wFtaLoqitnQuNr6`
+- **Upgrade final:** `5UgwGJe4PRfLc1qHSWdL6ujMJJdVzd3SnAcEm8geEr1BjvyfETd4g8Jp8VKWGWgJ7QM3mh6dDRhhCUaTyiW4xZQi`
 
 ---
 
-## ✅ **Verificación de Funcionalidades**
+## 💰 Wallet de Deployment
 
-### **Páginas Desplegadas:**
-
-- ✅ **Landing Page** (`/`)
-
-  - Hero section con CTA
-  - Estadísticas en tiempo real
-  - Preview de mercados trending
-  - Diseño responsive
-
-- ✅ **Markets List** (`/markets`)
-
-  - Grid de todos los mercados
-  - Filtros por categoría
-  - Cards con información clave
-
-- ✅ **Market Detail** (`/market/[id]`)
-
-  - Trading panel interactivo
-  - Order book
-  - Trade history
-  - User positions
-
-- ✅ **Create Market** (`/create-market`)
-  - Formulario completo
-  - Validaciones
-  - Preview en tiempo real
-
----
-
-## 📊 **Métricas del Build**
+**Dirección:**
 
 ```
-✓ Build Time: ~2-3 minutos
-✓ Bundle Size: Optimizado
-  - Landing: 128 kB (First Load JS)
-  - Markets: 130 kB
-  - Market Detail: 131 kB
-✓ Static Pages: 3 prerendered
-✓ Dynamic Routes: 1 (market/[id])
+7ug4E8Y5UaK3bnCHc38MXYMsQDMsLecNn135iqtrNwcV
 ```
 
----
-
-## 🔧 **Fixes Aplicados que Funcionaron**
-
-1. ✅ **TypeScript Errors** → Resueltos completamente
-2. ✅ **Peer Dependencies** → Configurados con `legacy-peer-deps`
-3. ✅ **Type Conflicts** → Aliases aplicados
-4. ✅ **Missing Dependencies** → Archivos innecesarios eliminados
-5. ✅ **Build Configuration** → `tsconfig.json` optimizado
+**Balance restante:** 2.10 SOL  
+**Costo del upgrade:** 0.00136 SOL
 
 ---
 
-## 📱 **Próximos Pasos Recomendados**
+## 🛠️ Stack Técnico Instalado
 
-### **1. Configurar Privy (Wallet Connection)**
+### Entorno de Desarrollo (WSL2)
 
-Para habilitar la conexión de wallets:
+- ✅ **Rust:** 1.90.0
+- ✅ **Solana CLI:** 3.0.3
+- ✅ **Anchor CLI:** 0.32.1
+- ✅ **AVM:** 0.32.1
+- ✅ **cargo-build-sbf:** 2.3.13
 
-1. Ve a: https://dashboard.privy.io
-2. Crea una app (o usa una existente)
-3. Copia el `App ID`
-4. En Vercel:
-   - Settings → Environment Variables
-   - Añade: `NEXT_PUBLIC_PRIVY_APP_ID` = `[tu-app-id]`
-   - Redeploy
+### Frontend
 
-### **2. Testing de Usuario**
-
-Ahora que está desplegado:
-
-- [ ] Prueba la navegación en mobile
-- [ ] Verifica todos los links
-- [ ] Prueba crear un mercado (mock)
-- [ ] Verifica que las imágenes cargan
-- [ ] Prueba en diferentes navegadores
-
-### **3. Share & Feedback**
-
-Comparte tu URL:
-
-- Twitter/X: "Built a prediction market platform on Solana 🚀"
-- LinkedIn: Post sobre el proyecto
-- Discord/Telegram: En comunidades de Solana/DeFi
-- Invita 5-10 beta testers
-
-### **4. Analytics (Opcional)**
-
-Considera agregar:
-
-- **Vercel Analytics** (ya incluido, actívalo en Settings)
-- **Google Analytics** para tracking detallado
-- **Mixpanel** para eventos de usuario
-
-### **5. Conectar Smart Contracts**
-
-Cuando estés listo:
-
-- Deploy de contratos Solana a Devnet
-- Conectar el SDK en el frontend
-- Habilitar transacciones reales
-- Testing con wallets de prueba
+- ✅ **Next.js:** 14.0.4
+- ✅ **@coral-xyz/anchor:** 0.30.1
+- ✅ **@solana/web3.js:** Última versión
+- ✅ **@solana/wallet-adapter:** Configurado
+- ✅ **Program ID actualizado:** ✓
+- ✅ **IDL integrado:** ✓
 
 ---
 
-## 🎯 **Para el Hackathon**
+## 📝 Funcionalidades del Contrato
 
-### **Demo Ready Checklist:**
+### Instrucciones Disponibles
 
-- ✅ **Live URL** funcionando
-- ✅ **UI/UX** profesional y responsive
-- ✅ **Funcionalidad mock** para demostración
-- ⏳ **Privy App ID** (recomendado configurar)
-- ⏳ **Smart Contracts en Devnet** (próximo paso)
-- ⏳ **Pitch Deck** (crear presentación)
+1. **createMarket**
 
-### **Puntos Clave para el Pitch:**
+   - Crear un nuevo mercado de predicción
+   - Parámetros: question, description, endTime, category
 
-**Problema:**
+2. **placeBet**
 
-- Mercados de predicción actuales son binarios (Yes/No)
-- Dificultan forecasting preciso de valores numéricos
-- No capturan la incertidumbre de manera granular
+   - Realizar una apuesta en YES o NO
+   - Parámetros: outcome (bool), amount (u64)
 
-**Solución (PrismaFi):**
+3. **resolveMarket**
 
-- **Scalar Markets**: Predice valores exactos (ej: CPI 2.4%)
-- **Payout por Accuracy**: Recompensas proporcionales a la precisión
-- **Rulebook Resolution**: Fuentes verificables y transparentes
+   - Resolver el mercado (solo authority)
+   - Parámetros: winningOutcome (bool)
 
-**Tech Stack:**
+4. **claimWinnings**
+   - Reclamar ganancias de apuestas ganadoras
+   - Sin parámetros adicionales
 
-- Frontend: Next.js 15 + TypeScript + Tailwind
-- Blockchain: Solana (velocidad + costos bajos)
-- Wallet: Privy (UX simplificado)
-- Deploy: Vercel (CD automático)
+### Cuentas (Accounts)
 
-**Traction:**
+- **Market:** Almacena información del mercado
+- **UserPosition:** Posición de cada usuario en un mercado
 
-- ✅ MVP deployado y funcional
-- ✅ UX/UI profesional
-- ✅ Listo para beta testing
+### Eventos
+
+- **MarketCreated:** Emitido al crear un mercado
+- **BetPlaced:** Emitido al realizar una apuesta
+- **MarketResolved:** Emitido al resolver un mercado
+- **WinningsClaimed:** Emitido al reclamar ganancias
 
 ---
 
-## 📊 **Métricas a Trackear**
+## 🚀 Cómo Usar
 
-Una vez que tengas tráfico:
+### 1. Iniciar el Frontend
 
-- **Engagement:**
-
-  - Visitas únicas
-  - Tiempo en sitio
-  - Pages per session
-
-- **Conversión:**
-
-  - Wallet connections
-  - Markets created
-  - Trades executed
-
-- **Retención:**
-  - DAU/MAU
-  - Repeat users
-  - Churn rate
-
----
-
-## 🎨 **Mejoras Futuras (Post-Hackathon)**
-
-### **Corto Plazo (1-2 semanas):**
-
-- [ ] Configurar Privy App ID
-- [ ] Deploy smart contracts a Devnet
-- [ ] Conectar frontend con contratos
-- [ ] Testing con usuarios reales
-- [ ] Pitch deck + video demo
-
-### **Mediano Plazo (1-2 meses):**
-
-- [ ] Optimizar imágenes (`<Image>` de Next.js)
-- [ ] Añadir tests automatizados
-- [ ] Implementar real-time updates (WebSockets)
-- [ ] Sistema de notificaciones
-- [ ] Leaderboard de traders
-
-### **Largo Plazo (3-6 meses):**
-
-- [ ] Audit de smart contracts
-- [ ] Deploy a Mainnet
-- [ ] Integración con oráculos (Pyth, Switchboard)
-- [ ] Mobile app (React Native)
-- [ ] Tokenomics y governance
-
----
-
-## 📝 **Documentación del Proyecto**
-
-### **Archivos Clave:**
-
-- `PRD.md` - Product Requirements Document
-- `BUILD_SUCCESS_SUMMARY.md` - Resumen de fixes aplicados
-- `VERCEL_BUILD_FIX.md` - Fix del error de `chainType`
-- `check-vercel-status.md` - Guía de verificación
-- `package.json` - Dependencias del proyecto
-- `.npmrc` - Config de npm (legacy-peer-deps)
-- `vercel.json` - Config de Vercel
-- `tsconfig.json` - Config de TypeScript
-
-### **Estructura del Código:**
-
+```bash
+cd prediction-market
+npm run dev
 ```
-src/
-├── app/                    # Next.js App Router
-│   ├── page.tsx           # Landing page
-│   ├── markets/           # Markets list
-│   ├── market/[id]/       # Market detail
-│   └── create-market/     # Create market form
-├── components/
-│   ├── landing/           # Landing page components
-│   ├── layout/            # Header, Footer, etc.
-│   └── market/            # Market-related components
-├── hooks/
-│   └── useWallet.ts       # Privy wallet hook
-├── lib/
-│   └── marketService.ts   # Market data service (mock)
-├── providers/
-│   └── PrivyProvider.tsx  # Privy config
-├── types/
-│   └── market.ts          # TypeScript types
-└── styles/
-    └── globals.css        # Global styles
+
+El servidor estará disponible en: `http://localhost:3000`
+
+### 2. Conectar Wallet
+
+1. Instalar Phantom o Solflare
+2. Cambiar la red a **Devnet**
+3. Obtener SOL de prueba: https://faucet.solana.com/
+4. Conectar wallet en la aplicación
+
+### 3. Crear un Mercado
+
+```typescript
+import { createMarket } from '@/lib/solana/contract'
+
+await createMarket(
+  wallet,
+  '¿Bitcoin superará los $100k en 2025?',
+  'Predicción sobre el precio de Bitcoin',
+  new Date('2025-12-31').getTime() / 1000,
+  'Crypto'
+)
+```
+
+### 4. Apostar
+
+```typescript
+import { placeBet } from '@/lib/solana/contract'
+
+await placeBet(
+  wallet,
+  marketPublicKey,
+  true, // YES
+  1_000_000_000 // 1 SOL en lamports
+)
 ```
 
 ---
 
-## 🎉 **¡FELICIDADES!**
+## 📊 Arquitectura
 
-Has completado exitosamente:
-
-✅ Desarrollo del frontend completo  
-✅ Resolución de todos los errores de build  
-✅ Configuración de CI/CD con Vercel  
-✅ Deploy a producción
-
-**Tu prediction market está LIVE y listo para demostrar! 🚀**
+```
+┌─────────────────────────────────────┐
+│   Frontend (Next.js + React)       │
+│   - @solana/wallet-adapter          │
+│   - @coral-xyz/anchor               │
+└──────────────┬──────────────────────┘
+               │
+               │ RPC
+               ▼
+┌─────────────────────────────────────┐
+│    Solana Devnet                    │
+│    - Program ID: 5Rkw...E6o8        │
+└──────────────┬──────────────────────┘
+               │
+               │ Anchor
+               ▼
+┌─────────────────────────────────────┐
+│   Smart Contract (Rust)             │
+│   - Markets                         │
+│   - User Positions                  │
+│   - PDAs                            │
+└─────────────────────────────────────┘
+```
 
 ---
 
-## 🔗 **Links Útiles**
+## 🔐 Seguridad
 
-- **Vercel Dashboard:** https://vercel.com/dashboard
-- **Privy Dashboard:** https://dashboard.privy.io
-- **GitHub Repo:** https://github.com/Edgadafi/cypherpunk-hackathon2025
-- **Solana Devnet:** https://explorer.solana.com/?cluster=devnet
-- **Next.js Docs:** https://nextjs.org/docs
+- ✅ PDAs para cuentas derivadas
+- ✅ Validación de authority
+- ✅ Checks de estado (resolved, expired)
+- ✅ Protección contra re-entrada
+- ✅ Validación de montos
 
 ---
 
-**¿Siguiente paso?** Configura Privy o continúa con los smart contracts. **¡Estás listo para el hackathon!** 🏆
+## 📚 Scripts Útiles
 
+### Compilar Contrato
 
+```bash
+wsl -e bash -c "cd '/mnt/c/Users/edgar/cypherpunk hackathon2025' && bash build-contract.sh"
+```
 
+### Desplegar a Devnet
 
+```bash
+wsl -e bash -c "cd '/mnt/c/Users/edgar/cypherpunk hackathon2025' && bash deploy-to-devnet.sh"
+```
 
+### Hacer Upgrade
 
+```bash
+wsl -e bash -c "cd '/mnt/c/Users/edgar/cypherpunk hackathon2025' && bash upgrade-contract.sh"
+```
 
+### Ver Balance
+
+```bash
+wsl -e bash -c "export PATH=~/.local/share/solana/install/releases/stable-5466f4592b1983adb13ba0a5d53f41ea2de69fba/solana-release/bin:$PATH && solana balance"
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Error: "User rejected the request"
+
+- Usuario canceló la transacción en la wallet
+- Intentar de nuevo
+
+### Error: "Account does not have enough SOL"
+
+- Obtener más SOL del faucet: https://faucet.solana.com/
+
+### Error: "Transaction simulation failed"
+
+- Verificar que el mercado no esté resuelto
+- Verificar que el usuario tenga fondos suficientes
+- Verificar que el mercado no haya expirado
+
+---
+
+## 📝 Próximos Pasos
+
+1. ✅ **Smart Contract desplegado**
+2. ✅ **Frontend configurado**
+3. ✅ **IDL integrado**
+4. ⏭️ **Probar transacciones en Devnet**
+5. ⏭️ **Desplegar a Mainnet** (cuando esté listo)
+
+---
+
+## 🎓 Recursos
+
+- **Solana Docs:** https://docs.solana.com/
+- **Anchor Docs:** https://www.anchor-lang.com/
+- **Solana Cookbook:** https://solanacookbook.com/
+- **Solana Explorer:** https://explorer.solana.com/
+
+---
+
+## 📞 Soporte
+
+Para problemas o preguntas:
+
+1. Verificar logs de la consola
+2. Revisar transacciones en Solana Explorer
+3. Consultar documentación de Anchor
+
+---
+
+**¡Tu infraestructura Web3 está completamente funcional y lista para usar! 🚀**

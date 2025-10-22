@@ -289,3 +289,15 @@ export const isOracleDataConsistent = (oracleData: OracleData[]): boolean => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+

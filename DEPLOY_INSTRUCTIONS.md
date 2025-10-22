@@ -189,3 +189,15 @@ Verifica que las variables de entorno estén configuradas en Vercel Dashboard
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+

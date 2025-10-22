@@ -142,3 +142,15 @@ Ahora ve a **PASO 6** en la guía principal para conectar el frontend.
 ## 🎯 Una vez tengas el Program ID
 
 Pasa al siguiente archivo: `CONECTAR_FRONTEND_GUIA.md`
+
+
+
+
+
+
+
+
+
+
+
+
