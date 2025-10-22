@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd prediction-market && npm install --legacy-peer-deps && npm run build",
+  "devCommand": "cd prediction-market && npm run dev",
+  "installCommand": "cd prediction-market && npm install --legacy-peer-deps",
+  "framework": "nextjs",
+  "outputDirectory": "prediction-market/.next"
+}
+
