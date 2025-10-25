@@ -1,10 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "framework": "nextjs",
   "buildCommand": "cd prediction-market && npm install --legacy-peer-deps && npm run build",
   "outputDirectory": "prediction-market/.next",
-  "devCommand": "cd prediction-market && npm run dev",
-  "installCommand": "echo 'Skipping global install'",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./prediction-market/"
+  "installCommand": "npm install --prefix prediction-market --legacy-peer-deps"
 }
