@@ -20,10 +20,10 @@ export function getProgram(wallet: AnchorWallet): Program {
   console.log("🔍 Provider wallet:", provider.wallet.publicKey.toBase58());
   
   try {
-    // ✅ Crear programa con IDL JSON y PROGRAM_ID explícito
+    // ✅ Crear programa con IDL JSON
+    // El programId se toma del IDL o se usa el PROGRAM_ID de constants
     const program = new Program(
       idlJson as Idl,
-      PROGRAM_ID,
       provider
     );
     
