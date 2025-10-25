@@ -19,7 +19,25 @@ const DISCRIMINATORS = {
   createMarket: Buffer.from([103, 226, 97, 235, 200, 188, 251, 254]),
   placeBet: Buffer.from([222, 62, 67, 220, 63, 166, 126, 33]),
   resolveMarket: Buffer.from([155, 23, 80, 173, 46, 74, 23, 239]),
+  claimWinnings: Buffer.from([161, 215, 24, 59, 14, 236, 242, 221]),
 };
+
+/**
+ * Derive the PDA for a user's bet on a market
+ */
+export function deriveBetPDA(
+  userPubkey: PublicKey,
+  marketPubkey: PublicKey
+): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
+    [
+      Buffer.from("bet"),
+      userPubkey.toBuffer(),
+      marketPubkey.toBuffer(),
+    ],
+    PROGRAM_ID
+  );
+}
 
 /**
  * Create market instruction data
@@ -167,6 +185,10 @@ export async function placeBetDirect(
   
   const connection = new Connection(RPC_ENDPOINT, CONNECTION_CONFIG.commitment);
   
+  // Derive bet PDA
+  const [betPDA] = deriveBetPDA(wallet.publicKey, marketPubkey);
+  console.log("  Bet PDA:", betPDA.toBase58());
+  
   // Convert SOL to lamports
   const amountLamports = new anchor.BN(amount * anchor.web3.LAMPORTS_PER_SOL);
   
@@ -181,6 +203,7 @@ export async function placeBetDirect(
   // Create instruction
   const instruction = new TransactionInstruction({
     keys: [
+      { pubkey: betPDA, isSigner: false, isWritable: true },
       { pubkey: marketPubkey, isSigner: false, isWritable: true },
       { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
@@ -272,6 +295,68 @@ export async function resolveMarketDirect(
   await connection.confirmTransaction(signature, CONNECTION_CONFIG.commitment);
   
   console.log("✅ Market resolved! Tx:", signature);
+  
+  return signature;
+}
+
+/**
+ * Claim winnings instruction data (no args)
+ */
+function encodeClaimWinningsData(): Buffer {
+  // Only discriminator (8 bytes), no args
+  const data = Buffer.alloc(8);
+  DISCRIMINATORS.claimWinnings.copy(data, 0);
+  return data;
+}
+
+/**
+ * Claim winnings from a resolved market
+ */
+export async function claimWinningsDirect(
+  wallet: AnchorWallet,
+  marketPubkey: PublicKey
+): Promise<string> {
+  console.log("💰 Claiming winnings (direct)...");
+  console.log("  Market:", marketPubkey.toBase58());
+  console.log("  User:", wallet.publicKey.toBase58());
+  
+  const connection = new Connection(RPC_ENDPOINT, CONNECTION_CONFIG.commitment);
+  
+  // Derive bet PDA
+  const [betPDA] = deriveBetPDA(wallet.publicKey, marketPubkey);
+  console.log("  Bet PDA:", betPDA.toBase58());
+  
+  // Encode instruction data
+  const instructionData = encodeClaimWinningsData();
+  
+  console.log("  Instruction data length:", instructionData.length);
+  
+  // Create instruction
+  const instruction = new TransactionInstruction({
+    keys: [
+      { pubkey: betPDA, isSigner: false, isWritable: true },
+      { pubkey: marketPubkey, isSigner: false, isWritable: true },
+      { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+    ],
+    programId: PROGRAM_ID,
+    data: instructionData,
+  });
+  
+  // Create and send transaction
+  const transaction = new Transaction().add(instruction);
+  transaction.feePayer = wallet.publicKey;
+  transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+  
+  // Sign transaction
+  const signedTx = await wallet.signTransaction(transaction);
+  
+  // Send transaction
+  const signature = await connection.sendRawTransaction(signedTx.serialize());
+  
+  // Confirm transaction
+  await connection.confirmTransaction(signature, CONNECTION_CONFIG.commitment);
+  
+  console.log("✅ Winnings claimed! Tx:", signature);
   
   return signature;
 }

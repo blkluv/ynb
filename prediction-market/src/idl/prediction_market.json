@@ -8,6 +8,55 @@
   },
   "instructions": [
     {
+      "name": "claim_winnings",
+      "discriminator": [
+        161,
+        215,
+        24,
+        59,
+        14,
+        236,
+        242,
+        221
+      ],
+      "accounts": [
+        {
+          "name": "bet",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              }
+            ]
+          }
+        },
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "create_market",
       "discriminator": [
         103,
@@ -94,6 +143,30 @@
       ],
       "accounts": [
         {
+          "name": "bet",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              }
+            ]
+          }
+        },
+        {
           "name": "market",
           "writable": true
         },
@@ -150,6 +223,19 @@
   ],
   "accounts": [
     {
+      "name": "Bet",
+      "discriminator": [
+        147,
+        23,
+        35,
+        59,
+        15,
+        75,
+        155,
+        32
+      ]
+    },
+    {
       "name": "GlobalState",
       "discriminator": [
         163,
@@ -160,24 +246,7 @@
         123,
         133,
         98
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "authority",
-            "type": "pubkey"
-          },
-          {
-            "name": "total_markets",
-            "type": "u64"
-          },
-          {
-            "name": "total_volume",
-            "type": "u64"
-          }
-        ]
-      }
+      ]
     },
     {
       "name": "Market",
@@ -190,48 +259,7 @@
         227,
         198,
         154
-      ],
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "authority",
-            "type": "pubkey"
-          },
-          {
-            "name": "question",
-            "type": "string"
-          },
-          {
-            "name": "description",
-            "type": "string"
-          },
-          {
-            "name": "end_time",
-            "type": "i64"
-          },
-          {
-            "name": "created_at",
-            "type": "i64"
-          },
-          {
-            "name": "yes_amount",
-            "type": "u64"
-          },
-          {
-            "name": "no_amount",
-            "type": "u64"
-          },
-          {
-            "name": "resolved",
-            "type": "bool"
-          },
-          {
-            "name": "winning_outcome",
-            "type": "bool"
-          }
-        ]
-      }
+      ]
     }
   ],
   "errors": [
@@ -279,9 +307,61 @@
       "code": 6008,
       "name": "MathOverflow",
       "msg": "Math overflow"
+    },
+    {
+      "code": 6009,
+      "name": "MarketNotResolved",
+      "msg": "Market not resolved yet"
+    },
+    {
+      "code": 6010,
+      "name": "WrongOutcome",
+      "msg": "Wrong outcome (you bet on the losing side)"
+    },
+    {
+      "code": 6011,
+      "name": "AlreadyClaimed",
+      "msg": "Already claimed"
+    },
+    {
+      "code": 6012,
+      "name": "NoWinnings",
+      "msg": "No winnings available"
     }
   ],
   "types": [
+    {
+      "name": "Bet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "market",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "outcome",
+            "type": "bool"
+          },
+          {
+            "name": "claimed",
+            "type": "bool"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
     {
       "name": "GlobalState",
       "type": {

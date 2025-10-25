@@ -6,6 +6,7 @@ import Layout from '@/components/layout/Layout'
 import WalletInfo from '@/components/wallet/WalletInfo'
 import BinaryTradingInterface from '@/components/markets/BinaryTradingInterface'
 import ResolveMarketInterface from '@/components/markets/ResolveMarketInterface'
+import ClaimWinnings from '@/components/markets/ClaimWinnings'
 import { useWallet, useAnchorWallet } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
 import { fetchMarketDirect, lamportsToSOL } from '@/lib/program/direct-read'
@@ -263,6 +264,12 @@ export default function MarketDetailPage() {
               <ResolveMarketInterface 
                 market={market} 
                 onResolved={handleRefreshMarket}
+              />
+
+              {/* Claim Winnings Interface */}
+              <ClaimWinnings 
+                market={market} 
+                onClaimed={handleRefreshMarket}
               />
 
               {/* Activity Feed (Placeholder) */}

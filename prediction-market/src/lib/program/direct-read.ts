@@ -6,9 +6,11 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Connection, PublicKey, AccountInfo } from "@solana/web3.js";
 import { PROGRAM_ID, RPC_ENDPOINT, CONNECTION_CONFIG } from "./constants";
+import { deriveBetPDA } from "./direct";
 
-// Market discriminator from IDL
+// Discriminators from IDL
 const MARKET_DISCRIMINATOR = Buffer.from([219, 190, 213, 55, 0, 227, 198, 154]);
+const BET_DISCRIMINATOR = Buffer.from([147, 23, 35, 59, 15, 75, 155, 32]);
 
 export interface MarketAccount {
   address: string;
@@ -21,6 +23,16 @@ export interface MarketAccount {
   noAmount: number;
   resolved: boolean;
   winningOutcome: boolean;
+}
+
+export interface BetAccount {
+  address: string;
+  user: PublicKey;
+  market: PublicKey;
+  amount: number; // lamports
+  outcome: boolean; // true = YES, false = NO
+  claimed: boolean;
+  timestamp: number;
 }
 
 /**
@@ -196,5 +208,167 @@ export function calculateOdds(yesAmount: number, noAmount: number): {
  */
 export function lamportsToSOL(lamports: number): number {
   return lamports / anchor.web3.LAMPORTS_PER_SOL;
+}
+
+/**
+ * Decode a Bet account from raw data
+ */
+function decodeBetAccount(data: Buffer, address: PublicKey): BetAccount | null {
+  try {
+    // Verify discriminator
+    const discriminator = data.slice(0, 8);
+    if (!discriminator.equals(BET_DISCRIMINATOR)) {
+      console.log("❌ Invalid discriminator for bet account:", address.toBase58());
+      return null;
+    }
+
+    let offset = 8; // Skip discriminator
+
+    // Read user (32 bytes)
+    const user = new PublicKey(data.slice(offset, offset + 32));
+    offset += 32;
+
+    // Read market (32 bytes)
+    const market = new PublicKey(data.slice(offset, offset + 32));
+    offset += 32;
+
+    // Read amount (8 bytes, u64)
+    const amountBuffer = data.slice(offset, offset + 8);
+    const amount = new anchor.BN(amountBuffer, 'le').toNumber();
+    offset += 8;
+
+    // Read outcome (1 byte, bool)
+    const outcome = data.readUInt8(offset) !== 0;
+    offset += 1;
+
+    // Read claimed (1 byte, bool)
+    const claimed = data.readUInt8(offset) !== 0;
+    offset += 1;
+
+    // Read timestamp (8 bytes, i64)
+    const timestampBuffer = data.slice(offset, offset + 8);
+    const timestamp = new anchor.BN(timestampBuffer, 'le').toNumber();
+
+    return {
+      address: address.toBase58(),
+      user,
+      market,
+      amount,
+      outcome,
+      claimed,
+      timestamp,
+    };
+  } catch (error) {
+    console.error("Error decoding bet account:", error);
+    return null;
+  }
+}
+
+/**
+ * Fetch a user's bet on a market
+ */
+export async function fetchUserBet(
+  userPubkey: PublicKey,
+  marketPubkey: PublicKey
+): Promise<BetAccount | null> {
+  console.log("🔍 Fetching bet for user:", userPubkey.toBase58());
+  
+  const connection = new Connection(RPC_ENDPOINT, CONNECTION_CONFIG.commitment);
+
+  try {
+    const [betPDA] = deriveBetPDA(userPubkey, marketPubkey);
+    console.log("  Bet PDA:", betPDA.toBase58());
+
+    const accountInfo = await connection.getAccountInfo(betPDA);
+
+    if (!accountInfo) {
+      console.log("  No bet found");
+      return null;
+    }
+
+    const decoded = decodeBetAccount(accountInfo.data, betPDA);
+    
+    if (decoded) {
+      console.log(`✅ Found bet: ${lamportsToSOL(decoded.amount)} SOL on ${decoded.outcome ? 'YES' : 'NO'}`);
+    }
+
+    return decoded;
+  } catch (error) {
+    console.error("❌ Error fetching bet:", error);
+    return null;
+  }
+}
+
+/**
+ * Calculate potential winnings for a user's bet
+ */
+export function calculateWinnings(
+  bet: BetAccount,
+  market: MarketAccount
+): {
+  hasWinnings: boolean;
+  canClaim: boolean;
+  winningsLamports: number;
+  winningsSOL: number;
+  multiplier: number;
+} {
+  // Market must be resolved
+  if (!market.resolved) {
+    return {
+      hasWinnings: false,
+      canClaim: false,
+      winningsLamports: 0,
+      winningsSOL: 0,
+      multiplier: 0,
+    };
+  }
+
+  // Must have bet on winning outcome
+  if (bet.outcome !== market.winningOutcome) {
+    return {
+      hasWinnings: false,
+      canClaim: false,
+      winningsLamports: 0,
+      winningsSOL: 0,
+      multiplier: 0,
+    };
+  }
+
+  // Must not have claimed already
+  if (bet.claimed) {
+    return {
+      hasWinnings: false,
+      canClaim: false,
+      winningsLamports: 0,
+      winningsSOL: 0,
+      multiplier: 0,
+    };
+  }
+
+  // Calculate winnings
+  const totalPool = market.yesAmount + market.noAmount;
+  const winningPool = market.winningOutcome ? market.yesAmount : market.noAmount;
+
+  if (winningPool === 0) {
+    return {
+      hasWinnings: false,
+      canClaim: false,
+      winningsLamports: 0,
+      winningsSOL: 0,
+      multiplier: 0,
+    };
+  }
+
+  // User's share: (user_bet / winning_pool) * total_pool
+  const winningsLamports = Math.floor((bet.amount * totalPool) / winningPool);
+  const multiplier = winningsLamports / bet.amount;
+
+  return {
+    hasWinnings: true,
+    canClaim: true,
+    winningsLamports,
+    winningsSOL: lamportsToSOL(winningsLamports),
+    multiplier,
+  };
 }
 

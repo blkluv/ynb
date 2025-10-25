@@ -1,131 +1,271 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 
-pub mod error;
-pub mod instructions;
-pub mod state;
-pub mod utils;
-
-use instructions::*;
-
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("9t6KXNy5xW8b6GyZmwUpqbHeQUKqxbvnfPy8oiRp9rka");
 
 #[program]
 pub mod prediction_market {
     use super::*;
 
-    /// Initialize the prediction market program
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        instructions::initialize::handler(ctx)
+        let global_state = &mut ctx.accounts.global_state;
+        global_state.authority = ctx.accounts.authority.key();
+        global_state.total_markets = 0;
+        global_state.total_volume = 0;
+        Ok(())
     }
 
-    /// Create a new prediction market
     pub fn create_market(
         ctx: Context<CreateMarket>,
-        market_data: MarketData,
-        evidence_requirements: EvidenceRequirements,
+        question: String,
+        description: String,
+        end_time: i64,
     ) -> Result<()> {
-        instructions::create_market::handler(ctx, market_data, evidence_requirements)
+        let market = &mut ctx.accounts.market;
+        let clock = Clock::get()?;
+        
+        require!(question.len() <= 200, ErrorCode::QuestionTooLong);
+        require!(end_time > clock.unix_timestamp, ErrorCode::InvalidEndTime);
+        
+        market.authority = ctx.accounts.authority.key();
+        market.question = question;
+        market.description = description;
+        market.end_time = end_time;
+        market.created_at = clock.unix_timestamp;
+        market.yes_amount = 0;
+        market.no_amount = 0;
+        market.resolved = false;
+        market.winning_outcome = false;
+        
+        Ok(())
     }
 
-    /// Submit evidence for a market
-    pub fn submit_evidence(
-        ctx: Context<SubmitEvidence>,
-        evidence_data: EvidenceData,
-    ) -> Result<()> {
-        instructions::submit_evidence::handler(ctx, evidence_data)
-    }
-
-    /// Place a prediction
-    pub fn place_prediction(
-        ctx: Context<PlacePrediction>,
+    pub fn place_bet(
+        ctx: Context<PlaceBet>,
         amount: u64,
-        outcome: Outcome,
+        bet_yes: bool,
     ) -> Result<()> {
-        instructions::place_prediction::handler(ctx, amount, outcome)
+        let market = &mut ctx.accounts.market;
+        let bet = &mut ctx.accounts.bet;
+        let clock = Clock::get()?;
+        
+        require!(!market.resolved, ErrorCode::MarketResolved);
+        require!(clock.unix_timestamp < market.end_time, ErrorCode::MarketExpired);
+        require!(amount >= 10_000_000, ErrorCode::BetTooSmall); // 0.01 SOL min
+        
+        // Transfer SOL to market account
+        let ix = anchor_lang::solana_program::system_instruction::transfer(
+            &ctx.accounts.user.key(),
+            &market.key(),
+            amount,
+        );
+        anchor_lang::solana_program::program::invoke(
+            &ix,
+            &[
+                ctx.accounts.user.to_account_info(),
+                market.to_account_info(),
+            ],
+        )?;
+        
+        // Update market totals
+        if bet_yes {
+            market.yes_amount = market.yes_amount.checked_add(amount).ok_or(ErrorCode::MathOverflow)?;
+        } else {
+            market.no_amount = market.no_amount.checked_add(amount).ok_or(ErrorCode::MathOverflow)?;
+        }
+        
+        // Record individual bet
+        bet.user = ctx.accounts.user.key();
+        bet.market = market.key();
+        bet.amount = amount;
+        bet.outcome = bet_yes;
+        bet.claimed = false;
+        bet.timestamp = clock.unix_timestamp;
+        
+        Ok(())
     }
 
-    /// Vote on market eligibility (DAO governance)
-    pub fn vote_on_eligibility(
-        ctx: Context<VoteOnEligibility>,
-        vote: bool,
-        reason: String,
+    pub fn resolve_market(
+        ctx: Context<ResolveMarket>,
+        outcome: bool,
     ) -> Result<()> {
-        instructions::vote_on_eligibility::handler(ctx, vote, reason)
+        let market = &mut ctx.accounts.market;
+        let clock = Clock::get()?;
+        
+        require!(!market.resolved, ErrorCode::AlreadyResolved);
+        require!(clock.unix_timestamp >= market.end_time, ErrorCode::MarketNotExpired);
+        require!(ctx.accounts.authority.key() == market.authority, ErrorCode::Unauthorized);
+        
+        market.resolved = true;
+        market.winning_outcome = outcome;
+        
+        Ok(())
     }
 
-    /// Report content for moderation
-    pub fn report_content(
-        ctx: Context<ReportContent>,
-        report_type: ModerationType,
-        reason: String,
-    ) -> Result<()> {
-        instructions::report_content::handler(ctx, report_type, reason)
-    }
-
-    /// Emergency pause market (Multisig only)
-    pub fn emergency_pause_market(
-        ctx: Context<EmergencyPauseMarket>,
-        reason: String,
-    ) -> Result<()> {
-        instructions::emergency_pause_market::handler(ctx, reason)
-    }
-
-    /// Verify human identity (Proof of Humanity integration)
-    pub fn verify_human_identity(
-        ctx: Context<VerifyHumanIdentity>,
-        proof_data: HumanProofData,
-    ) -> Result<()> {
-        instructions::verify_human_identity::handler(ctx, proof_data)
-    }
-
-    /// Create meta-prediction market
-    pub fn create_meta_prediction(
-        ctx: Context<CreateMetaPrediction>,
-        parent_market: Pubkey,
-        meta_data: MetaPredictionData,
-    ) -> Result<()> {
-        instructions::create_meta_prediction::handler(ctx, parent_market, meta_data)
-    }
-
-    /// Resolve market with oracle data
-    pub fn resolve_market_with_oracle(
-        ctx: Context<ResolveMarketWithOracle>,
-        oracle_data: OracleData,
-    ) -> Result<()> {
-        instructions::resolve_market_with_oracle::handler(ctx, oracle_data)
-    }
-
-    /// Update reputation based on prediction accuracy
-    pub fn update_reputation(
-        ctx: Context<UpdateReputation>,
-        accuracy_score: u8,
-    ) -> Result<()> {
-        instructions::update_reputation::handler(ctx, accuracy_score)
-    }
-    
-    /// Claim winnings from a resolved market
     pub fn claim_winnings(ctx: Context<ClaimWinnings>) -> Result<()> {
-        instructions::claim_winnings::handler(ctx)
-    }
-    
-    /// Sell position before market resolution
-    pub fn sell_position(ctx: Context<SellPosition>, amount: u64) -> Result<()> {
-        instructions::sell_position::handler(ctx, amount)
-    }
-    
-    /// Add liquidity to market pool
-    pub fn add_liquidity(
-        ctx: Context<AddLiquidity>,
-        amount_yes: u64,
-        amount_no: u64,
-    ) -> Result<()> {
-        instructions::add_liquidity::handler(ctx, amount_yes, amount_no)
-    }
-    
-    /// Remove liquidity from market pool
-    pub fn remove_liquidity(ctx: Context<RemoveLiquidity>, lp_tokens: u64) -> Result<()> {
-        instructions::remove_liquidity::handler(ctx, lp_tokens)
+        let market = &ctx.accounts.market;
+        let bet = &mut ctx.accounts.bet;
+        
+        // Validate market is resolved
+        require!(market.resolved, ErrorCode::MarketNotResolved);
+        
+        // Validate user bet on winning outcome
+        require!(bet.outcome == market.winning_outcome, ErrorCode::WrongOutcome);
+        
+        // Validate not already claimed
+        require!(!bet.claimed, ErrorCode::AlreadyClaimed);
+        
+        // Calculate winnings
+        let total_pool = market.yes_amount.checked_add(market.no_amount).ok_or(ErrorCode::MathOverflow)?;
+        let winning_pool = if market.winning_outcome {
+            market.yes_amount
+        } else {
+            market.no_amount
+        };
+        
+        require!(winning_pool > 0, ErrorCode::NoWinnings);
+        
+        // Calculate user's share: (user_bet / winning_pool) * total_pool
+        let winnings = (bet.amount as u128)
+            .checked_mul(total_pool as u128).ok_or(ErrorCode::MathOverflow)?
+            .checked_div(winning_pool as u128).ok_or(ErrorCode::MathOverflow)?
+            as u64;
+        
+        require!(winnings > 0, ErrorCode::NoWinnings);
+        
+        // Transfer winnings from market to user
+        **market.to_account_info().try_borrow_mut_lamports()? = market
+            .to_account_info()
+            .lamports()
+            .checked_sub(winnings)
+            .ok_or(ErrorCode::MathOverflow)?;
+        
+        **ctx.accounts.user.to_account_info().try_borrow_mut_lamports()? = ctx
+            .accounts
+            .user
+            .to_account_info()
+            .lamports()
+            .checked_add(winnings)
+            .ok_or(ErrorCode::MathOverflow)?;
+        
+        // Mark as claimed
+        bet.claimed = true;
+        
+        Ok(())
     }
 }
 
+#[derive(Accounts)]
+pub struct Initialize<'info> {
+    #[account(init, payer = authority, space = 8 + 32 + 8 + 8)]
+    pub global_state: Account<'info, GlobalState>,
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct CreateMarket<'info> {
+    #[account(init, payer = authority, space = 8 + 32 + 200 + 500 + 8 + 8 + 8 + 8 + 1 + 1)]
+    pub market: Account<'info, Market>,
+    #[account(mut)]
+    pub authority: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct PlaceBet<'info> {
+    #[account(
+        init,
+        payer = user,
+        space = 8 + 32 + 32 + 8 + 1 + 1 + 8,
+        seeds = [b"bet", user.key().as_ref(), market.key().as_ref()],
+        bump
+    )]
+    pub bet: Account<'info, Bet>,
+    #[account(mut)]
+    pub market: Account<'info, Market>,
+    #[account(mut)]
+    pub user: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
+#[derive(Accounts)]
+pub struct ResolveMarket<'info> {
+    #[account(mut)]
+    pub market: Account<'info, Market>,
+    pub authority: Signer<'info>,
+}
+
+#[derive(Accounts)]
+pub struct ClaimWinnings<'info> {
+    #[account(
+        mut,
+        seeds = [b"bet", user.key().as_ref(), market.key().as_ref()],
+        bump
+    )]
+    pub bet: Account<'info, Bet>,
+    #[account(mut)]
+    pub market: Account<'info, Market>,
+    #[account(mut)]
+    pub user: Signer<'info>,
+}
+
+#[account]
+pub struct GlobalState {
+    pub authority: Pubkey,
+    pub total_markets: u64,
+    pub total_volume: u64,
+}
+
+#[account]
+pub struct Market {
+    pub authority: Pubkey,           // 32
+    pub question: String,             // 4 + 200
+    pub description: String,          // 4 + 500
+    pub end_time: i64,                // 8
+    pub created_at: i64,              // 8
+    pub yes_amount: u64,              // 8
+    pub no_amount: u64,               // 8
+    pub resolved: bool,               // 1
+    pub winning_outcome: bool,        // 1
+}
+
+#[account]
+pub struct Bet {
+    pub user: Pubkey,                 // 32
+    pub market: Pubkey,               // 32
+    pub amount: u64,                  // 8
+    pub outcome: bool,                // 1 (true = YES, false = NO)
+    pub claimed: bool,                // 1
+    pub timestamp: i64,               // 8
+}
+
+#[error_code]
+pub enum ErrorCode {
+    #[msg("Question too long (max 200 characters)")]
+    QuestionTooLong,
+    #[msg("Invalid end time")]
+    InvalidEndTime,
+    #[msg("Market already resolved")]
+    MarketResolved,
+    #[msg("Market expired")]
+    MarketExpired,
+    #[msg("Bet too small (min 0.01 SOL)")]
+    BetTooSmall,
+    #[msg("Already resolved")]
+    AlreadyResolved,
+    #[msg("Market not expired yet")]
+    MarketNotExpired,
+    #[msg("Unauthorized")]
+    Unauthorized,
+    #[msg("Math overflow")]
+    MathOverflow,
+    #[msg("Market not resolved yet")]
+    MarketNotResolved,
+    #[msg("Wrong outcome (you bet on the losing side)")]
+    WrongOutcome,
+    #[msg("Already claimed")]
+    AlreadyClaimed,
+    #[msg("No winnings available")]
+    NoWinnings,
+}
