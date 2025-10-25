@@ -4,8 +4,11 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Layout from '@/components/layout/Layout'
 import WalletInfo from '@/components/wallet/WalletInfo'
+import BinaryMarketForm from '@/components/markets/BinaryMarketForm'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { CATEGORIES } from '@/lib/mock/markets'
+import { useAnchorWallet } from '@solana/wallet-adapter-react'
+import { createMarketDirect } from '@/lib/program/direct'
+import * as anchor from '@coral-xyz/anchor'
 
 interface FormData {
   question: string
@@ -24,6 +27,7 @@ interface FormErrors {
 
 export default function CreateMarketPage() {
   const { connected } = useWallet()
+  const wallet = useAnchorWallet()
   const router = useRouter()
 
   const [formData, setFormData] = useState<FormData>({
@@ -45,7 +49,6 @@ export default function CreateMarketPage() {
   ) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
-    // Clear error for this field
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }))
     }
@@ -54,38 +57,30 @@ export default function CreateMarketPage() {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {}
 
-    // Question validation
     if (!formData.question.trim()) {
       newErrors.question = 'Question is required'
     } else if (formData.question.length < 10) {
       newErrors.question = 'Question must be at least 10 characters'
-    } else if (formData.question.length > 200) {
-      newErrors.question = 'Question must be less than 200 characters'
     } else if (!formData.question.includes('?')) {
       newErrors.question = 'Question should end with a question mark'
     }
 
-    // Description validation
     if (!formData.description.trim()) {
-      newErrors.description = 'Description is required'
-    } else if (formData.description.length < 20) {
-      newErrors.description = 'Description must be at least 20 characters'
-    } else if (formData.description.length > 1000) {
-      newErrors.description = 'Description must be less than 1000 characters'
+      newErrors.description = 'Resolution criteria is required'
+    } else if (formData.description.length < 50) {
+      newErrors.description =
+        'Please provide detailed resolution criteria (min 50 characters)'
     }
 
-    // Category validation
     if (!formData.category) {
       newErrors.category = 'Please select a category'
     }
 
-    // End date validation
     if (!formData.endDate) {
       newErrors.endDate = 'End date is required'
     } else {
       const selectedDate = new Date(`${formData.endDate}T${formData.endTime}`)
-      const now = new Date()
-      if (selectedDate <= now) {
+      if (selectedDate <= new Date()) {
         newErrors.endDate = 'End date must be in the future'
       }
     }
@@ -101,16 +96,70 @@ export default function CreateMarketPage() {
       return
     }
 
+    if (!connected || !wallet) {
+      alert('⚠️ Please connect your wallet first')
+      return
+    }
+
     setIsSubmitting(true)
 
-    // Simulate market creation
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      // Convert end date to Unix timestamp
+      const endDateTime = new Date(`${formData.endDate}T${formData.endTime}`)
+      const endTimeUnix = Math.floor(endDateTime.getTime() / 1000)
 
+      // Validate timestamp
+      if (!endTimeUnix || isNaN(endTimeUnix) || endTimeUnix <= 0) {
+        throw new Error('Invalid end date/time. Please check your input.')
+      }
+
+      console.log('📅 End date:', formData.endDate)
+      console.log('🕐 End time:', formData.endTime)
+      console.log('⏰ End timestamp:', endTimeUnix)
+      console.log('📆 End date object:', endDateTime.toString())
+
+      // Create market on-chain (direct method - bypasses IDL issues)
+      const { signature, marketPubkey } = await createMarketDirect(
+        wallet,
+        formData.question,
+        formData.description,
+        endTimeUnix
+      )
+
+      console.log('✅ Market created!')
+      console.log('Transaction:', signature)
+      console.log('Market address:', marketPubkey.toString())
+
+      // Show success message with transaction link
+      const explorerUrl = `https://explorer.solana.com/tx/${signature}?cluster=devnet`
+      
+      alert(
+        `✅ Market created successfully!\n\n` +
+        `Market ID: ${marketPubkey.toString().slice(0, 8)}...\n` +
+        `Transaction: ${signature.slice(0, 8)}...\n\n` +
+        `View on Explorer: ${explorerUrl}`
+      )
+
+      // Redirect to market detail page
+      router.push(`/markets/${marketPubkey.toString()}`)
+
+    } catch (error: any) {
+      console.error('Error creating market:', error)
+      
+      let errorMessage = 'Failed to create market. Please try again.'
+      
+      if (error.message?.includes('User rejected')) {
+        errorMessage = 'Transaction cancelled by user.'
+      } else if (error.message?.includes('Insufficient funds')) {
+        errorMessage = 'Insufficient SOL balance. Please fund your wallet.'
+      } else if (error.message) {
+        errorMessage = `Error: ${error.message}`
+      }
+      
+      alert(`❌ ${errorMessage}`)
+    } finally {
     setIsSubmitting(false)
-
-    // Show success and redirect
-    alert('✅ Market created successfully! (Demo mode)')
-    router.push('/markets')
+    }
   }
 
   const getEndDateTime = () => {
@@ -118,12 +167,12 @@ export default function CreateMarketPage() {
     return new Date(`${formData.endDate}T${formData.endTime}`)
   }
 
-  const estimatedOdds = { yes: 50, no: 50 } // Initial odds
+  const estimatedOdds = { yes: 50, no: 50 }
 
   return (
     <Layout>
       <div className="min-h-screen bg-black py-20 px-4">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           {/* Wallet Info or Demo Banner */}
           {connected ? (
             <div className="mb-6">
@@ -151,165 +200,54 @@ export default function CreateMarketPage() {
               Create Prediction Market
             </h1>
             <p className="text-gray-400">
-              Create a new market and let others trade on the outcome
+              Create a YES/NO market about political promises, public projects, or
+              institutional commitments
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-6">
-            {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Market Form */}
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Question */}
-                <div>
-                  <label className="block text-white font-semibold mb-2">
-                    Market Question *
-                  </label>
-                  <input
-                    type="text"
-                    name="question"
-                    value={formData.question}
+              <BinaryMarketForm
+                formData={formData}
+                errors={errors}
                     onChange={handleChange}
-                    placeholder="Will Bitcoin reach $100,000 in 2025?"
-                    className={`w-full px-4 py-3 bg-gray-800 border ${
-                      errors.question ? 'border-red-500' : 'border-gray-700'
-                    } rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500`}
-                  />
-                  {errors.question && (
-                    <p className="text-red-400 text-sm mt-2">
-                      {errors.question}
-                    </p>
-                  )}
-                  <p className="text-gray-500 text-xs mt-2">
-                    {formData.question.length}/200 characters
-                  </p>
+              />
                 </div>
 
-                {/* Description */}
+            {/* Creation Fee Info */}
+            <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">💰</span>
                 <div>
-                  <label className="block text-white font-semibold mb-2">
-                    Description *
-                  </label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    placeholder="This market will resolve YES if Bitcoin reaches or exceeds $100,000 USD on any major exchange before December 31, 2025..."
-                    rows={5}
-                    className={`w-full px-4 py-3 bg-gray-800 border ${
-                      errors.description
-                        ? 'border-red-500'
-                        : 'border-gray-700'
-                    } rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none`}
-                  />
-                  {errors.description && (
-                    <p className="text-red-400 text-sm mt-2">
-                      {errors.description}
-                    </p>
-                  )}
-                  <p className="text-gray-500 text-xs mt-2">
-                    {formData.description.length}/1000 characters
+                  <p className="text-blue-300 font-semibold">
+                    Market Creation Fee
+                  </p>
+                  <p className="text-blue-200/70 text-sm">
+                    0.1 SOL (includes rent + platform fee)
                   </p>
                 </div>
-
-                {/* Category */}
-                <div>
-                  <label className="block text-white font-semibold mb-2">
-                    Category *
-                  </label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-3 bg-gray-800 border ${
-                      errors.category ? 'border-red-500' : 'border-gray-700'
-                    } rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500`}
-                  >
-                    <option value="">Select a category</option>
-                    {CATEGORIES.filter((c) => c !== 'All').map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.category && (
-                    <p className="text-red-400 text-sm mt-2">
-                      {errors.category}
-                    </p>
-                  )}
+              </div>
                 </div>
 
-                {/* End Date & Time */}
-                <div>
-                  <label className="block text-white font-semibold mb-2">
-                    Market End Date & Time *
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <input
-                      type="date"
-                      name="endDate"
-                      value={formData.endDate}
-                      onChange={handleChange}
-                      min={new Date().toISOString().split('T')[0]}
-                      className={`px-4 py-3 bg-gray-800 border ${
-                        errors.endDate ? 'border-red-500' : 'border-gray-700'
-                      } rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500`}
-                    />
-                    <input
-                      type="time"
-                      name="endTime"
-                      value={formData.endTime}
-                      onChange={handleChange}
-                      className="px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
-                  </div>
-                  {errors.endDate && (
-                    <p className="text-red-400 text-sm mt-2">
-                      {errors.endDate}
-                    </p>
-                  )}
-                  {getEndDateTime() && (
-                    <p className="text-gray-400 text-sm mt-2">
-                      Ends on{' '}
-                      {getEndDateTime()?.toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </p>
-                  )}
-                </div>
-
-                {/* Creation Fee Info */}
-                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-                  <p className="text-blue-300 text-sm font-semibold mb-1">
-                    💡 Market Creation Fee
-                  </p>
-                  <p className="text-blue-200/70 text-xs">
-                    Creating a market costs 0.1 SOL (includes rent + fees)
-                  </p>
-                </div>
-
-                {/* Buttons */}
-                <div className="flex gap-3">
+            {/* Action Buttons */}
+            <div className="flex gap-4">
                   <button
                     type="button"
                     onClick={() => setShowPreview(!showPreview)}
-                    className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-lg transition-all"
+                className="flex-1 py-4 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl transition-all"
                   >
                     {showPreview ? 'Hide' : 'Show'} Preview
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-1 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
                       <span className="flex items-center justify-center gap-2">
                         <span className="animate-spin">⏳</span>
-                        Creating...
+                    Creating Market...
                       </span>
                     ) : (
                       'Create Market'
@@ -317,17 +255,12 @@ export default function CreateMarketPage() {
                   </button>
                 </div>
               </form>
-            </div>
 
-            {/* Preview */}
-            <div
-              className={`transition-all duration-300 ${
-                showPreview ? 'opacity-100' : 'opacity-50'
-              }`}
-            >
-              <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 sticky top-24">
+          {/* Preview Section */}
+          {showPreview && (
+            <div className="mt-8 bg-gray-900 border border-gray-800 rounded-xl p-6">
                 <h2 className="text-xl font-bold text-white mb-4">
-                  Market Preview
+                🎯 Market Preview
                 </h2>
 
                 {formData.question ? (
@@ -338,34 +271,14 @@ export default function CreateMarketPage() {
                       <h3 className="text-white font-bold text-lg">
                         {formData.question}
                       </h3>
-                    </div>
-
-                    {/* Description */}
-                    {formData.description && (
-                      <div>
-                        <p className="text-gray-400 text-xs mb-1">
-                          DESCRIPTION
-                        </p>
-                        <p className="text-gray-300 text-sm">
-                          {formData.description}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Category */}
-                    {formData.category && (
-                      <div>
-                        <span className="px-3 py-1 bg-purple-500/20 text-purple-300 text-xs rounded font-medium">
-                          {formData.category}
+                    <span className="inline-block mt-2 px-3 py-1 bg-purple-500/20 text-purple-300 rounded text-xs font-medium">
+                      YES/NO MARKET
                         </span>
                       </div>
-                    )}
 
-                    {/* Odds */}
+                  {/* Odds Preview */}
                     <div>
-                      <p className="text-gray-400 text-xs mb-2">
-                        INITIAL ODDS
-                      </p>
+                    <p className="text-gray-400 text-xs mb-2">INITIAL ODDS</p>
                       <div className="grid grid-cols-2 gap-3">
                         <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
                           <p className="text-green-400 text-xs mb-1">YES</p>
@@ -382,37 +295,49 @@ export default function CreateMarketPage() {
                       </div>
                     </div>
 
-                    {/* End Date */}
+                  {/* Description */}
+                  {formData.description && (
+                    <div>
+                      <p className="text-gray-400 text-xs mb-1">
+                        RESOLUTION CRITERIA
+                      </p>
+                      <p className="text-gray-300 text-sm">
+                        {formData.description}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Category & End Date */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-800">
+                    {formData.category && (
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded font-medium">
+                        {formData.category}
+                      </span>
+                    )}
                     {formData.endDate && (
                       <div>
-                        <p className="text-gray-400 text-xs mb-1">
-                          ENDS ON
-                        </p>
-                        <p className="text-white font-semibold">
-                          {new Date(
-                            `${formData.endDate}T${formData.endTime}`
-                          ).toLocaleDateString('en-US', {
+                        <p className="text-gray-400 text-xs">ENDS</p>
+                        <p className="text-white text-sm font-semibold">
+                          {getEndDateTime()?.toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
                           })}
                         </p>
                       </div>
                     )}
                   </div>
+                  </div>
                 ) : (
                   <div className="text-center py-12">
-                    <div className="text-5xl mb-4">📝</div>
+                  <div className="text-5xl mb-4">🎯</div>
                     <p className="text-gray-400">
                       Fill out the form to see a preview
                     </p>
                   </div>
                 )}
               </div>
-            </div>
-          </div>
+          )}
 
           {/* Guidelines */}
           <div className="mt-8 bg-gray-900 border border-gray-800 rounded-xl p-6">
@@ -423,19 +348,27 @@ export default function CreateMarketPage() {
               <li className="flex items-start gap-2">
                 <span className="text-green-400">✓</span>
                 <span>
-                  Questions must be clear, unambiguous, and answerable with
-                  YES or NO
+                  Questions must be clear, unambiguous, and answerable with YES
+                  or NO
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-400">✓</span>
                 <span>
-                  Include specific resolution criteria in the description
+                  Include specific resolution criteria and data sources in the
+                  description
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-400">✓</span>
                 <span>Set a realistic end date for market resolution</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-400">✓</span>
+                <span>
+                  Best for: political promises, public projects, institutional
+                  commitments
+                </span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-red-400">✗</span>
@@ -447,7 +380,8 @@ export default function CreateMarketPage() {
               <li className="flex items-start gap-2">
                 <span className="text-red-400">✗</span>
                 <span>
-                  Don't create duplicate markets or markets on illegal activities
+                  Don't create duplicate markets or markets on illegal
+                  activities
                 </span>
               </li>
             </ul>
