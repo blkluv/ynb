@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAnchorWallet } from '@solana/wallet-adapter-react'
-import { PublicKey } from '@solana/web3.js'
+import { PublicKey, Connection, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import toast from 'react-hot-toast'
 import { placeBetDirect } from '@/lib/program/direct'
+import { RPC_ENDPOINT } from '@/lib/program/constants'
 import { type MockMarket, getMarketOdds } from '@/lib/mock/markets'
 
 interface BinaryTradingInterfaceProps {
@@ -22,15 +23,49 @@ export default function BinaryTradingInterface({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [txSignature, setTxSignature] = useState<string | null>(null)
+  const [walletBalance, setWalletBalance] = useState<number | null>(null)
+  const [isLoadingBalance, setIsLoadingBalance] = useState(false)
 
   const odds = getMarketOdds(market)
 
+  // Fetch wallet balance
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (!wallet?.publicKey) {
+        setWalletBalance(null)
+        return
+      }
+
+      setIsLoadingBalance(true)
+      try {
+        const connection = new Connection(RPC_ENDPOINT, 'confirmed')
+        const balance = await connection.getBalance(wallet.publicKey)
+        setWalletBalance(balance / LAMPORTS_PER_SOL)
+      } catch (error) {
+        console.error('Error fetching balance:', error)
+        setWalletBalance(null)
+      } finally {
+        setIsLoadingBalance(false)
+      }
+    }
+
+    fetchBalance()
+  }, [wallet?.publicKey])
+
   const handlePlaceBet = async () => {
+    // Wallet check
+    if (!wallet) {
+      toast.error('Please connect your wallet first')
+      return
+    }
+
+    // Outcome selection check
     if (selectedOutcome === null) {
       toast.error('Please select YES or NO')
       return
     }
 
+    // Amount validation
     const amount = parseFloat(betAmount)
     if (isNaN(amount) || amount <= 0) {
       toast.error('Please enter a valid amount')
@@ -42,9 +77,27 @@ export default function BinaryTradingInterface({
       return
     }
 
-    if (!wallet) {
-      toast.error('Please connect your wallet first')
+    // Market status checks
+    if (market.resolved) {
+      toast.error('This market has already been resolved')
       return
+    }
+
+    const now = new Date()
+    if (market.endTime < now) {
+      toast.error('Trading has ended for this market')
+      return
+    }
+
+    // Balance check (with buffer for transaction fees)
+    if (walletBalance !== null) {
+      const requiredAmount = amount + 0.001 // Add 0.001 SOL buffer for fees
+      if (walletBalance < requiredAmount) {
+        toast.error(
+          `Insufficient balance. You have ${walletBalance.toFixed(4)} SOL but need ${requiredAmount.toFixed(4)} SOL (including fees)`
+        )
+        return
+      }
     }
 
     setIsSubmitting(true)
@@ -91,6 +144,13 @@ export default function BinaryTradingInterface({
         </div>,
         { duration: 5000 }
       )
+
+      // Refresh balance after successful bet
+      if (wallet?.publicKey) {
+        const connection = new Connection(RPC_ENDPOINT, 'confirmed')
+        const newBalance = await connection.getBalance(wallet.publicKey)
+        setWalletBalance(newBalance / LAMPORTS_PER_SOL)
+      }
 
       // Reset form after success
       setTimeout(() => {
@@ -186,9 +246,19 @@ export default function BinaryTradingInterface({
 
       {/* Bet Amount */}
       <div>
-        <label className="block text-white font-semibold mb-2">
-          Amount (SOL)
-        </label>
+        <div className="flex justify-between items-center mb-2">
+          <label className="block text-white font-semibold">
+            Amount (SOL)
+          </label>
+          {walletBalance !== null && (
+            <span className="text-sm text-gray-400">
+              Balance: {walletBalance.toFixed(4)} SOL
+            </span>
+          )}
+          {isLoadingBalance && (
+            <span className="text-sm text-gray-400">Loading balance...</span>
+          )}
+        </div>
         <input
           type="number"
           value={betAmount}
@@ -197,6 +267,11 @@ export default function BinaryTradingInterface({
           min="0.01"
           className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
+        {walletBalance !== null && parseFloat(betAmount) > 0 && (
+          <div className="mt-2 text-sm text-gray-400">
+            After bet: {(walletBalance - parseFloat(betAmount) - 0.001).toFixed(4)} SOL (est.)
+          </div>
+        )}
       </div>
 
       {/* Potential Winnings */}
