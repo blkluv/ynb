@@ -47,21 +47,46 @@ export default function MarketCard({ market }: { market: MockMarket }) {
         {market.description}
       </p>
 
-      {/* Binary Market Display - YES/NO Odds */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
-          <div className="text-green-400 text-xs mb-1 font-semibold">YES</div>
-          <div className="text-white font-bold text-xl">
-            {odds.yesPercentage}%
+      {/* Resolved market: Show winner */}
+      {market.resolved ? (
+        <div className="mb-4">
+          <div className={`p-4 rounded-lg border-2 ${
+            market.winningOutcome 
+              ? 'bg-green-500/20 border-green-500/50' 
+              : 'bg-red-500/20 border-red-500/50'
+          }`}>
+            <div className="text-center">
+              <div className="text-2xl mb-2">
+                {market.winningOutcome ? '✅' : '❌'}
+              </div>
+              <div className={`font-bold text-lg ${
+                market.winningOutcome ? 'text-green-300' : 'text-red-300'
+              }`}>
+                {market.winningOutcome ? 'YES' : 'NO'} WON
+              </div>
+              <div className="text-sm text-gray-400 mt-1">
+                Market resolved
+              </div>
+            </div>
           </div>
         </div>
-        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-          <div className="text-red-400 text-xs mb-1 font-semibold">NO</div>
-          <div className="text-white font-bold text-xl">
-            {odds.noPercentage}%
+      ) : (
+        /* Binary Market Display - YES/NO Odds */
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
+            <div className="text-green-400 text-xs mb-1 font-semibold">YES</div>
+            <div className="text-white font-bold text-xl">
+              {odds.yesPercentage}%
+            </div>
+          </div>
+          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+            <div className="text-red-400 text-xs mb-1 font-semibold">NO</div>
+            <div className="text-white font-bold text-xl">
+              {odds.noPercentage}%
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Stats */}
       <div className="flex items-center justify-between text-sm text-gray-400 mb-4 pb-4 border-b border-gray-800">

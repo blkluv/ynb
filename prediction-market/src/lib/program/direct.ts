@@ -208,3 +208,71 @@ export async function placeBetDirect(
   return signature;
 }
 
+/**
+ * Resolve market instruction data
+ */
+function encodeResolveMarketData(outcome: boolean): Buffer {
+  // Discriminator (8 bytes) + outcome (1 byte bool)
+  const data = Buffer.alloc(8 + 1);
+  
+  let offset = 0;
+  
+  // Discriminator
+  DISCRIMINATORS.resolveMarket.copy(data, offset);
+  offset += 8;
+  
+  // Outcome (bool)
+  data.writeUInt8(outcome ? 1 : 0, offset);
+  
+  return data;
+}
+
+/**
+ * Resolve a market directly (only authority can do this)
+ */
+export async function resolveMarketDirect(
+  wallet: AnchorWallet,
+  marketPubkey: PublicKey,
+  outcome: boolean
+): Promise<string> {
+  console.log("⚖️ Resolving market (direct)...");
+  console.log("  Market:", marketPubkey.toBase58());
+  console.log("  Outcome:", outcome ? "YES" : "NO");
+  console.log("  Authority:", wallet.publicKey.toBase58());
+  
+  const connection = new Connection(RPC_ENDPOINT, CONNECTION_CONFIG.commitment);
+  
+  // Encode instruction data
+  const instructionData = encodeResolveMarketData(outcome);
+  
+  console.log("  Instruction data length:", instructionData.length);
+  
+  // Create instruction
+  const instruction = new TransactionInstruction({
+    keys: [
+      { pubkey: marketPubkey, isSigner: false, isWritable: true },
+      { pubkey: wallet.publicKey, isSigner: true, isWritable: false },
+    ],
+    programId: PROGRAM_ID,
+    data: instructionData,
+  });
+  
+  // Create and send transaction
+  const transaction = new Transaction().add(instruction);
+  transaction.feePayer = wallet.publicKey;
+  transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+  
+  // Sign transaction
+  const signedTx = await wallet.signTransaction(transaction);
+  
+  // Send transaction
+  const signature = await connection.sendRawTransaction(signedTx.serialize());
+  
+  // Confirm transaction
+  await connection.confirmTransaction(signature, CONNECTION_CONFIG.commitment);
+  
+  console.log("✅ Market resolved! Tx:", signature);
+  
+  return signature;
+}
+

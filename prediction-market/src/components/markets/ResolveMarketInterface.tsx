@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAnchorWallet } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
-import { getProgram, resolveMarket } from '@/lib/program/predictionMarket'
+import toast from 'react-hot-toast'
+import { resolveMarketDirect } from '@/lib/program/direct'
+import { fetchMarketDirect } from '@/lib/program/direct-read'
 import type { MockMarket } from '@/lib/mock/markets'
 
 interface ResolveMarketInterfaceProps {
@@ -18,11 +20,52 @@ export default function ResolveMarketInterface({
   const wallet = useAnchorWallet()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedOutcome, setSelectedOutcome] = useState<boolean | null>(null)
+  const [isCheckingAuthority, setIsCheckingAuthority] = useState(true)
+  const [isAuthority, setIsAuthority] = useState(false)
+
+  // Verify authority from blockchain
+  useEffect(() => {
+    const checkAuthority = async () => {
+      if (!wallet) {
+        setIsAuthority(false)
+        setIsCheckingAuthority(false)
+        return
+      }
+
+      try {
+        setIsCheckingAuthority(true)
+        const marketPubkey = new PublicKey(market.id)
+        const marketData = await fetchMarketDirect(marketPubkey)
+        
+        if (marketData) {
+          const isMarketAuthority = marketData.authority.equals(wallet.publicKey)
+          setIsAuthority(isMarketAuthority)
+          console.log('Authority check:', isMarketAuthority ? '✅ User is authority' : '❌ User is not authority')
+        } else {
+          setIsAuthority(false)
+        }
+      } catch (error) {
+        console.error('Error checking authority:', error)
+        setIsAuthority(false)
+      } finally {
+        setIsCheckingAuthority(false)
+      }
+    }
+
+    checkAuthority()
+  }, [wallet?.publicKey, market.id])
 
   const handleResolve = async () => {
-    if (!wallet || selectedOutcome === null) return
+    if (!wallet) {
+      toast.error('Please connect your wallet')
+      return
+    }
 
-      const program = getProgram(wallet)
+    if (selectedOutcome === null) {
+      toast.error('Please select YES or NO as the winning outcome')
+      return
+    }
+
     const marketPubkey = new PublicKey(market.id)
 
     try {
@@ -32,8 +75,8 @@ export default function ResolveMarketInterface({
       console.log('Market:', market.id)
       console.log('Outcome:', selectedOutcome ? 'YES' : 'NO')
 
-      const signature = await resolveMarket(
-        program,
+      const signature = await resolveMarketDirect(
+        wallet,
         marketPubkey,
         selectedOutcome
       )
@@ -42,13 +85,26 @@ export default function ResolveMarketInterface({
 
       const explorerUrl = `https://explorer.solana.com/tx/${signature}?cluster=devnet`
 
-      alert(
-        `✅ Market resolved successfully!\n\n` +
-          `Winner: ${selectedOutcome ? 'YES' : 'NO'}\n` +
-          `Transaction: ${signature.slice(0, 8)}...\n\n` +
-          `View on Explorer: ${explorerUrl}`
+      // Show success toast with transaction link
+      toast.success(
+        <div className="flex flex-col gap-1">
+          <span className="font-bold">Market resolved successfully!</span>
+          <span className="text-sm">
+            Winner: {selectedOutcome ? 'YES' : 'NO'}
+          </span>
+          <a 
+            href={explorerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:text-blue-300 text-xs underline"
+          >
+            View transaction →
+          </a>
+        </div>,
+        { duration: 6000 }
       )
 
+      // Callback to refresh market data
       if (onResolved) {
         setTimeout(() => onResolved(), 2000)
       }
@@ -59,17 +115,17 @@ export default function ResolveMarketInterface({
 
       if (error.message?.includes('User rejected')) {
         errorMessage = 'Transaction cancelled by user.'
-      } else if (error.message?.includes('Unauthorized')) {
+      } else if (error.message?.includes('Unauthorized') || error.message?.includes('ConstraintSigner')) {
         errorMessage = 'Only the market creator can resolve this market.'
       } else if (error.message?.includes('AlreadyResolved')) {
         errorMessage = 'This market has already been resolved.'
       } else if (error.message?.includes('MarketNotExpired')) {
         errorMessage = 'Cannot resolve: market has not expired yet.'
       } else if (error.message) {
-        errorMessage = `Error: ${error.message}`
+        errorMessage = error.message
       }
 
-      alert(`❌ ${errorMessage}`)
+      toast.error(errorMessage, { duration: 5000 })
     } finally {
       setIsSubmitting(false)
     }
@@ -80,13 +136,21 @@ export default function ResolveMarketInterface({
     return null
   }
 
-  // Check if user is the authority (market creator)
-  const isAuthority =
-    wallet.publicKey.toString() === market.creator ||
-    market.creator.includes(wallet.publicKey.toString().slice(0, 4))
+  // Show loading state while checking authority
+  if (isCheckingAuthority) {
+    return (
+      <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6">
+        <div className="flex items-center justify-center gap-2">
+          <span className="animate-spin">⏳</span>
+          <span className="text-gray-400">Checking permissions...</span>
+        </div>
+      </div>
+    )
+  }
 
+  // Don't show if user is not the authority
   if (!isAuthority) {
-    return null // Don't show resolution interface if not the creator
+    return null
   }
 
   // If already resolved
