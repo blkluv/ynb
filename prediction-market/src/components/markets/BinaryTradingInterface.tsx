@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useAnchorWallet } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
+import toast from 'react-hot-toast'
 import { placeBetDirect } from '@/lib/program/direct'
 import { type MockMarket, getMarketOdds } from '@/lib/mock/markets'
 
@@ -26,23 +27,23 @@ export default function BinaryTradingInterface({
 
   const handlePlaceBet = async () => {
     if (selectedOutcome === null) {
-      alert('Please select YES or NO')
+      toast.error('Please select YES or NO')
       return
     }
 
     const amount = parseFloat(betAmount)
     if (isNaN(amount) || amount <= 0) {
-      alert('Please enter a valid amount')
+      toast.error('Please enter a valid amount')
       return
     }
 
     if (amount < 0.01) {
-      alert('Minimum bet is 0.01 SOL')
+      toast.error('Minimum bet is 0.01 SOL')
       return
     }
 
     if (!wallet) {
-      alert('⚠️ Please connect your wallet first')
+      toast.error('Please connect your wallet first')
       return
     }
 
@@ -72,11 +73,23 @@ export default function BinaryTradingInterface({
       setTxSignature(signature)
       setSuccess(true)
 
-      alert(
-        `✅ Bet placed successfully!\n\n` +
-        `Amount: ${amount} SOL on ${selectedOutcome ? 'YES' : 'NO'}\n` +
-        `Transaction: ${signature.slice(0, 8)}...\n\n` +
-        `View on Explorer: ${explorerUrl}`
+      // Show success toast with transaction link
+      toast.success(
+        <div className="flex flex-col gap-1">
+          <span className="font-bold">Bet placed successfully!</span>
+          <span className="text-sm">
+            {amount} SOL on {selectedOutcome ? 'YES' : 'NO'}
+          </span>
+          <a 
+            href={explorerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:text-blue-300 text-xs underline"
+          >
+            View transaction →
+          </a>
+        </div>,
+        { duration: 5000 }
       )
 
       // Reset form after success
@@ -108,10 +121,10 @@ export default function BinaryTradingInterface({
       } else if (error.message?.includes('BetTooSmall')) {
         errorMessage = 'Bet amount too small. Minimum is 0.01 SOL.'
       } else if (error.message) {
-        errorMessage = `Error: ${error.message}`
+        errorMessage = error.message
       }
 
-      alert(`❌ ${errorMessage}`)
+      toast.error(errorMessage, { duration: 4000 })
     } finally {
       setIsSubmitting(false)
     }
