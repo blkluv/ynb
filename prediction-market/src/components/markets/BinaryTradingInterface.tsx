@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useAnchorWallet } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
-import { getProgram, placeBet } from '@/lib/program/predictionMarket'
+import { placeBetDirect } from '@/lib/program/direct'
 import { type MockMarket, getMarketOdds } from '@/lib/mock/markets'
 
 interface BinaryTradingInterfaceProps {
@@ -51,7 +51,6 @@ export default function BinaryTradingInterface({
     setTxSignature(null)
 
     try {
-      const program = getProgram(wallet)
       const marketPubkey = new PublicKey(market.id)
 
       console.log('Placing bet...')
@@ -59,8 +58,8 @@ export default function BinaryTradingInterface({
       console.log('Amount:', amount, 'SOL')
       console.log('Outcome:', selectedOutcome ? 'YES' : 'NO')
 
-      const signature = await placeBet(
-        program,
+      const signature = await placeBetDirect(
+        wallet,
         marketPubkey,
         amount,
         selectedOutcome

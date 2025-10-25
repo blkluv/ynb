@@ -124,3 +124,87 @@ export async function createMarketDirect(
   };
 }
 
+/**
+ * Place bet instruction data
+ */
+function encodePlaceBetData(
+  amount: anchor.BN,
+  betYes: boolean
+): Buffer {
+  // Discriminator (8 bytes) + amount (8 bytes u64) + betYes (1 byte bool)
+  const data = Buffer.alloc(8 + 8 + 1);
+  
+  let offset = 0;
+  
+  // Discriminator
+  DISCRIMINATORS.placeBet.copy(data, offset);
+  offset += 8;
+  
+  // Amount (u64)
+  const amountBuffer = amount.toArrayLike(Buffer, 'le', 8);
+  amountBuffer.copy(data, offset);
+  offset += 8;
+  
+  // BetYes (bool)
+  data.writeUInt8(betYes ? 1 : 0, offset);
+  
+  return data;
+}
+
+/**
+ * Place a bet on a market directly
+ */
+export async function placeBetDirect(
+  wallet: AnchorWallet,
+  marketPubkey: PublicKey,
+  amount: number,
+  betYes: boolean
+): Promise<string> {
+  console.log("🎲 Placing bet (direct)...");
+  console.log("  Market:", marketPubkey.toBase58());
+  console.log("  Amount:", amount, "SOL");
+  console.log("  Bet:", betYes ? "YES" : "NO");
+  
+  const connection = new Connection(RPC_ENDPOINT, CONNECTION_CONFIG.commitment);
+  
+  // Convert SOL to lamports
+  const amountLamports = new anchor.BN(amount * anchor.web3.LAMPORTS_PER_SOL);
+  
+  console.log("  Amount (lamports):", amountLamports.toString());
+  console.log("  User:", wallet.publicKey.toBase58());
+  
+  // Encode instruction data
+  const instructionData = encodePlaceBetData(amountLamports, betYes);
+  
+  console.log("  Instruction data length:", instructionData.length);
+  
+  // Create instruction
+  const instruction = new TransactionInstruction({
+    keys: [
+      { pubkey: marketPubkey, isSigner: false, isWritable: true },
+      { pubkey: wallet.publicKey, isSigner: true, isWritable: true },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+    ],
+    programId: PROGRAM_ID,
+    data: instructionData,
+  });
+  
+  // Create and send transaction
+  const transaction = new Transaction().add(instruction);
+  transaction.feePayer = wallet.publicKey;
+  transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+  
+  // Sign transaction
+  const signedTx = await wallet.signTransaction(transaction);
+  
+  // Send transaction
+  const signature = await connection.sendRawTransaction(signedTx.serialize());
+  
+  // Confirm transaction
+  await connection.confirmTransaction(signature, CONNECTION_CONFIG.commitment);
+  
+  console.log("✅ Bet placed! Tx:", signature);
+  
+  return signature;
+}
+
