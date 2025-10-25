@@ -42,5 +42,22 @@ next-env.d.ts
 # OS
 Thumbs.db
 
+# Rust/Anchor
+**/target/
+**/*.rs.bk
+Cargo.lock
+.anchor/
 
+# Solana
+test-ledger/
+.localnet/
+
+# Build artifacts
+*.so
+*.dylib
+*.dll
+*.wasm
+
+# Logs
+*.log
 

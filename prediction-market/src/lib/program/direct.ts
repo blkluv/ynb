@@ -11,6 +11,7 @@ import {
   TransactionInstruction,
   Transaction
 } from "@solana/web3.js";
+import type { AnchorWallet } from "@solana/wallet-adapter-react";
 import { PROGRAM_ID, RPC_ENDPOINT, CONNECTION_CONFIG } from "./constants";
 
 // Discriminators from IDL
@@ -68,7 +69,7 @@ function encodeCreateMarketData(
  * Create a market directly
  */
 export async function createMarketDirect(
-  wallet: anchor.Wallet,
+  wallet: AnchorWallet,
   question: string,
   description: string,
   endTime: number
