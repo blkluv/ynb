@@ -1,13 +1,14 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program, AnchorProvider, Idl } from "@coral-xyz/anchor";
 import { Connection, PublicKey, SystemProgram } from "@solana/web3.js";
+import type { AnchorWallet } from "@solana/wallet-adapter-react";
 import { PROGRAM_ID, RPC_ENDPOINT, CONNECTION_CONFIG } from "./constants";
 import idlJson from "../../idl/prediction_market.json";
 
 /**
  * Get the program instance
  */
-export function getProgram(wallet: anchor.Wallet): Program {
+export function getProgram(wallet: AnchorWallet): Program {
   const connection = new Connection(RPC_ENDPOINT, CONNECTION_CONFIG.commitment);
   const provider = new AnchorProvider(connection, wallet, {
     preflightCommitment: CONNECTION_CONFIG.commitment,
