@@ -31,19 +31,19 @@ export default function BinaryMarketForm({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-white font-bold text-lg mb-2">
+        <h3 className="mb-2 text-lg font-bold text-white">
           2. Market Details
         </h3>
-        <p className="text-gray-400 text-sm mb-4">
+        <p className="mb-4 text-sm text-gray-400">
           Fill in the information for your YES/NO market
         </p>
       </div>
 
       {/* Question */}
       <div>
-        <label className="block text-white font-semibold mb-2">
+        <label className="block mb-2 font-semibold text-white">
           Market Question *
-          <span className="text-gray-400 font-normal text-sm ml-2">
+          <span className="ml-2 text-sm font-normal text-gray-400">
             (must end with ?)
           </span>
         </label>
@@ -53,24 +53,24 @@ export default function BinaryMarketForm({
           value={formData.question}
           onChange={onChange}
           maxLength={150}
-          placeholder="¿Milei cumplirá su promesa de déficit cero en 2025?"
+          placeholder="Will Nas mention YE/NO BET before 2025?"
           className={`w-full px-4 py-3 bg-gray-800 border ${
             errors.question ? 'border-red-500' : 'border-gray-700'
           } rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500`}
         />
         {errors.question && (
-          <p className="text-red-400 text-sm mt-2">{errors.question}</p>
+          <p className="mt-2 text-sm text-red-400">{errors.question}</p>
         )}
-        <p className="text-gray-500 text-xs mt-2">
+        <p className="mt-2 text-xs text-gray-500">
           {formData.question.length}/150 characters
         </p>
       </div>
 
       {/* Resolution Criteria */}
       <div>
-        <label className="block text-white font-semibold mb-2">
+        <label className="block mb-2 font-semibold text-white">
           Resolution Criteria *
-          <span className="text-gray-400 font-normal text-sm ml-2">
+          <span className="ml-2 text-sm font-normal text-gray-400">
             (how will this be verified?)
           </span>
         </label>
@@ -79,22 +79,22 @@ export default function BinaryMarketForm({
           value={formData.description}
           onChange={onChange}
           maxLength={400}
-          placeholder="This market resolves YES if official government reports confirm zero deficit by December 31, 2025. Source: Ministry of Economy official statements."
+          placeholder="This market resolves YES if Nas talks about YE/NO BET by December 31, 2025."
           rows={5}
           className={`w-full px-4 py-3 bg-gray-800 border ${
             errors.description ? 'border-red-500' : 'border-gray-700'
           } rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none`}
         />
         {errors.description && (
-          <p className="text-red-400 text-sm mt-2">{errors.description}</p>
+          <p className="mt-2 text-sm text-red-400">{errors.description}</p>
         )}
-        <p className="text-gray-500 text-xs mt-2">
+        <p className="mt-2 text-xs text-gray-500">
           {formData.description.length}/400 characters
         </p>
 
         {/* Helper tip */}
-        <div className="mt-3 bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
-          <p className="text-blue-300 text-xs">
+        <div className="p-3 mt-3 border rounded-lg bg-blue-500/10 border-blue-500/20">
+          <p className="text-xs text-blue-300">
             <strong>💡 Tip:</strong> Include specific sources, dates, and
             verification methods. Clear criteria = fewer disputes.
           </p>
@@ -103,7 +103,7 @@ export default function BinaryMarketForm({
 
       {/* Category */}
       <div>
-        <label className="block text-white font-semibold mb-2">
+        <label className="block mb-2 font-semibold text-white">
           Category *
         </label>
         <select
@@ -122,15 +122,15 @@ export default function BinaryMarketForm({
           ))}
         </select>
         {errors.category && (
-          <p className="text-red-400 text-sm mt-2">{errors.category}</p>
+          <p className="mt-2 text-sm text-red-400">{errors.category}</p>
         )}
       </div>
 
       {/* End Date & Time */}
       <div>
-        <label className="block text-white font-semibold mb-2">
+        <label className="block mb-2 font-semibold text-white">
           Market End Date & Time *
-          <span className="text-gray-400 font-normal text-sm ml-2">
+          <span className="ml-2 text-sm font-normal text-gray-400">
             (when should trading stop?)
           </span>
         </label>
@@ -150,11 +150,11 @@ export default function BinaryMarketForm({
             name="endTime"
             value={formData.endTime}
             onChange={onChange}
-            className="px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="px-4 py-3 text-white bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
         </div>
         {errors.endDate && (
-          <p className="text-red-400 text-sm mt-2">{errors.endDate}</p>
+          <p className="mt-2 text-sm text-red-400">{errors.endDate}</p>
         )}
       </div>
     </div>

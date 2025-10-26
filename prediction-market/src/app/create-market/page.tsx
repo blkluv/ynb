@@ -74,7 +74,7 @@ export default function CreateMarketPage() {
       newErrors.description =
         'Please provide detailed resolution criteria (min 50 characters)'
     } else if (formData.description.length > 400) {
-      newErrors.description = 
+      newErrors.description =
         'Description too long. Maximum 400 characters to fit in transaction.'
     }
 
@@ -138,18 +138,18 @@ export default function CreateMarketPage() {
 
       // Show success message with transaction link
       const explorerUrl = `https://explorer.solana.com/tx/${signature}?cluster=devnet`
-      
+
       toast.success(
         <div className="flex flex-col gap-1">
           <span className="font-bold">Market created successfully!</span>
           <span className="text-sm">
             Market ID: {marketPubkey.toString().slice(0, 8)}...
           </span>
-          <a 
+          <a
             href={explorerUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-400 hover:text-blue-300 text-xs underline"
+            className="text-xs text-blue-400 underline hover:text-blue-300"
           >
             View transaction →
           </a>
@@ -164,11 +164,11 @@ export default function CreateMarketPage() {
 
     } catch (error: any) {
       console.error('Error creating market:', error)
-      
+
       let errorMessage = 'Failed to create market. Please try again.'
-      
+
       // Check for common error types
-      if (error.message?.includes('User rejected') || 
+      if (error.message?.includes('User rejected') ||
           error.message?.includes('User canceled') ||
           error.message?.includes('cancelled') ||
           error.code === 4001) {
@@ -184,11 +184,11 @@ export default function CreateMarketPage() {
         errorMessage = 'End date must be in the future.'
       } else if (error.message) {
         // Show a more user-friendly message
-        errorMessage = error.message.includes('custom program error') 
+        errorMessage = error.message.includes('custom program error')
           ? 'Smart contract error. Please check your inputs and try again.'
           : error.message
       }
-      
+
       toast.error(errorMessage, { duration: 4000 })
     } finally {
       setIsSubmitting(false)
@@ -204,7 +204,7 @@ export default function CreateMarketPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-black py-20 px-4">
+      <div className="min-h-screen px-4 py-20 bg-black">
         <div className="max-w-6xl mx-auto">
           {/* Wallet Info or Demo Banner */}
           {connected ? (
@@ -212,14 +212,14 @@ export default function CreateMarketPage() {
               <WalletInfo />
             </div>
           ) : (
-            <div className="mb-6 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-xl p-4">
+            <div className="p-4 mb-6 border bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/30 rounded-xl">
               <div className="flex items-center justify-center gap-3">
                 <span className="text-2xl">⚠️</span>
                 <div>
-                  <p className="text-yellow-300 font-semibold">
+                  <p className="font-semibold text-yellow-300">
                     DEMO MODE - Simulated Market Creation
                   </p>
-                  <p className="text-yellow-200/70 text-sm">
+                  <p className="text-sm text-yellow-200/70">
                     Connect your wallet to create real markets on Devnet
                   </p>
                 </div>
@@ -229,7 +229,7 @@ export default function CreateMarketPage() {
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">
+            <h1 className="mb-2 text-4xl font-bold text-white">
               Create Prediction Market
             </h1>
             <p className="text-gray-400">
@@ -240,7 +240,7 @@ export default function CreateMarketPage() {
 
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Market Form */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+            <div className="p-6 bg-gray-900 border border-gray-800 rounded-xl">
               <BinaryMarketForm
                 formData={formData}
                 errors={errors}
@@ -249,14 +249,14 @@ export default function CreateMarketPage() {
                 </div>
 
             {/* Creation Fee Info */}
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+            <div className="p-4 border bg-blue-500/10 border-blue-500/30 rounded-xl">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">💰</span>
                 <div>
-                  <p className="text-blue-300 font-semibold">
+                  <p className="font-semibold text-blue-300">
                     Market Creation Fee
                   </p>
-                  <p className="text-blue-200/70 text-sm">
+                  <p className="text-sm text-blue-200/70">
                     0.1 SOL (includes rent + platform fee)
                   </p>
                 </div>
@@ -268,14 +268,14 @@ export default function CreateMarketPage() {
                   <button
                     type="button"
                     onClick={() => setShowPreview(!showPreview)}
-                className="flex-1 py-4 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl transition-all"
+                className="flex-1 py-4 font-semibold text-white transition-all bg-gray-800 hover:bg-gray-700 rounded-xl"
                   >
                     {showPreview ? 'Hide' : 'Show'} Preview
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                className="flex-1 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 py-4 font-bold text-white transition-all bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
                       <span className="flex items-center justify-center gap-2">
@@ -291,8 +291,8 @@ export default function CreateMarketPage() {
 
           {/* Preview Section */}
           {showPreview && (
-            <div className="mt-8 bg-gray-900 border border-gray-800 rounded-xl p-6">
-                <h2 className="text-xl font-bold text-white mb-4">
+            <div className="p-6 mt-8 bg-gray-900 border border-gray-800 rounded-xl">
+                <h2 className="mb-4 text-xl font-bold text-white">
                 🎯 Market Preview
                 </h2>
 
@@ -300,28 +300,28 @@ export default function CreateMarketPage() {
                   <div className="space-y-4">
                     {/* Question */}
                     <div>
-                      <p className="text-gray-400 text-xs mb-1">QUESTION</p>
-                      <h3 className="text-white font-bold text-lg">
+                      <p className="mb-1 text-xs text-gray-400">QUESTION</p>
+                      <h3 className="text-lg font-bold text-white">
                         {formData.question}
                       </h3>
-                    <span className="inline-block mt-2 px-3 py-1 bg-purple-500/20 text-purple-300 rounded text-xs font-medium">
+                    <span className="inline-block px-3 py-1 mt-2 text-xs font-medium text-purple-300 rounded bg-purple-500/20">
                       YES/NO MARKET
                         </span>
                       </div>
 
                   {/* Odds Preview */}
                     <div>
-                    <p className="text-gray-400 text-xs mb-2">INITIAL ODDS</p>
+                    <p className="mb-2 text-xs text-gray-400">INITIAL ODDS</p>
                       <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
-                          <p className="text-green-400 text-xs mb-1">YES</p>
-                          <p className="text-white font-bold text-2xl">
+                        <div className="p-3 border rounded-lg bg-green-500/10 border-green-500/20">
+                          <p className="mb-1 text-xs text-green-400">YES</p>
+                          <p className="text-2xl font-bold text-white">
                             {estimatedOdds.yes}%
                           </p>
                         </div>
-                        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-                          <p className="text-red-400 text-xs mb-1">NO</p>
-                          <p className="text-white font-bold text-2xl">
+                        <div className="p-3 border rounded-lg bg-red-500/10 border-red-500/20">
+                          <p className="mb-1 text-xs text-red-400">NO</p>
+                          <p className="text-2xl font-bold text-white">
                             {estimatedOdds.no}%
                           </p>
                         </div>
@@ -331,10 +331,10 @@ export default function CreateMarketPage() {
                   {/* Description */}
                   {formData.description && (
                     <div>
-                      <p className="text-gray-400 text-xs mb-1">
+                      <p className="mb-1 text-xs text-gray-400">
                         RESOLUTION CRITERIA
                       </p>
-                      <p className="text-gray-300 text-sm">
+                      <p className="text-sm text-gray-300">
                         {formData.description}
                       </p>
                     </div>
@@ -343,14 +343,14 @@ export default function CreateMarketPage() {
                   {/* Category & End Date */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-800">
                     {formData.category && (
-                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded font-medium">
+                      <span className="px-3 py-1 text-xs font-medium text-gray-300 bg-gray-700 rounded">
                         {formData.category}
                       </span>
                     )}
                     {formData.endDate && (
                       <div>
-                        <p className="text-gray-400 text-xs">ENDS</p>
-                        <p className="text-white text-sm font-semibold">
+                        <p className="text-xs text-gray-400">ENDS</p>
+                        <p className="text-sm font-semibold text-white">
                           {getEndDateTime()?.toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
@@ -362,8 +362,8 @@ export default function CreateMarketPage() {
                   </div>
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                  <div className="text-5xl mb-4">🎯</div>
+                  <div className="py-12 text-center">
+                  <div className="mb-4 text-5xl">🎯</div>
                     <p className="text-gray-400">
                       Fill out the form to see a preview
                     </p>
@@ -373,11 +373,11 @@ export default function CreateMarketPage() {
           )}
 
           {/* Guidelines */}
-          <div className="mt-8 bg-gray-900 border border-gray-800 rounded-xl p-6">
-            <h3 className="text-white font-bold mb-4">
+          <div className="p-6 mt-8 bg-gray-900 border border-gray-800 rounded-xl">
+            <h3 className="mb-4 font-bold text-white">
               📋 Market Creation Guidelines
             </h3>
-            <ul className="space-y-2 text-gray-300 text-sm">
+            <ul className="space-y-2 text-sm text-gray-300">
               <li className="flex items-start gap-2">
                 <span className="text-green-400">✓</span>
                 <span>
@@ -399,8 +399,7 @@ export default function CreateMarketPage() {
               <li className="flex items-start gap-2">
                 <span className="text-green-400">✓</span>
                 <span>
-                  Best for: political promises, public projects, institutional
-                  commitments
+                  Best for: Social trends, public projects, surveys and marketing campaigns.
                 </span>
               </li>
               <li className="flex items-start gap-2">
@@ -413,7 +412,7 @@ export default function CreateMarketPage() {
               <li className="flex items-start gap-2">
                 <span className="text-red-400">✗</span>
                 <span>
-                  Don't create duplicate markets or markets on illegal
+                  Do not create duplicate markets or markets on illegal
                   activities
                 </span>
               </li>

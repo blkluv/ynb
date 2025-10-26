@@ -48,7 +48,7 @@ Simple YES/NO markets on political promises, public projects, and institutional 
 ### **1. Create Market**
 ```
 User fills form:
-- Question: "¿Milei cumplirá déficit cero 2025?"
+- Question: "Will NAS mention YE/NO BET before 2026?"
 - Resolution Criteria: "YES if official Ministry reports confirm zero deficit by Dec 31, 2025"
 - Category: Social
 - End Date: 2025-12-31
