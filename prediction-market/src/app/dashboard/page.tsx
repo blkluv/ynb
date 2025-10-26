@@ -155,10 +155,20 @@ export default function DashboardPage() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">My Dashboard</h1>
-          <p className="text-gray-400">
-            Track your bets, monitor performance, and claim your winnings
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2">My Dashboard</h1>
+              <p className="text-gray-400">
+                Track your bets, monitor performance, and claim your winnings
+              </p>
+            </div>
+            <button
+              onClick={() => router.push(`/profile/${wallet.publicKey.toBase58()}`)}
+              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors"
+            >
+              View Public Profile
+            </button>
+          </div>
         </div>
 
         {/* Loading */}

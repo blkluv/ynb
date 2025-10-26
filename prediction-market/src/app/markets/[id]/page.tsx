@@ -7,6 +7,7 @@ import WalletInfo from '@/components/wallet/WalletInfo'
 import BinaryTradingInterface from '@/components/markets/BinaryTradingInterface'
 import ResolveMarketInterface from '@/components/markets/ResolveMarketInterface'
 import ClaimWinnings from '@/components/markets/ClaimWinnings'
+import ShareMarket from '@/components/social/ShareMarket'
 import { useWallet, useAnchorWallet } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
 import { fetchMarketDirect, lamportsToSOL } from '@/lib/program/direct-read'
@@ -192,21 +193,24 @@ export default function MarketDetailPage() {
                     </div>
                   </div>
 
-                  <span
-                    className={`px-3 py-1 text-sm rounded font-medium whitespace-nowrap ${
-                      market.resolved
-                        ? 'bg-blue-500/20 text-blue-300'
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`px-3 py-1 text-sm rounded font-medium whitespace-nowrap ${
+                        market.resolved
+                          ? 'bg-blue-500/20 text-blue-300'
+                          : isExpired
+                          ? 'bg-yellow-500/20 text-yellow-300'
+                          : 'bg-green-500/20 text-green-300'
+                      }`}
+                    >
+                      {market.resolved
+                        ? '✓ Resolved'
                         : isExpired
-                        ? 'bg-yellow-500/20 text-yellow-300'
-                        : 'bg-green-500/20 text-green-300'
-                    }`}
-                  >
-                    {market.resolved
-                      ? '✓ Resolved'
-                      : isExpired
-                      ? '⏰ Expired'
-                      : '🟢 Active'}
-                  </span>
+                        ? '⏰ Expired'
+                        : '🟢 Active'}
+                    </span>
+                    <ShareMarket market={market} />
+                  </div>
                 </div>
 
                 {/* Description */}
