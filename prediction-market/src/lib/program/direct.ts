@@ -41,23 +41,34 @@ export function deriveBetPDA(
 
 /**
  * Create market instruction data
+ * Now includes oracle parameters (oracle_enabled, oracle_feed_id, oracle_threshold, oracle_comparison)
  */
 function encodeCreateMarketData(
   question: string,
   description: string,
-  endTime: anchor.BN
+  endTime: anchor.BN,
+  oracleEnabled: boolean = false,
+  oracleFeedId?: Buffer,
+  oracleThreshold?: anchor.BN,
+  oracleComparison?: number
 ): Buffer {
-  // Discriminator (8 bytes) + question (4 + len) + description (4 + len) + endTime (8)
   const questionBytes = Buffer.from(question, 'utf8');
   const descriptionBytes = Buffer.from(description, 'utf8');
   
-  const data = Buffer.alloc(
+  // Calculate buffer size:
+  // discriminator (8) + question (4 + len) + description (4 + len) + endTime (8)
+  // + oracle_enabled (1) + oracle_feed_id (1 + 32 if Some) + oracle_threshold (1 + 8 if Some) + oracle_comparison (1 + 1 if Some)
+  let bufferSize = 
     8 + // discriminator
-    4 + questionBytes.length + // question length + data
-    4 + descriptionBytes.length + // description length + data
-    8 // endTime i64
-  );
+    4 + questionBytes.length + // question
+    4 + descriptionBytes.length + // description
+    8 + // endTime
+    1 + // oracle_enabled (bool)
+    1 + (oracleFeedId ? 32 : 0) + // Option<[u8; 32]>
+    1 + (oracleThreshold ? 8 : 0) + // Option<i64>
+    1 + (oracleComparison !== undefined ? 1 : 0); // Option<u8>
   
+  const data = Buffer.alloc(bufferSize);
   let offset = 0;
   
   // Discriminator
@@ -76,9 +87,48 @@ function encodeCreateMarketData(
   descriptionBytes.copy(data, offset);
   offset += descriptionBytes.length;
   
-  // End time
+  // End time (i64)
   const endTimeBuffer = endTime.toArrayLike(Buffer, 'le', 8);
   endTimeBuffer.copy(data, offset);
+  offset += 8;
+  
+  // Oracle enabled (bool)
+  data.writeUInt8(oracleEnabled ? 1 : 0, offset);
+  offset += 1;
+  
+  // Oracle feed ID (Option<[u8; 32]>)
+  if (oracleFeedId && oracleFeedId.length === 32) {
+    data.writeUInt8(1, offset); // Some
+    offset += 1;
+    oracleFeedId.copy(data, offset);
+    offset += 32;
+  } else {
+    data.writeUInt8(0, offset); // None
+    offset += 1;
+  }
+  
+  // Oracle threshold (Option<i64>)
+  if (oracleThreshold) {
+    data.writeUInt8(1, offset); // Some
+    offset += 1;
+    const thresholdBuffer = oracleThreshold.toArrayLike(Buffer, 'le', 8);
+    thresholdBuffer.copy(data, offset);
+    offset += 8;
+  } else {
+    data.writeUInt8(0, offset); // None
+    offset += 1;
+  }
+  
+  // Oracle comparison (Option<u8>)
+  if (oracleComparison !== undefined) {
+    data.writeUInt8(1, offset); // Some
+    offset += 1;
+    data.writeUInt8(oracleComparison, offset);
+    offset += 1;
+  } else {
+    data.writeUInt8(0, offset); // None
+    offset += 1;
+  }
   
   return data;
 }
@@ -104,7 +154,16 @@ export async function createMarketDirect(
   
   // Encode instruction data
   const endTimeBN = new anchor.BN(endTime);
-  const instructionData = encodeCreateMarketData(question, description, endTimeBN);
+  // Create market without oracle (oracle_enabled = false, all oracle params = None)
+  const instructionData = encodeCreateMarketData(
+    question, 
+    description, 
+    endTimeBN,
+    false, // oracle_enabled
+    undefined, // oracle_feed_id
+    undefined, // oracle_threshold
+    undefined  // oracle_comparison
+  );
   
   console.log("  Instruction data length:", instructionData.length);
   
