@@ -1,19 +1,20 @@
 import { PublicKey } from "@solana/web3.js";
 
 /**
- * Program ID deployed to Devnet
- * Deploy Date: 2025-10-25
- * Explorer: https://explorer.solana.com/address/9t6KXNy5xW8b6GyZmwUpqbHeQUKqxbvnfPy8oiRp9rka?cluster=devnet
+ * Program ID deployed to Devnet (Oracle-Enabled)
+ * Deploy Date: 2025-10-26
+ * Explorer: https://explorer.solana.com/address/GUzTP7BCgdTUTEDtguuUwZKdDbrkAKFiiRuqzpbSaQLu?cluster=devnet
+ * Features: Pyth Network Oracle Integration for automatic price-based resolution
  */
 export const PROGRAM_ID = new PublicKey(
-  "9t6KXNy5xW8b6GyZmwUpqbHeQUKqxbvnfPy8oiRp9rka"
+  "GUzTP7BCgdTUTEDtguuUwZKdDbrkAKFiiRuqzpbSaQLu"
 );
 
 /**
  * IDL Account Address
  */
 export const IDL_ACCOUNT = new PublicKey(
-  "5nHBkAVTUWCrbs7rN1wtcLJAaeFjVMVM5M5ytVUCwUC1"
+  "GvHscGzk7tLC8SDdTqbHXgjifEEwUUYaVYMgRCNN1tFL"
 );
 
 /**
