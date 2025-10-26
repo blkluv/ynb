@@ -128,7 +128,7 @@ What's your prediction? Trade now on PrismaFi! 🚀`;
               </button>
 
               {/* Web Share API (mobile) */}
-              {navigator.share && (
+              {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
                 <button
                   onClick={handleWebShare}
                   className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors text-left"

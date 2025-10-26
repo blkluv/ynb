@@ -149,7 +149,7 @@ export async function shareViaWebApi(
   text: string,
   url: string
 ): Promise<boolean> {
-  if (!navigator.share) {
+  if (typeof navigator === 'undefined' || typeof navigator.share !== 'function') {
     return false;
   }
 
