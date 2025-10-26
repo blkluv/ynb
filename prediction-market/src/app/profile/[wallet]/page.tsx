@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import RealTimeStatus from '@/components/common/RealTimeStatus';
+import { useRealTimeData } from '@/hooks/useRealTimeData';
 import { useParams, useRouter } from 'next/navigation';
 import { PublicKey } from '@solana/web3.js';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
