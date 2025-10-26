@@ -212,7 +212,7 @@ export default function DashboardPage() {
         )}
 
         {/* No bets */}
-        {!isLoading && bets.length === 0 && (
+        {!isLoading && (dashboardData?.bets.length || 0) === 0 && (
           <div className="bg-gray-800 border border-gray-700 rounded-lg p-12 text-center">
             <div className="text-6xl mb-6">🎲</div>
             <h2 className="text-2xl font-bold text-white mb-4">No Bets Yet</h2>
