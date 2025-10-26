@@ -21,16 +21,17 @@ import {
   type MarketAccount,
 } from '@/lib/program/direct-read';
 
+interface ProfileData {
+  bets: EnrichedBet[];
+  stats: UserStats;
+}
+
 export default function ProfilePage() {
   const params = useParams();
   const router = useRouter();
   const connectedWallet = useAnchorWallet();
   const walletAddress = params.wallet as string;
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [bets, setBets] = useState<EnrichedBet[]>([]);
-  const [stats, setStats] = useState<UserStats | null>(null);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
 
   // Check if viewing own profile
@@ -40,87 +41,105 @@ export default function ProfilePage() {
     }
   }, [connectedWallet, walletAddress]);
 
-  // Load profile data
-  useEffect(() => {
-    const loadProfileData = async () => {
+  // Fetch profile data function
+  const fetchProfileData = useCallback(async (): Promise<ProfileData | null> => {
+    try {
+      // Validate wallet address
+      let profilePubkey: PublicKey;
       try {
-        setIsLoading(true);
-        setError(null);
-
-        // Validate wallet address
-        let profilePubkey: PublicKey;
-        try {
-          profilePubkey = new PublicKey(walletAddress);
-        } catch (err) {
-          setError('Invalid wallet address');
-          setIsLoading(false);
-          return;
-        }
-
-        console.log('👤 Loading profile for:', profilePubkey.toBase58());
-
-        // Fetch all user bets
-        const userBets = await fetchAllUserBets(profilePubkey);
-        console.log('✅ Fetched', userBets.length, 'bets');
-
-        if (userBets.length === 0) {
-          setIsLoading(false);
-          return;
-        }
-
-        // Fetch market data for each bet
-        const marketsMap = new Map<string, MarketAccount>();
-        const enrichedBets: EnrichedBet[] = [];
-
-        for (const bet of userBets) {
-          try {
-            const marketAddress = bet.market.toBase58();
-
-            let marketData: MarketAccount | null | undefined = marketsMap.get(marketAddress);
-
-            if (!marketData) {
-              marketData = await fetchMarketDirect(marketAddress);
-              if (marketData) {
-                marketsMap.set(marketAddress, marketData);
-              }
-            }
-
-            const enriched: EnrichedBet = {
-              ...bet,
-              marketData: marketData ?? undefined, // Convert null to undefined for type compatibility
-            };
-
-            if (marketData) {
-              enriched.winnings = calculateWinnings(bet, marketData);
-            }
-
-            enrichedBets.push(enriched);
-          } catch (error) {
-            console.error('Error fetching market for bet:', bet.address, error);
-            enrichedBets.push(bet);
-          }
-        }
-
-        // Calculate statistics
-        const userStats = await calculateUserStats(userBets, marketsMap);
-
-        // Sort bets by timestamp (most recent first)
-        enrichedBets.sort((a, b) => b.timestamp - a.timestamp);
-
-        setBets(enrichedBets);
-        setStats(userStats);
-      } catch (error) {
-        console.error('❌ Error loading profile:', error);
-        setError('Failed to load profile data');
-      } finally {
-        setIsLoading(false);
+        profilePubkey = new PublicKey(walletAddress);
+      } catch (err) {
+        console.error('❌ Invalid wallet address');
+        return null;
       }
-    };
 
-    if (walletAddress) {
-      loadProfileData();
+      console.log('👤 Loading profile for:', profilePubkey.toBase58());
+
+      // Fetch all user bets
+      const userBets = await fetchAllUserBets(profilePubkey);
+      console.log('✅ Fetched', userBets.length, 'bets');
+
+      if (userBets.length === 0) {
+        return { bets: [], stats: {
+          totalBets: 0,
+          activeBets: 0,
+          wonBets: 0,
+          lostBets: 0,
+          winRate: 0,
+          totalWagered: 0,
+          totalWon: 0,
+          totalLost: 0,
+          netProfit: 0,
+          roi: 0,
+          avgBetSize: 0,
+        }};
+      }
+
+      // Fetch market data for each bet
+      const marketsMap = new Map<string, MarketAccount>();
+      const enrichedBets: EnrichedBet[] = [];
+
+      for (const bet of userBets) {
+        try {
+          const marketAddress = bet.market.toBase58();
+
+          let marketData: MarketAccount | null | undefined = marketsMap.get(marketAddress);
+
+          if (!marketData) {
+            marketData = await fetchMarketDirect(marketAddress);
+            if (marketData) {
+              marketsMap.set(marketAddress, marketData);
+            }
+          }
+
+          const enriched: EnrichedBet = {
+            ...bet,
+            marketData: marketData ?? undefined, // Convert null to undefined for type compatibility
+          };
+
+          if (marketData) {
+            enriched.winnings = calculateWinnings(bet, marketData);
+          }
+
+          enrichedBets.push(enriched);
+        } catch (error) {
+          console.error('Error fetching market for bet:', bet.address, error);
+          enrichedBets.push(bet);
+        }
+      }
+
+      // Calculate statistics
+      const userStats = await calculateUserStats(userBets, marketsMap);
+
+      // Sort bets by timestamp (most recent first)
+      enrichedBets.sort((a, b) => b.timestamp - a.timestamp);
+
+      return {
+        bets: enrichedBets,
+        stats: userStats,
+      };
+    } catch (error) {
+      console.error('❌ Error loading profile:', error);
+      throw error;
     }
   }, [walletAddress]);
+
+  // Use real-time data hook
+  const {
+    data: profileData,
+    isLoading,
+    isRefreshing,
+    error,
+    lastUpdated,
+    refresh,
+    toggleAutoRefresh,
+    isAutoRefreshEnabled,
+  } = useRealTimeData<ProfileData>({
+    fetchData: fetchProfileData,
+    interval: 12000, // 12 seconds
+    fetchOnMount: true,
+    enabled: !!walletAddress,
+  });
 
   // Format wallet address for display
   const formatWallet = (address: string) => {
@@ -134,7 +153,7 @@ export default function ProfilePage() {
 
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-4xl font-bold text-white">
@@ -149,8 +168,19 @@ export default function ProfilePage() {
               <p className="text-gray-400 text-sm font-mono">{walletAddress}</p>
             </div>
 
-            {/* Share Button */}
-            {stats && <ShareProfile walletAddress={walletAddress} stats={stats} />}
+            <div className="flex items-center gap-3">
+              {/* Real-Time Status */}
+              <RealTimeStatus
+                lastUpdated={lastUpdated}
+                isRefreshing={isRefreshing}
+                isAutoRefreshEnabled={isAutoRefreshEnabled}
+                onRefresh={refresh}
+                onToggleAutoRefresh={toggleAutoRefresh}
+              />
+
+              {/* Share Button */}
+              {profileData?.stats && <ShareProfile walletAddress={walletAddress} stats={profileData.stats} />}
+            </div>
           </div>
 
           {/* Quick Actions */}
@@ -173,7 +203,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Loading State */}
-        {isLoading && (
+        {isLoading && !profileData && (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
             <p className="text-gray-400">Loading profile...</p>
@@ -181,16 +211,22 @@ export default function ProfilePage() {
         )}
 
         {/* Error State */}
-        {error && (
+        {error && !profileData && (
           <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-6 text-center">
             <div className="text-4xl mb-4">⚠️</div>
             <h3 className="text-xl font-bold text-red-300 mb-2">Error</h3>
-            <p className="text-gray-400">{error}</p>
+            <p className="text-gray-400">{error.message || 'Failed to load profile data'}</p>
+            <button
+              onClick={refresh}
+              className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+            >
+              Try Again
+            </button>
           </div>
         )}
 
         {/* No Activity */}
-        {!isLoading && !error && bets.length === 0 && (
+        {!isLoading && !error && (profileData?.bets.length || 0) === 0 && (
           <div className="bg-gray-800 border border-gray-700 rounded-lg p-12 text-center">
             <div className="text-6xl mb-6">👤</div>
             <h2 className="text-2xl font-bold text-white mb-4">No Activity Yet</h2>
@@ -211,13 +247,13 @@ export default function ProfilePage() {
         )}
 
         {/* Profile Content */}
-        {!isLoading && !error && bets.length > 0 && stats && (
+        {!isLoading && profileData && (profileData.bets.length || 0) > 0 && profileData.stats && (
           <div className="space-y-8">
             {/* Statistics */}
-            <ProfileStats stats={stats} isOwnProfile={isOwnProfile} />
+            <ProfileStats stats={profileData.stats} isOwnProfile={isOwnProfile} />
 
             {/* Activity/Bet History */}
-            <ProfileActivity bets={bets} walletAddress={walletAddress} />
+            <ProfileActivity bets={profileData.bets} walletAddress={walletAddress} />
           </div>
         )}
       </div>
