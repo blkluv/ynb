@@ -1,12 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Layout from '@/components/layout/Layout';
 import WalletInfo from '@/components/wallet/WalletInfo';
 import StatsWidget from '@/components/dashboard/StatsWidget';
 import BetCard from '@/components/dashboard/BetCard';
+import RealTimeStatus from '@/components/common/RealTimeStatus';
+import { useRealTimeData } from '@/hooks/useRealTimeData';
 import {
   fetchAllUserBets,
   fetchMarketDirect,
@@ -18,99 +21,125 @@ import {
   type UserStats,
 } from '@/lib/program/direct-read';
 
+interface DashboardData {
+  bets: EnrichedBet[];
+  stats: UserStats;
+}
+
 export default function DashboardPage() {
   const wallet = useAnchorWallet();
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [bets, setBets] = useState<EnrichedBet[]>([]);
-  const [stats, setStats] = useState<UserStats | null>(null);
   const [filter, setFilter] = useState<'all' | 'active' | 'resolved' | 'claimable'>('all');
 
-  // Fetch user data
-  useEffect(() => {
-    const loadUserData = async () => {
-      if (!wallet) {
-        setIsLoading(false);
-        return;
+  // Fetch user data with real-time updates
+  const fetchDashboardData = useCallback(async (): Promise<DashboardData | null> => {
+    if (!wallet) {
+      return null;
+    }
+
+    try {
+      console.log('📊 Loading dashboard for:', wallet.publicKey.toBase58());
+
+      // 1. Fetch all user bets
+      const userBets = await fetchAllUserBets(wallet.publicKey);
+      console.log('✅ Fetched', userBets.length, 'bets');
+
+      if (userBets.length === 0) {
+        return {
+          bets: [],
+          stats: {
+            totalBets: 0,
+            activeBets: 0,
+            resolvedBets: 0,
+            wonBets: 0,
+            lostBets: 0,
+            totalWagered: 0,
+            totalWon: 0,
+            totalClaimed: 0,
+            unclaimedWinnings: 0,
+            winRate: 0,
+            profitLoss: 0,
+            roi: 0,
+          },
+        };
       }
 
-      try {
-        setIsLoading(true);
+      // 2. Fetch market data for each bet
+      const marketsMap = new Map<string, MarketAccount>();
+      const enrichedBets: EnrichedBet[] = [];
 
-        console.log('📊 Loading dashboard for:', wallet.publicKey.toBase58());
-
-        // 1. Fetch all user bets
-        const userBets = await fetchAllUserBets(wallet.publicKey);
-        console.log('✅ Fetched', userBets.length, 'bets');
-
-        if (userBets.length === 0) {
-          setIsLoading(false);
-          return;
-        }
-
-        // 2. Fetch market data for each bet
-        const marketsMap = new Map<string, MarketAccount>();
-        const enrichedBets: EnrichedBet[] = [];
-
-        for (const bet of userBets) {
-          try {
-            const marketAddress = bet.market.toBase58();
-            
-            // Check if we already fetched this market
-            let marketData: MarketAccount | null | undefined = marketsMap.get(marketAddress);
-            
-            if (!marketData) {
-              marketData = await fetchMarketDirect(marketAddress);
-              if (marketData) {
-                marketsMap.set(marketAddress, marketData);
-              }
-            }
-
-            // Enrich bet with market data and winnings calculation
-            const enriched: EnrichedBet = {
-              ...bet,
-              marketData: marketData ?? undefined, // Convert null to undefined for type compatibility
-            };
-
+      for (const bet of userBets) {
+        try {
+          const marketAddress = bet.market.toBase58();
+          
+          // Check if we already fetched this market
+          let marketData: MarketAccount | null | undefined = marketsMap.get(marketAddress);
+          
+          if (!marketData) {
+            marketData = await fetchMarketDirect(marketAddress);
             if (marketData) {
-              enriched.winnings = calculateWinnings(bet, marketData);
+              marketsMap.set(marketAddress, marketData);
             }
-
-            enrichedBets.push(enriched);
-          } catch (error) {
-            console.error('Error fetching market for bet:', bet.address, error);
-            // Add bet without market data
-            enrichedBets.push(bet);
           }
+
+          // Enrich bet with market data and winnings calculation
+          const enriched: EnrichedBet = {
+            ...bet,
+            marketData: marketData ?? undefined,
+          };
+
+          if (marketData) {
+            enriched.winnings = calculateWinnings(bet, marketData);
+          }
+
+          enrichedBets.push(enriched);
+        } catch (error) {
+          console.error('Error fetching market for bet:', bet.address, error);
+          enrichedBets.push(bet);
         }
-
-        // 3. Calculate statistics
-        const userStats = await calculateUserStats(userBets, marketsMap);
-
-        // 4. Sort bets: claimable first, then active, then resolved
-        enrichedBets.sort((a, b) => {
-          if (a.winnings?.canClaim && !b.winnings?.canClaim) return -1;
-          if (!a.winnings?.canClaim && b.winnings?.canClaim) return 1;
-          if (!a.marketData?.resolved && b.marketData?.resolved) return -1;
-          if (a.marketData?.resolved && !b.marketData?.resolved) return 1;
-          return b.timestamp - a.timestamp; // Most recent first
-        });
-
-        setBets(enrichedBets);
-        setStats(userStats);
-      } catch (error) {
-        console.error('❌ Error loading dashboard:', error);
-      } finally {
-        setIsLoading(false);
       }
-    };
 
-    loadUserData();
+      // 3. Calculate statistics
+      const userStats = await calculateUserStats(userBets, marketsMap);
+
+      // 4. Sort bets: claimable first, then active, then resolved
+      enrichedBets.sort((a, b) => {
+        if (a.winnings?.canClaim && !b.winnings?.canClaim) return -1;
+        if (!a.winnings?.canClaim && b.winnings?.canClaim) return 1;
+        if (!a.marketData?.resolved && b.marketData?.resolved) return -1;
+        if (a.marketData?.resolved && !b.marketData?.resolved) return 1;
+        return b.timestamp - a.timestamp;
+      });
+
+      return {
+        bets: enrichedBets,
+        stats: userStats,
+      };
+    } catch (error) {
+      console.error('❌ Error loading dashboard:', error);
+      return null;
+    }
   }, [wallet]);
 
+  const {
+    data: dashboardData,
+    isLoading,
+    isRefreshing,
+    error,
+    lastUpdated,
+    refresh,
+    toggleAutoRefresh,
+    isAutoRefreshEnabled,
+  } = useRealTimeData({
+    fetchData: fetchDashboardData,
+    interval: 8000, // Refresh every 8 seconds
+    fetchOnMount: true,
+    enabled: !!wallet,
+  });
+
   // Filter bets
-  const filteredBets = bets.filter((bet) => {
+  const filteredBets = (dashboardData?.bets || []).filter((bet) => {
     if (filter === 'all') return true;
     if (filter === 'active') return !bet.marketData?.resolved;
     if (filter === 'resolved') return bet.marketData?.resolved;
@@ -199,11 +228,24 @@ export default function DashboardPage() {
           </div>
         )}
 
+        {/* Real-Time Status */}
+        {!isLoading && dashboardData && dashboardData.bets.length > 0 && (
+          <div className="mb-6 flex justify-end">
+            <RealTimeStatus
+              lastUpdated={lastUpdated}
+              isRefreshing={isRefreshing}
+              isAutoRefreshEnabled={isAutoRefreshEnabled}
+              onRefresh={refresh}
+              onToggleAutoRefresh={toggleAutoRefresh}
+            />
+          </div>
+        )}
+
         {/* Dashboard Content */}
-        {!isLoading && bets.length > 0 && stats && (
+        {!isLoading && dashboardData && dashboardData.bets.length > 0 && (
           <div className="space-y-8">
             {/* Statistics */}
-            <StatsWidget stats={stats} />
+            <StatsWidget stats={dashboardData.stats} />
 
             {/* Filters */}
             <div className="flex items-center gap-3 overflow-x-auto pb-2">
@@ -215,7 +257,7 @@ export default function DashboardPage() {
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
               >
-                All ({bets.length})
+                All ({dashboardData.bets.length})
               </button>
               <button
                 onClick={() => setFilter('active')}
@@ -225,7 +267,7 @@ export default function DashboardPage() {
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
               >
-                Active ({bets.filter((b) => !b.marketData?.resolved).length})
+                Active ({dashboardData.bets.filter((b) => !b.marketData?.resolved).length})
               </button>
               <button
                 onClick={() => setFilter('resolved')}
@@ -235,7 +277,7 @@ export default function DashboardPage() {
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
               >
-                Resolved ({bets.filter((b) => b.marketData?.resolved).length})
+                Resolved ({dashboardData.bets.filter((b) => b.marketData?.resolved).length})
               </button>
               <button
                 onClick={() => setFilter('claimable')}
@@ -245,7 +287,7 @@ export default function DashboardPage() {
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
               >
-                Claimable ({bets.filter((b) => b.winnings?.canClaim).length})
+                Claimable ({dashboardData.bets.filter((b) => b.winnings?.canClaim).length})
               </button>
             </div>
 
