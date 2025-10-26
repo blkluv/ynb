@@ -62,6 +62,8 @@ export default function CreateMarketPage() {
       newErrors.question = 'Question is required'
     } else if (formData.question.length < 10) {
       newErrors.question = 'Question must be at least 10 characters'
+    } else if (formData.question.length > 150) {
+      newErrors.question = 'Question too long. Maximum 150 characters to fit in transaction.'
     } else if (!formData.question.includes('?')) {
       newErrors.question = 'Question should end with a question mark'
     }
@@ -71,6 +73,9 @@ export default function CreateMarketPage() {
     } else if (formData.description.length < 50) {
       newErrors.description =
         'Please provide detailed resolution criteria (min 50 characters)'
+    } else if (formData.description.length > 400) {
+      newErrors.description = 
+        'Description too long. Maximum 400 characters to fit in transaction.'
     }
 
     if (!formData.category) {

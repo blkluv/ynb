@@ -52,6 +52,7 @@ export default function BinaryMarketForm({
           name="question"
           value={formData.question}
           onChange={onChange}
+          maxLength={150}
           placeholder="¿Milei cumplirá su promesa de déficit cero en 2025?"
           className={`w-full px-4 py-3 bg-gray-800 border ${
             errors.question ? 'border-red-500' : 'border-gray-700'
@@ -61,7 +62,7 @@ export default function BinaryMarketForm({
           <p className="text-red-400 text-sm mt-2">{errors.question}</p>
         )}
         <p className="text-gray-500 text-xs mt-2">
-          {formData.question.length}/200 characters
+          {formData.question.length}/150 characters
         </p>
       </div>
 
@@ -77,7 +78,8 @@ export default function BinaryMarketForm({
           name="description"
           value={formData.description}
           onChange={onChange}
-          placeholder="This market resolves YES if official government reports confirm zero deficit by December 31, 2025. Source: Ministry of Economy official statements and published budget reports."
+          maxLength={400}
+          placeholder="This market resolves YES if official government reports confirm zero deficit by December 31, 2025. Source: Ministry of Economy official statements."
           rows={5}
           className={`w-full px-4 py-3 bg-gray-800 border ${
             errors.description ? 'border-red-500' : 'border-gray-700'
@@ -87,7 +89,7 @@ export default function BinaryMarketForm({
           <p className="text-red-400 text-sm mt-2">{errors.description}</p>
         )}
         <p className="text-gray-500 text-xs mt-2">
-          {formData.description.length}/1000 characters
+          {formData.description.length}/400 characters
         </p>
 
         {/* Helper tip */}
