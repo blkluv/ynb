@@ -10,7 +10,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'PrismaFi | Your own Prediction Markets on Solana',
+  title: 'YE/NO BET | Your own Prediction Markets on Solana',
   description:
     'Generate your prediction market in 3 steps. Put your price for truth. 95% privacy with on-chain resolution and only 0.5% fees.',
 }

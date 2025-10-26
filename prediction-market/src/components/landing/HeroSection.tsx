@@ -31,7 +31,7 @@ const HeroSection = () => {
           <div className="flex justify-center mb-8">
             <img
               src="/images/prismafi-logo.svg"
-              alt="PrismaFi"
+              alt="YE NO BET"
               className="w-auto h-72"
             />
           </div>

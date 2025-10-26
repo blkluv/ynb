@@ -20,12 +20,12 @@ const ShareMarket = ({ market }: ShareMarketProps) => {
   const [copied, setCopied] = useState(false);
 
   const marketUrl = getMarketUrl(market.id);
-  
+
   // Generate share text
   const yesOdds = market.totalYesAmount + market.totalNoAmount > 0
     ? ((market.totalYesAmount / (market.totalYesAmount + market.totalNoAmount)) * 100).toFixed(0)
     : '50';
-  
+
   const totalPool = (market.totalYesAmount + market.totalNoAmount).toFixed(2);
 
   const shareText = `🎲 ${market.question}
@@ -36,7 +36,7 @@ Current odds:
 
 Total pool: ${totalPool} SOL
 
-What's your prediction? Trade now on PrismaFi! 🚀`;
+What's your prediction? Trade now on YE/NO BET! 🚀`;
 
   const handleShareTwitter = () => {
     const twitterUrl = getTwitterShareUrl(shareText, marketUrl);
@@ -72,7 +72,7 @@ What's your prediction? Trade now on PrismaFi! 🚀`;
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+        className="p-2 transition-colors rounded-lg hover:bg-gray-700"
         title="Share market"
       >
         <Share2 className="w-5 h-5 text-gray-400 hover:text-white" />
@@ -87,32 +87,32 @@ What's your prediction? Trade now on PrismaFi! 🚀`;
           ></div>
 
           {/* Share Menu */}
-          <div className="absolute right-0 mt-2 w-64 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 overflow-hidden">
+          <div className="absolute right-0 z-50 w-64 mt-2 overflow-hidden bg-gray-800 border border-gray-700 rounded-lg shadow-xl">
             <div className="p-3 border-b border-gray-700">
-              <h3 className="font-bold text-white text-sm">Share Market</h3>
+              <h3 className="text-sm font-bold text-white">Share Market</h3>
             </div>
 
             <div className="p-2 space-y-1">
               {/* Twitter/X */}
               <button
                 onClick={handleShareTwitter}
-                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors text-left"
+                className="flex items-center w-full gap-3 px-3 py-2 text-left transition-colors rounded-lg hover:bg-gray-700"
               >
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <div className="flex items-center justify-center w-8 h-8 bg-blue-500 rounded-full">
                   <Twitter className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <div className="text-white text-sm font-medium">Share on X</div>
-                  <div className="text-gray-400 text-xs">Post to timeline</div>
+                  <div className="text-sm font-medium text-white">Share on X</div>
+                  <div className="text-xs text-gray-400">Post to timeline</div>
                 </div>
               </button>
 
               {/* Copy Link */}
               <button
                 onClick={handleCopyLink}
-                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors text-left"
+                className="flex items-center w-full gap-3 px-3 py-2 text-left transition-colors rounded-lg hover:bg-gray-700"
               >
-                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                <div className="flex items-center justify-center w-8 h-8 bg-gray-600 rounded-full">
                   {copied ? (
                     <Check className="w-4 h-4 text-green-400" />
                   ) : (
@@ -120,10 +120,10 @@ What's your prediction? Trade now on PrismaFi! 🚀`;
                   )}
                 </div>
                 <div>
-                  <div className="text-white text-sm font-medium">
+                  <div className="text-sm font-medium text-white">
                     {copied ? 'Copied!' : 'Copy Link'}
                   </div>
-                  <div className="text-gray-400 text-xs">Copy market URL</div>
+                  <div className="text-xs text-gray-400">Copy market URL</div>
                 </div>
               </button>
 
@@ -131,14 +131,14 @@ What's your prediction? Trade now on PrismaFi! 🚀`;
               {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
                 <button
                   onClick={handleWebShare}
-                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors text-left"
+                  className="flex items-center w-full gap-3 px-3 py-2 text-left transition-colors rounded-lg hover:bg-gray-700"
                 >
-                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                  <div className="flex items-center justify-center w-8 h-8 bg-purple-500 rounded-full">
                     <Share2 className="w-4 h-4 text-white" />
                   </div>
                   <div>
-                    <div className="text-white text-sm font-medium">Share...</div>
-                    <div className="text-gray-400 text-xs">More options</div>
+                    <div className="text-sm font-medium text-white">Share...</div>
+                    <div className="text-xs text-gray-400">More options</div>
                   </div>
                 </button>
               )}
@@ -146,7 +146,7 @@ What's your prediction? Trade now on PrismaFi! 🚀`;
 
             {/* Preview Text */}
             <div className="p-3 border-t border-gray-700 bg-gray-900/50">
-              <div className="text-xs text-gray-400 mb-2">Preview:</div>
+              <div className="mb-2 text-xs text-gray-400">Preview:</div>
               <div className="text-xs text-gray-300 whitespace-pre-line line-clamp-4">
                 {shareText}
               </div>

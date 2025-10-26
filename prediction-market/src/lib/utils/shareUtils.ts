@@ -45,7 +45,7 @@ export function generateProfileShareText(
 🎲 ${stats.totalBets} bets | 🎯 ${winRate}% win rate
 💰 ${profit} SOL profit | 📈 ${roi}% ROI
 
-Check out my track record on PrismaFi! 🚀`;
+Check out my track record on YE/NO BET! 🚀`;
 }
 
 /**
@@ -53,7 +53,7 @@ Check out my track record on PrismaFi! 🚀`;
  */
 export function generateMarketShareText(market: MarketAccount): string {
   const totalPool = (market.yesAmount + market.noAmount) / 1e9; // Convert to SOL
-  const yesOdds = market.yesAmount + market.noAmount > 0 
+  const yesOdds = market.yesAmount + market.noAmount > 0
     ? ((market.yesAmount / (market.yesAmount + market.noAmount)) * 100).toFixed(0)
     : '50';
 
@@ -65,7 +65,7 @@ Current odds:
 
 Total pool: ${totalPool.toFixed(2)} SOL
 
-What's your prediction? Trade now on PrismaFi! 🚀`;
+What's your prediction? Trade now on YE/NO BET! 🚀`;
 }
 
 /**
@@ -80,7 +80,7 @@ export function generateWinningBetShareText(
   const multiplier = bet.winnings?.multiplier.toFixed(2) || '0';
   const outcome = bet.outcome ? 'YES' : 'NO';
 
-  return `🎉 Just won ${winnings} SOL on PrismaFi!
+  return `🎉 Just won ${winnings} SOL on YE/NO BET!
 
 💰 Bet ${betAmount} SOL on ${outcome}
 📈 ${multiplier}x multiplier
@@ -89,7 +89,7 @@ export function generateWinningBetShareText(
 
 My prediction was spot on! 🎯
 
-Trade prediction markets on PrismaFi 🚀`;
+Trade prediction markets on YE/NO BET 🚀`;
 }
 
 /**
@@ -111,7 +111,7 @@ export function generateMarketResolutionShareText(
 
 Thanks to everyone who participated! 🎉
 
-Trade more markets on PrismaFi 🚀`;
+Trade more markets on YE/NO BET 🚀`;
 }
 
 /**

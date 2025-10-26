@@ -43,7 +43,7 @@ const ShareProfile = ({ walletAddress, stats }: ShareProfileProps) => {
 
   const handleWebShare = async () => {
     const success = await shareViaWebApi(
-      'My PrismaFi Profile',
+      'My YE/NO BET Profile',
       shareText,
       profileUrl
     );
@@ -59,7 +59,7 @@ const ShareProfile = ({ walletAddress, stats }: ShareProfileProps) => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+        className="flex items-center gap-2 px-4 py-2 font-medium text-white transition-colors bg-blue-500 rounded-lg hover:bg-blue-600"
       >
         <Share2 className="w-4 h-4" />
         Share Profile
@@ -74,32 +74,32 @@ const ShareProfile = ({ walletAddress, stats }: ShareProfileProps) => {
           ></div>
 
           {/* Share Menu */}
-          <div className="absolute right-0 mt-2 w-64 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50 overflow-hidden">
+          <div className="absolute right-0 z-50 w-64 mt-2 overflow-hidden bg-gray-800 border border-gray-700 rounded-lg shadow-xl">
             <div className="p-3 border-b border-gray-700">
-              <h3 className="font-bold text-white text-sm">Share Profile</h3>
+              <h3 className="text-sm font-bold text-white">Share Profile</h3>
             </div>
 
             <div className="p-2 space-y-1">
               {/* Twitter/X */}
               <button
                 onClick={handleShareTwitter}
-                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors text-left"
+                className="flex items-center w-full gap-3 px-3 py-2 text-left transition-colors rounded-lg hover:bg-gray-700"
               >
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                <div className="flex items-center justify-center w-8 h-8 bg-blue-500 rounded-full">
                   <Twitter className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <div className="text-white text-sm font-medium">Share on X</div>
-                  <div className="text-gray-400 text-xs">Post to timeline</div>
+                  <div className="text-sm font-medium text-white">Share on X</div>
+                  <div className="text-xs text-gray-400">Post to timeline</div>
                 </div>
               </button>
 
               {/* Copy Link */}
               <button
                 onClick={handleCopyLink}
-                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors text-left"
+                className="flex items-center w-full gap-3 px-3 py-2 text-left transition-colors rounded-lg hover:bg-gray-700"
               >
-                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                <div className="flex items-center justify-center w-8 h-8 bg-gray-600 rounded-full">
                   {copied ? (
                     <Check className="w-4 h-4 text-green-400" />
                   ) : (
@@ -107,10 +107,10 @@ const ShareProfile = ({ walletAddress, stats }: ShareProfileProps) => {
                   )}
                 </div>
                 <div>
-                  <div className="text-white text-sm font-medium">
+                  <div className="text-sm font-medium text-white">
                     {copied ? 'Copied!' : 'Copy Link'}
                   </div>
-                  <div className="text-gray-400 text-xs">Copy profile URL</div>
+                  <div className="text-xs text-gray-400">Copy profile URL</div>
                 </div>
               </button>
 
@@ -118,14 +118,14 @@ const ShareProfile = ({ walletAddress, stats }: ShareProfileProps) => {
               {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
                 <button
                   onClick={handleWebShare}
-                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors text-left"
+                  className="flex items-center w-full gap-3 px-3 py-2 text-left transition-colors rounded-lg hover:bg-gray-700"
                 >
-                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                  <div className="flex items-center justify-center w-8 h-8 bg-purple-500 rounded-full">
                     <Share2 className="w-4 h-4 text-white" />
                   </div>
                   <div>
-                    <div className="text-white text-sm font-medium">Share...</div>
-                    <div className="text-gray-400 text-xs">More options</div>
+                    <div className="text-sm font-medium text-white">Share...</div>
+                    <div className="text-xs text-gray-400">More options</div>
                   </div>
                 </button>
               )}
@@ -133,7 +133,7 @@ const ShareProfile = ({ walletAddress, stats }: ShareProfileProps) => {
 
             {/* Preview Text */}
             <div className="p-3 border-t border-gray-700 bg-gray-900/50">
-              <div className="text-xs text-gray-400 mb-2">Preview:</div>
+              <div className="mb-2 text-xs text-gray-400">Preview:</div>
               <div className="text-xs text-gray-300 whitespace-pre-line line-clamp-4">
                 {shareText}
               </div>
