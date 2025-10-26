@@ -70,7 +70,7 @@ export default function DashboardPage() {
             // Enrich bet with market data and winnings calculation
             const enriched: EnrichedBet = {
               ...bet,
-              marketData,
+              marketData: marketData ?? undefined, // Convert null to undefined for type compatibility
             };
 
             if (marketData) {

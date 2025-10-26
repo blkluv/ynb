@@ -85,7 +85,7 @@ export default function ProfilePage() {
 
             const enriched: EnrichedBet = {
               ...bet,
-              marketData,
+              marketData: marketData ?? undefined, // Convert null to undefined for type compatibility
             };
 
             if (marketData) {
