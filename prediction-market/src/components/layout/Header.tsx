@@ -25,6 +25,7 @@ const Header = () => {
     { name: 'Markets', href: '/markets' },
     { name: 'Create Market', href: '/create-market' },
     { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Leaderboard', href: '/leaderboard' },
     { name: 'Activity', href: '/activity' },
   ]
 
