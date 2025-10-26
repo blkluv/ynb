@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import Layout from '@/components/layout/Layout';
 import WalletInfo from '@/components/wallet/WalletInfo';
 import LeaderboardTable from '@/components/leaderboard/LeaderboardTable';
+import RealTimeStatus from '@/components/common/RealTimeStatus';
+import { useRealTimeData } from '@/hooks/useRealTimeData';
 import {
   fetchLeaderboard,
   getUserRank,
@@ -12,39 +14,58 @@ import {
   type LeaderboardSortBy,
 } from '@/lib/program/leaderboard';
 
+interface LeaderboardData {
+  entries: LeaderboardEntry[];
+  userRank: number | null;
+}
+
 export default function LeaderboardPage() {
   const wallet = useAnchorWallet();
   
-  const [isLoading, setIsLoading] = useState(true);
-  const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [sortBy, setSortBy] = useState<LeaderboardSortBy>('roi');
-  const [userRank, setUserRank] = useState<number | null>(null);
   const [limit, setLimit] = useState(50);
 
-  // Load leaderboard
-  useEffect(() => {
-    const loadLeaderboard = async () => {
-      try {
-        setIsLoading(true);
-        console.log('🏆 Loading leaderboard...');
+  // Load leaderboard with real-time updates
+  const fetchLeaderboardData = useCallback(async (): Promise<LeaderboardData> => {
+    try {
+      console.log('🏆 Loading leaderboard...');
 
-        const leaderboardData = await fetchLeaderboard(sortBy, limit);
-        setEntries(leaderboardData);
+      const leaderboardData = await fetchLeaderboard(sortBy, limit);
 
-        // Get user's rank if wallet connected
-        if (wallet) {
-          const rank = await getUserRank(wallet.publicKey.toBase58(), sortBy);
-          setUserRank(rank);
-        }
-      } catch (error) {
-        console.error('❌ Error loading leaderboard:', error);
-      } finally {
-        setIsLoading(false);
+      // Get user's rank if wallet connected
+      let rank: number | null = null;
+      if (wallet) {
+        rank = await getUserRank(wallet.publicKey.toBase58(), sortBy);
       }
-    };
 
-    loadLeaderboard();
+      return {
+        entries: leaderboardData,
+        userRank: rank,
+      };
+    } catch (error) {
+      console.error('❌ Error loading leaderboard:', error);
+      return {
+        entries: [],
+        userRank: null,
+      };
+    }
   }, [sortBy, limit, wallet]);
+
+  const {
+    data: leaderboardData,
+    isLoading,
+    isRefreshing,
+    error,
+    lastUpdated,
+    refresh,
+    toggleAutoRefresh,
+    isAutoRefreshEnabled,
+  } = useRealTimeData({
+    fetchData: fetchLeaderboardData,
+    interval: 15000, // Refresh every 15 seconds
+    fetchOnMount: true,
+    enabled: true,
+  });
 
   const sortOptions: { value: LeaderboardSortBy; label: string; icon: string }[] = [
     { value: 'roi', label: 'ROI', icon: '📈' },
@@ -124,13 +145,13 @@ export default function LeaderboardPage() {
           <>
             <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden mb-6">
               <LeaderboardTable
-                entries={entries}
+                entries={leaderboardData?.entries || []}
                 currentUserWallet={wallet?.publicKey.toBase58()}
               />
             </div>
 
             {/* Load More */}
-            {entries.length >= limit && (
+            {(leaderboardData?.entries.length || 0) >= limit && (
               <div className="text-center">
                 <button
                   onClick={() => setLimit((prev) => prev + 50)}
@@ -141,27 +162,38 @@ export default function LeaderboardPage() {
               </div>
             )}
 
+            {/* Real-Time Status */}
+            <div className="mb-6 flex justify-end">
+              <RealTimeStatus
+                lastUpdated={lastUpdated}
+                isRefreshing={isRefreshing}
+                isAutoRefreshEnabled={isAutoRefreshEnabled}
+                onRefresh={refresh}
+                onToggleAutoRefresh={toggleAutoRefresh}
+              />
+            </div>
+
             {/* Stats Summary */}
-            {entries.length > 0 && (
+            {(leaderboardData?.entries.length || 0) > 0 && (
               <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                   <div className="text-sm text-gray-400 mb-1">Total Traders</div>
-                  <div className="text-3xl font-bold text-white">{entries.length}</div>
+                  <div className="text-3xl font-bold text-white">{leaderboardData?.entries.length || 0}</div>
                 </div>
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                   <div className="text-sm text-gray-400 mb-1">Avg Win Rate</div>
                   <div className="text-3xl font-bold text-green-300">
-                    {(
-                      entries.reduce((sum, e) => sum + e.stats.winRate, 0) /
-                      entries.length
-                    ).toFixed(1)}
+                    {((leaderboardData?.entries || []).length > 0 ?
+                      (leaderboardData?.entries.reduce((sum, e) => sum + e.stats.winRate, 0) || 0) /
+                      leaderboardData.entries.length
+                      : 0).toFixed(1)}
                     %
                   </div>
                 </div>
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                   <div className="text-sm text-gray-400 mb-1">Total Volume</div>
                   <div className="text-3xl font-bold text-purple-300">
-                    {entries
+                    {(leaderboardData?.entries || [])
                       .reduce((sum, e) => sum + e.stats.totalWagered, 0)
                       .toFixed(2)}{' '}
                     SOL
@@ -173,7 +205,7 @@ export default function LeaderboardPage() {
         )}
 
         {/* Empty State */}
-        {!isLoading && entries.length === 0 && (
+        {!isLoading && (leaderboardData?.entries.length || 0) === 0 && (
           <div className="bg-gray-800 border border-gray-700 rounded-lg p-12 text-center">
             <div className="text-6xl mb-6">🏆</div>
             <h2 className="text-2xl font-bold text-white mb-4">No Traders Yet</h2>
