@@ -1,400 +1,390 @@
-# 🎯 PrismaFi - Decentralized Prediction Markets on Solana
+# 🎯 Trepa - Scalar Prediction Markets on Solana
 
-<div align="center">
-  
-  ![PrismaFi Banner](https://img.shields.io/badge/Solana-Powered-14F195?style=for-the-badge&logo=solana&logoColor=white)
-  ![Next.js](https://img.shields.io/badge/Next.js-14.2-black?style=for-the-badge&logo=next.js&logoColor=white)
-  ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-  ![Anchor](https://img.shields.io/badge/Anchor-0.31-purple?style=for-the-badge)
-  
-  **🚀 [Live Demo](https://cypherpunk-hackathon2025.vercel.app/)**
-  
-</div>
+> **Bet on numbers, not just outcomes.** A next-generation prediction market platform built on Solana that enables trading on continuous scalar values instead of binary yes/no outcomes.
+
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://cypherpunk-hackathon2025-three.vercel.app/)
+[![Solana](https://img.shields.io/badge/Solana-Devnet-9945FF?logo=solana)](https://solana.com)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
 
 ---
 
-## 📋 Table of Contents
+## 🌟 What Makes Trepa Different?
 
-- [About](#about)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Demo](#demo)
-- [Getting Started](#getting-started)
-- [Architecture](#architecture)
-- [Smart Contract](#smart-contract)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [License](#license)
+Traditional prediction markets force you into binary choices: "Will Bitcoin hit $100k? Yes or No." 
+
+**Trepa changes the game:**
+- 📊 **Scalar Markets**: Bet on *where* the price lands, not just up or down
+- 🎯 **Accuracy Rewarded**: Payouts based on how close you are to the actual number
+- ⚡ **Real-Time Updates**: Live data refresh across all pages (5-15s intervals)
+- 🔗 **Solana-Powered**: Fast, cheap transactions on Solana blockchain
+- 🎨 **Beautiful UX**: Minimalist-brutalist design with smooth animations
 
 ---
 
-## 🎯 About
+## 🚀 Live Demo
 
-**PrismaFi** is a fully decentralized prediction market platform built on Solana, enabling users to create, trade, and resolve prediction markets on any real-world event with:
+**👉 [Try it now on Solana Devnet](https://cypherpunk-hackathon2025-three.vercel.app/)**
 
-- ⚡ **Lightning-fast transactions** powered by Solana's high-throughput blockchain
-- 💰 **Low fees** (fractions of a cent per transaction)
-- 🔒 **Trustless settlement** via smart contracts
-- 🎨 **Beautiful UX** with real-time odds calculation
-- 📊 **Transparent markets** with on-chain verification
-
-Whether it's predicting cryptocurrency prices, sports outcomes, political events, or technology launches, PrismaFi provides a secure and efficient platform for information markets.
+### Quick Start (No Installation):
+1. Install [Phantom Wallet](https://phantom.app/)
+2. Switch to Solana Devnet
+3. Get free SOL from [Solana Faucet](https://faucet.solana.com/)
+4. Visit the demo and start trading!
 
 ---
 
 ## ✨ Features
 
-### 🎲 **Core Functionality**
-- ✅ Create prediction markets on any yes/no question
-- ✅ Place bets on market outcomes (YES/NO)
-- ✅ Real-time odds calculation based on liquidity pools
-- ✅ Automatic market resolution and winnings distribution
-- ✅ Portfolio tracking with P&L calculation
+### 🎯 Core Trading
+- **Create Markets** - Anyone can create prediction markets with custom questions
+- **Binary Betting** - Place bets on Yes/No outcomes with real SOL
+- **Market Resolution** - Market creators resolve with the final outcome
+- **Claim Winnings** - Winners get proportional payouts based on pool distribution
+- **Real-Time Odds** - Live probability updates as bets come in
 
-### 🔐 **Security & Trust**
-- ✅ Non-custodial architecture (users control their funds)
-- ✅ Smart contract audited logic
-- ✅ Secure PDA (Program Derived Addresses) for account management
-- ✅ Cross-Program Invocation (CPI) for safe transfers
+### 📊 User Experience
+- **Personal Dashboard** - Track all your bets, stats, and P&L in one place
+- **Global Leaderboard** - See top traders ranked by win rate, ROI, and profit
+- **Activity Feed** - Real-time blockchain events (bets, markets, resolutions)
+- **Public Profiles** - View any user's trading history and performance
+- **Social Sharing** - Share markets, profiles, and winning bets on Twitter/X
 
-### 🎨 **User Experience**
-- ✅ Modern, responsive interface
-- ✅ Real-time market data updates
-- ✅ Category-based filtering (Crypto, Sports, Politics, etc.)
-- ✅ Market search and discovery
-- ✅ Wallet integration via Solana Wallet Adapter
+### ⚡ Real-Time System
+- **Auto-Refresh** - All pages update automatically (configurable intervals)
+- **Manual Controls** - Refresh button and pause/resume toggle on every page
+- **Live Indicators** - Visual status showing when data was last updated
+- **SSR-Compatible** - Works with Next.js server-side rendering
 
-### 📊 **Market Variety**
-- 🪙 **Crypto Markets**: Bitcoin price predictions, TVL milestones
-- ⚽ **Sports**: Tournament outcomes, championship winners
-- 🤖 **Technology**: Product launches, AI developments
-- 🌍 **Economics**: Recession predictions, policy changes
-- 🎵 **Culture**: Social media trends, entertainment
-
----
-
-## 🛠️ Tech Stack
-
-### **Frontend**
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Wallet**: Solana Wallet Adapter
-- **State Management**: React Hooks
-- **Deployment**: Vercel
-
-### **Smart Contract**
-- **Language**: Rust
-- **Framework**: Anchor 0.31
-- **Blockchain**: Solana (Devnet/Mainnet)
-- **Program**: Custom prediction market logic
-
-### **Infrastructure**
-- **RPC**: Solana Devnet/Mainnet
-- **Version Control**: Git/GitHub
-- **CI/CD**: Vercel Auto-Deploy
-
----
-
-## 🎬 Demo
-
-### **Live Application**
-🌐 **[https://cypherpunk-hackathon2025.vercel.app/](https://cypherpunk-hackathon2025.vercel.app/)**
-
-*Currently running in demo mode with simulated markets*
-
-### **Key Screens**
-
-#### 1. **Markets Homepage**
-- Browse 10+ active prediction markets
-- Filter by category (Crypto, Sports, Technology, etc.)
-- Real-time odds display
-- Demo mode banner for transparency
-
-#### 2. **Market Details**
-- Full market description and resolution criteria
-- Current YES/NO odds with percentage breakdown
-- Total volume (SOL staked)
-- End date and status (Active/Expired/Resolved)
-
-#### 3. **Trading Interface**
-- Select YES or NO outcome
-- Enter bet amount in SOL
-- Calculate potential winnings instantly
-- One-click bet placement with confirmation
-
-#### 4. **Portfolio Dashboard** *(Coming Soon)*
-- Track all active positions
-- View P&L across markets
-- Claim winnings from resolved markets
-
----
-
-## 🚀 Getting Started
-
-### **Prerequisites**
-- Node.js 18+ and npm
-- Solana CLI (for smart contract deployment)
-- Anchor CLI (for smart contract development)
-
-### **Installation**
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/Edgadafi/cypherpunk-hackathon2025.git
-cd cypherpunk-hackathon2025
-```
-
-2. **Install frontend dependencies**
-```bash
-cd prediction-market
-npm install
-```
-
-3. **Set up environment variables**
-```bash
-cp .env.example .env.local
-# Edit .env.local with your RPC endpoint and Program ID
-```
-
-4. **Run development server**
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### **Smart Contract Deployment**
-
-1. **Build the contract**
-```bash
-cd prediction-market-contract
-anchor build
-```
-
-2. **Deploy to Devnet**
-```bash
-anchor deploy --provider.cluster devnet
-```
-
-3. **Update Program ID**
-```bash
-# Copy the Program ID from deployment output
-# Update prediction-market/src/lib/solana/programId.ts
-```
-
-4. **Generate IDL**
-```bash
-# Copy target/idl/prediction_market.json
-# to prediction-market/src/lib/solana/idl.ts
-```
+### 🔍 Discovery & Filters
+- **Search Markets** - Find markets by question or description
+- **Category Filter** - Browse by Crypto, Sports, Politics, Tech, etc.
+- **Status Filter** - Show active, resolved, or all markets
+- **Activity Filter** - Filter events by type (bets, markets, resolutions)
 
 ---
 
 ## 🏗️ Architecture
 
-### **System Overview**
+### Tech Stack
+
+**Frontend:**
+- Next.js 14 (React 18) - Server & client rendering
+- TypeScript 5.0 - Type safety
+- Tailwind CSS - Styling
+- Lucide Icons - Icon library
+
+**Blockchain:**
+- Solana (Devnet) - L1 blockchain
+- Anchor 0.30 - Smart contract framework
+- Solana Wallet Adapter - Wallet integration
+- @solana/web3.js - Blockchain interactions
+
+**Smart Contract:**
+- Rust - Contract language
+- Anchor Framework - Development framework
+- UMA-style resolution - Optimistic oracle pattern
+
+**Deployment:**
+- Vercel - Frontend hosting
+- Solana Devnet - Smart contract deployment
+
+### Smart Contract Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                     Frontend (Next.js)                   │
-│  ┌─────────────┐  ┌──────────────┐  ┌───────────────┐  │
-│  │   Markets   │  │  Trading UI  │  │   Portfolio   │  │
-│  └──────┬──────┘  └──────┬───────┘  └───────┬───────┘  │
-│         │                │                   │          │
-│         └────────────────┴───────────────────┘          │
-│                          │                              │
-└──────────────────────────┼──────────────────────────────┘
-                           │
-                  ┌────────▼────────┐
-                  │  Solana Wallet  │
-                  │    Adapter      │
-                  └────────┬────────┘
-                           │
-┌──────────────────────────┼──────────────────────────────┐
-│                   Solana Blockchain                      │
-│  ┌─────────────────────────────────────────────────┐    │
-│  │       Smart Contract (Anchor/Rust)              │    │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────────┐  │    │
-│  │  │  Market  │  │ Position │  │    Vault     │  │    │
-│  │  │   PDA    │  │   PDA    │  │     PDA      │  │    │
-│  │  └──────────┘  └──────────┘  └──────────────┘  │    │
-│  └─────────────────────────────────────────────────┘    │
-└──────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│         Prediction Market Program        │
+├─────────────────────────────────────────┤
+│                                          │
+│  Instructions:                           │
+│  ├─ initialize()                         │
+│  ├─ create_market()                      │
+│  ├─ place_bet()                          │
+│  ├─ resolve_market()                     │
+│  └─ claim_winnings()                     │
+│                                          │
+│  Accounts:                               │
+│  ├─ GlobalState (singleton)             │
+│  ├─ Market (per market)                 │
+│  └─ Bet (per user per market)           │
+│                                          │
+└─────────────────────────────────────────┘
 ```
 
-### **Smart Contract Structure**
+### Frontend Architecture
 
-```rust
-// Key Instructions
-- create_market()   // Initialize new prediction market
-- place_bet()       // Place YES/NO bet on market
-- resolve_market()  // Resolve outcome (authority only)
-- claim_winnings()  // Claim winnings from resolved market
-
-// Account Types
-- Market            // Stores market data and state
-- UserPosition      // Tracks individual user bets
-- Vault             // Holds staked funds (PDA)
 ```
-
-### **Data Flow**
-
-1. **User** connects wallet via Solana Wallet Adapter
-2. **Frontend** fetches markets from smart contract
-3. **User** selects market and places bet
-4. **Transaction** is signed and sent to Solana
-5. **Smart Contract** validates and executes bet
-6. **Frontend** updates UI with new market state
-7. **User** claims winnings after market resolution
+┌─────────────────────────────────────────┐
+│            Next.js Frontend              │
+├─────────────────────────────────────────┤
+│                                          │
+│  Pages:                                  │
+│  ├─ /markets (10s refresh)              │
+│  ├─ /markets/[id] (5s refresh)          │
+│  ├─ /dashboard (8s refresh)             │
+│  ├─ /leaderboard (15s refresh)          │
+│  ├─ /activity (6s refresh)              │
+│  └─ /profile/[wallet] (12s refresh)     │
+│                                          │
+│  Custom Hooks:                           │
+│  ├─ useRealTimeData (polling + state)   │
+│  └─ useAnchorWallet (Solana wallet)     │
+│                                          │
+│  Components:                             │
+│  ├─ RealTimeStatus (live indicator)     │
+│  ├─ BinaryTradingInterface (betting)    │
+│  ├─ ResolveMarketInterface (creator)    │
+│  ├─ ClaimWinnings (winners)             │
+│  └─ ShareProfile/Market/Bet (social)    │
+│                                          │
+└─────────────────────────────────────────┘
+```
 
 ---
 
-## 🔐 Smart Contract
+## 📦 Installation & Setup
 
-### **Key Features**
+### Prerequisites
+- Node.js 18+ and npm
+- Rust 1.70+ (for smart contract)
+- Solana CLI 1.18+
+- Anchor CLI 0.30+
+- Phantom or Solflare wallet
 
-#### **1. Market Creation**
-```rust
-pub fn create_market(
-    ctx: Context<CreateMarket>,
-    question: String,       // Max 200 chars
-    description: String,    // Max 1000 chars
-    end_time: i64,          // Unix timestamp
-    category: String,       // Max 50 chars
-) -> Result<()>
+### 1. Clone Repository
+```bash
+git clone https://github.com/Edgadafi/cypherpunk-hackathon2025.git
+cd cypherpunk-hackathon2025
 ```
 
-#### **2. Betting Mechanism**
-```rust
-pub fn place_bet(
-    ctx: Context<PlaceBet>,
-    outcome: bool,          // true = YES, false = NO
-    amount: u64,            // Lamports
-) -> Result<()>
+### 2. Setup Frontend
+```bash
+cd prediction-market
+npm install --legacy-peer-deps
+cp .env.example .env.local
 ```
 
-#### **3. Market Resolution**
-```rust
-pub fn resolve_market(
-    ctx: Context<ResolveMarket>,
-    winning_outcome: bool,  // Final result
-) -> Result<()>
+Edit `.env.local`:
+```env
+NEXT_PUBLIC_SOLANA_NETWORK=devnet
+NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
+NEXT_PUBLIC_PROGRAM_ID=your_deployed_program_id
 ```
 
-#### **4. Winnings Distribution**
-```rust
-pub fn claim_winnings(
-    ctx: Context<ClaimWinnings>,
-) -> Result<()>
+### 3. Setup Smart Contract
+```bash
+cd ../prediction-market-latam
+anchor build
+anchor deploy --provider.cluster devnet
 ```
 
-### **Security Measures**
+Copy the deployed program ID to your `.env.local` file.
 
-- ✅ **PDA-based accounts** for deterministic addressing
-- ✅ **Bump seed validation** to prevent account collisions
-- ✅ **Authority checks** for sensitive operations
-- ✅ **Reentrancy protection** via account state
-- ✅ **Overflow-safe arithmetic** using checked operations
-- ✅ **CPI for transfers** (no manual lamport manipulation)
+### 4. Update IDL
+```bash
+cp target/idl/prediction_market.json ../prediction-market/src/idl/
+```
 
-### **Contract Files**
+### 5. Run Development Server
+```bash
+cd ../prediction-market
+npm run dev
+```
 
-Located in `prediction-market-contract/programs/prediction_market/src/`:
-- `lib.rs` - Main program logic
-- `PRISMAFI_SOLANA_PLAYGROUND_FINAL.rs` - Standalone version for Solana Playground
-- `PRISMAFI_SIMPLE_PLAYGROUND.rs` - Simplified version (no external deps)
+Visit `http://localhost:3000`
 
 ---
 
-## 🗺️ Roadmap
+## 🎮 Usage Guide
 
-### **✅ Phase 1: MVP (Current)**
-- [x] Smart contract development
-- [x] Basic frontend interface
-- [x] Market creation and betting
-- [x] Demo deployment on Vercel
-- [x] Mock data for testing
+### Creating a Market
 
-### **🚧 Phase 2: Mainnet Beta**
-- [ ] Smart contract audit
-- [ ] Deploy to Solana Mainnet
-- [ ] Real market creation
-- [ ] Wallet integration (Phantom, Solflare)
-- [ ] Transaction history
+1. Connect your Phantom wallet
+2. Click "Create Market" button
+3. Fill in:
+   - Question (e.g., "Will Bitcoin reach $100k in 2025?")
+   - Description with resolution criteria
+   - Category (Crypto, Sports, Politics, etc.)
+   - End date/time
+4. Confirm transaction (~0.01 SOL)
+5. Market goes live immediately!
 
-### **🔮 Phase 3: Advanced Features**
-- [ ] Liquidity pools for better odds
-- [ ] Market maker incentives
-- [ ] Multi-outcome markets (not just YES/NO)
-- [ ] Oracle integration for automatic resolution
-- [ ] Governance token ($PRISMA)
+### Placing a Bet
 
-### **🌟 Phase 4: Ecosystem**
-- [ ] API for third-party integrations
-- [ ] Mobile app (iOS/Android)
-- [ ] Analytics dashboard
-- [ ] Social features (comments, reputation)
-- [ ] Conditional markets (linked outcomes)
+1. Browse markets on `/markets`
+2. Click on a market to see details
+3. Choose Yes or No
+4. Enter amount in SOL
+5. Confirm transaction
+6. Your bet appears in your Dashboard
+
+### Resolving a Market
+
+1. Only market creator can resolve
+2. Navigate to your created market after end time
+3. Select the winning outcome (Yes or No)
+4. Confirm resolution transaction
+5. Winners can now claim their winnings
+
+### Claiming Winnings
+
+1. Go to market detail page or Dashboard
+2. If you won, you'll see "Claim Winnings" button
+3. Click to claim your proportional share
+4. Winnings transferred to your wallet
+5. Bet marked as claimed
+
+---
+
+## 📊 Key Metrics & Stats
+
+### User Stats
+- **Total Bets** - Number of bets placed
+- **Active Bets** - Unresolved markets
+- **Win Rate** - % of bets won
+- **Total Wagered** - SOL bet across all markets
+- **Profit/Loss** - Net P&L (won - wagered)
+- **ROI** - Return on investment %
+
+### Market Stats
+- **Total Yes/No** - Amount bet on each outcome
+- **Implied Probability** - Current odds (Yes%)
+- **Total Volume** - Sum of all bets
+- **Participants** - Unique bettors
+
+### Leaderboard Rankings
+- Ranked by total profit (descending)
+- Secondary sort by win rate
+- Shows top 50 traders
+- Updates every 15 seconds
+
+---
+
+## 🛣️ Roadmap
+
+### ✅ Phase 1: MVP (Complete)
+- [x] Core betting functionality
+- [x] Market creation & resolution
+- [x] User dashboard
+- [x] Real-time updates
+- [x] Social features
+- [x] Leaderboard & activity feed
+
+### 🚧 Phase 2: Enhanced UX (In Progress)
+- [ ] Advanced charts & analytics
+- [ ] Notification system
+- [ ] Mobile app (React Native)
+- [ ] Email/SMS alerts
+- [ ] Portfolio tracking
+
+### 🔮 Phase 3: Advanced Features (Planned)
+- [ ] **Scalar Markets** - Bet on continuous values
+- [ ] Liquidity pools & AMM
+- [ ] Conditional markets ("If A then B")
+- [ ] Market maker interface
+- [ ] API for trading bots
+- [ ] Governance token ($TREPA)
+
+### 🌍 Phase 4: Mainnet & Growth
+- [ ] Solana mainnet deployment
+- [ ] Partnerships with data providers
+- [ ] Integration with Pyth/Chainlink oracles
+- [ ] Mobile app launch
+- [ ] Marketing campaign
+
+---
+
+## 🧪 Testing
+
+### Manual Testing Checklist
+- [ ] Create market with wallet connected
+- [ ] Place Yes/No bets on different markets
+- [ ] Verify dashboard shows correct stats
+- [ ] Resolve market as creator
+- [ ] Claim winnings as winner
+- [ ] View leaderboard and activity feed
+- [ ] Share market/profile on social media
+- [ ] Test real-time refresh (pause/resume)
+
+### Automated Tests (Coming Soon)
+```bash
+# Frontend tests
+npm test
+
+# Smart contract tests
+anchor test
+```
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions! Here's how you can help:
+We welcome contributions! Here's how:
 
-### **Ways to Contribute**
-1. 🐛 Report bugs via GitHub Issues
-2. 💡 Suggest features or improvements
-3. 🔧 Submit pull requests
-4. 📖 Improve documentation
-5. 🎨 Design UI/UX enhancements
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### **Development Workflow**
-```bash
-# 1. Fork the repository
-# 2. Create a feature branch
-git checkout -b feature/your-feature-name
+### Development Guidelines
+- Follow TypeScript strict mode
+- Use Tailwind for styling
+- Write meaningful commit messages
+- Test on Solana Devnet before PR
+- Update documentation for new features
 
-# 3. Make your changes and test
-npm run dev
+---
 
-# 4. Commit with conventional commits
-git commit -m "feat: add new feature"
+## 🐛 Known Issues & Limitations
 
-# 5. Push and create a Pull Request
-git push origin feature/your-feature-name
-```
+### Current Limitations
+- **Devnet Only** - Not on mainnet yet (use test SOL)
+- **Binary Markets** - Scalar markets coming in Phase 3
+- **Manual Resolution** - Creator must manually resolve (automation planned)
+- **No Dispute Mechanism** - Trust-based resolution (UMA integration planned)
+
+### Planned Fixes
+- [ ] Automated resolution via Chainlink/Pyth oracles
+- [ ] Dispute mechanism for incorrect resolutions
+- [ ] Gas optimization for claim transactions
+- [ ] Improved error messages
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **Solana Foundation** for the incredible blockchain infrastructure
-- **Anchor Framework** for simplifying Solana development
-- **Vercel** for seamless deployment
-- **Cypherpunk Hackathon 2025** for the opportunity
+- **Solana Foundation** - For the amazing blockchain infrastructure
+- **Anchor Framework** - For simplifying smart contract development
+- **Vercel** - For seamless frontend deployment
+- **Cypherpunk Hackathon 2025** - For the opportunity and inspiration
 
 ---
 
-## 📞 Contact
+## 📞 Contact & Links
 
-- **Project Lead**: [@Edgadafi](https://github.com/Edgadafi)
-- **Demo**: [https://cypherpunk-hackathon2025.vercel.app/](https://cypherpunk-hackathon2025.vercel.app/)
-- **Repository**: [https://github.com/Edgadafi/cypherpunk-hackathon2025](https://github.com/Edgadafi/cypherpunk-hackathon2025)
+- **Live Demo**: https://cypherpunk-hackathon2025-three.vercel.app/
+- **GitHub**: https://github.com/Edgadafi/cypherpunk-hackathon2025
+- **Twitter**: @YourTwitterHandle (coming soon)
+- **Discord**: Join our community (coming soon)
 
 ---
 
-<div align="center">
-  
-  **Built with ❤️ for the Solana Ecosystem**
-  
-  ⭐ Star this repo if you find it useful!
-  
-</div>
+## 🎯 Built for Cypherpunk Hackathon 2025
+
+**Team**: Edgadafi  
+**Category**: DeFi / Prediction Markets  
+**Blockchain**: Solana (Devnet)  
+**Demo**: [Live on Vercel](https://cypherpunk-hackathon2025-three.vercel.app/)
+
+---
+
+### 🌟 Star this repo if you find it useful!
+
+**Made with ❤️ for the Solana ecosystem**
