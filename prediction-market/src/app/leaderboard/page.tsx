@@ -91,12 +91,12 @@ export default function LeaderboardPage() {
         </div>
 
         {/* User Rank Card */}
-        {wallet && userRank && (
+        {wallet && leaderboardData?.userRank && (
           <div className="bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-blue-500/30 rounded-lg p-6 mb-6">
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm text-gray-400 mb-1">Your Rank</div>
-                <div className="text-3xl font-bold text-white">#{userRank}</div>
+                <div className="text-3xl font-bold text-white">#{leaderboardData.userRank}</div>
               </div>
               <div className="text-right">
                 <div className="text-sm text-gray-400 mb-1">Sorted by</div>
