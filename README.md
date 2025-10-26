@@ -1,6 +1,6 @@
-# 🎯 Trepa - Scalar Prediction Markets on Solana
+# 🎯 PrismaFi - Transparent Prediction Markets on Solana
 
-> **Bet on numbers, not just outcomes.** A next-generation prediction market platform built on Solana that enables trading on continuous scalar values instead of binary yes/no outcomes.
+> **Transparent, Verifiable, On-Chain.** A next-generation prediction market platform built on Solana with full transparency and instant settlements. Every bet, resolution, and payout is verifiable on-chain.
 
 [![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://cypherpunk-hackathon2025-three.vercel.app/)
 [![Solana](https://img.shields.io/badge/Solana-Devnet-9945FF?logo=solana)](https://solana.com)
@@ -9,16 +9,16 @@
 
 ---
 
-## 🌟 What Makes Trepa Different?
+## 🌟 What Makes PrismaFi Different?
 
-Traditional prediction markets force you into binary choices: "Will Bitcoin hit $100k? Yes or No." 
+Traditional prediction markets suffer from opacity and trust issues. You never know if odds are manipulated or if your payout will arrive.
 
-**Trepa changes the game:**
-- 📊 **Scalar Markets**: Bet on *where* the price lands, not just up or down
-- 🎯 **Accuracy Rewarded**: Payouts based on how close you are to the actual number
-- ⚡ **Real-Time Updates**: Live data refresh across all pages (5-15s intervals)
-- 🔗 **Solana-Powered**: Fast, cheap transactions on Solana blockchain
-- 🎨 **Beautiful UX**: Minimalist-brutalist design with smooth animations
+**PrismaFi changes the game:**
+- 🔍 **Full Transparency**: Every bet, resolution, and payout is verifiable on-chain
+- ⚡ **Instant Settlements**: Claims settle in <1 second with Solana's speed
+- 💰 **Ultra-Low Fees**: $0.00025 per transaction vs $5-50 on Ethereum
+- 🔗 **Permissionless**: Anyone can create markets without gatekeepers
+- 🎨 **Beautiful UX**: Minimalist-brutalist design with real-time updates
 
 ---
 
@@ -283,7 +283,6 @@ Visit `http://localhost:3000`
 - [ ] Conditional markets ("If A then B")
 - [ ] Market maker interface
 - [ ] API for trading bots
-- [ ] Governance token ($TREPA)
 
 ### 🌍 Phase 4: Mainnet & Growth
 - [ ] Solana mainnet deployment
@@ -291,6 +290,7 @@ Visit `http://localhost:3000`
 - [ ] Integration with Pyth/Chainlink oracles
 - [ ] Mobile app launch
 - [ ] Marketing campaign
+- [ ] Governance token ($PRISMA)
 
 ---
 
@@ -378,6 +378,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🎯 Built for Cypherpunk Hackathon 2025
 
+**Project**: PrismaFi  
 **Team**: Edgadafi  
 **Category**: DeFi / Prediction Markets  
 **Blockchain**: Solana (Devnet)  

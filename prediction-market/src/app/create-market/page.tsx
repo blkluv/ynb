@@ -9,6 +9,7 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { useAnchorWallet } from '@solana/wallet-adapter-react'
 import { createMarketDirect } from '@/lib/program/direct'
 import * as anchor from '@coral-xyz/anchor'
+import toast from 'react-hot-toast'
 
 interface FormData {
   question: string
@@ -97,7 +98,7 @@ export default function CreateMarketPage() {
     }
 
     if (!connected || !wallet) {
-      alert('⚠️ Please connect your wallet first')
+      toast.error('Please connect your wallet first')
       return
     }
 
@@ -133,32 +134,59 @@ export default function CreateMarketPage() {
       // Show success message with transaction link
       const explorerUrl = `https://explorer.solana.com/tx/${signature}?cluster=devnet`
       
-      alert(
-        `✅ Market created successfully!\n\n` +
-        `Market ID: ${marketPubkey.toString().slice(0, 8)}...\n` +
-        `Transaction: ${signature.slice(0, 8)}...\n\n` +
-        `View on Explorer: ${explorerUrl}`
+      toast.success(
+        <div className="flex flex-col gap-1">
+          <span className="font-bold">Market created successfully!</span>
+          <span className="text-sm">
+            Market ID: {marketPubkey.toString().slice(0, 8)}...
+          </span>
+          <a 
+            href={explorerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:text-blue-300 text-xs underline"
+          >
+            View transaction →
+          </a>
+        </div>,
+        { duration: 5000 }
       )
 
-      // Redirect to market detail page
-      router.push(`/markets/${marketPubkey.toString()}`)
+      // Redirect to market detail page after a short delay
+      setTimeout(() => {
+        router.push(`/markets/${marketPubkey.toString()}`)
+      }, 1500)
 
     } catch (error: any) {
       console.error('Error creating market:', error)
       
       let errorMessage = 'Failed to create market. Please try again.'
       
-      if (error.message?.includes('User rejected')) {
-        errorMessage = 'Transaction cancelled by user.'
+      // Check for common error types
+      if (error.message?.includes('User rejected') || 
+          error.message?.includes('User canceled') ||
+          error.message?.includes('cancelled') ||
+          error.code === 4001) {
+        toast.error('Transaction cancelled. You rejected the signature request.', {
+          duration: 3000,
+        })
+        return // Don't show additional error
       } else if (error.message?.includes('Insufficient funds')) {
-        errorMessage = 'Insufficient SOL balance. Please fund your wallet.'
+        errorMessage = 'Insufficient SOL balance. Please fund your wallet from the faucet.'
+      } else if (error.message?.includes('QuestionTooLong')) {
+        errorMessage = 'Question is too long. Maximum 200 characters.'
+      } else if (error.message?.includes('InvalidEndTime')) {
+        errorMessage = 'End date must be in the future.'
       } else if (error.message) {
-        errorMessage = `Error: ${error.message}`
+        // Show a more user-friendly message
+        errorMessage = error.message.includes('custom program error') 
+          ? 'Smart contract error. Please check your inputs and try again.'
+          : error.message
       }
       
-      alert(`❌ ${errorMessage}`)
+      toast.error(errorMessage, { duration: 4000 })
     } finally {
-    setIsSubmitting(false)
+      setIsSubmitting(false)
     }
   }
 
