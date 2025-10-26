@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import Layout from '@/components/layout/Layout';
 import WalletInfo from '@/components/wallet/WalletInfo';
 import ActivityFeed from '@/components/activity/ActivityFeed';
+import RealTimeStatus from '@/components/common/RealTimeStatus';
+import { useRealTimeData } from '@/hooks/useRealTimeData';
 import {
   fetchRecentActivity,
   type ActivityEvent,
@@ -11,33 +13,39 @@ import {
 } from '@/lib/program/activity';
 
 export default function ActivityPage() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [events, setEvents] = useState<ActivityEvent[]>([]);
   const [filter, setFilter] = useState<ActivityType | 'all'>('all');
   const [limit, setLimit] = useState(50);
 
-  // Load activity
-  useEffect(() => {
-    const loadActivity = async () => {
-      try {
-        setIsLoading(true);
-        console.log('📡 Loading activity feed...');
-
-        const activityData = await fetchRecentActivity(limit);
-        setEvents(activityData);
-      } catch (error) {
-        console.error('❌ Error loading activity:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadActivity();
+  // Load activity with real-time updates
+  const fetchActivity = useCallback(async (): Promise<ActivityEvent[]> => {
+    try {
+      console.log('📡 Loading activity feed...');
+      return await fetchRecentActivity(limit);
+    } catch (error) {
+      console.error('❌ Error loading activity:', error);
+      return [];
+    }
   }, [limit]);
+
+  const {
+    data: events,
+    isLoading,
+    isRefreshing,
+    error,
+    lastUpdated,
+    refresh,
+    toggleAutoRefresh,
+    isAutoRefreshEnabled,
+  } = useRealTimeData({
+    fetchData: fetchActivity,
+    interval: 6000, // Refresh every 6 seconds (fast for activity feed)
+    fetchOnMount: true,
+    enabled: true,
+  });
 
   // Filter events
   const filteredEvents =
-    filter === 'all' ? events : events.filter((e) => e.type === filter);
+    filter === 'all' ? (events || []) : (events || []).filter((e) => e.type === filter);
 
   const filterOptions: { value: ActivityType | 'all'; label: string; icon: string }[] = [
     { value: 'all', label: 'All Activity', icon: '📡' },
@@ -53,11 +61,17 @@ export default function ActivityPage() {
 
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-4xl font-bold text-white">📡 Activity Feed</h1>
-            <div className="animate-pulse">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <h1 className="text-4xl font-bold text-white">📡 Activity Feed</h1>
             </div>
+            <RealTimeStatus
+              lastUpdated={lastUpdated}
+              isRefreshing={isRefreshing}
+              isAutoRefreshEnabled={isAutoRefreshEnabled}
+              onRefresh={refresh}
+              onToggleAutoRefresh={toggleAutoRefresh}
+            />
           </div>
           <p className="text-gray-400">
             Real-time stream of prediction market activity
