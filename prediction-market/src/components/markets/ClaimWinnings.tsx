@@ -5,8 +5,8 @@ import { useAnchorWallet } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
 import toast from 'react-hot-toast';
 import { claimWinningsDirect } from '@/lib/program/direct';
-import { fetchUserBet, calculateWinnings, type BetAccount } from '@/lib/program/direct-read';
-import type { MockMarket } from '@/types/market';
+import { fetchUserBet, calculateWinnings, lamportsToSOL, type BetAccount, type MarketAccount } from '@/lib/program/direct-read';
+import type { MockMarket } from '@/lib/mock/markets';
 
 interface ClaimWinningsProps {
   market: MockMarket;
@@ -35,7 +35,7 @@ const ClaimWinnings = ({ market, onClaimed }: ClaimWinningsProps) => {
 
       try {
         setIsLoading(true);
-        const marketPubkey = new PublicKey(market.address);
+        const marketPubkey = new PublicKey(market.id);
         const bet = await fetchUserBet(wallet.publicKey, marketPubkey);
 
         if (!bet) {
@@ -48,14 +48,14 @@ const ClaimWinnings = ({ market, onClaimed }: ClaimWinningsProps) => {
 
         // Calculate winnings
         const winnings = calculateWinnings(bet, {
-          address: market.address,
-          authority: new PublicKey(market.address), // placeholder
+          address: market.id,
+          authority: new PublicKey(market.id), // placeholder
           question: market.question,
           description: market.description || '',
-          endTime: Math.floor(new Date(market.endDate).getTime() / 1000),
-          createdAt: Math.floor(new Date(market.createdDate).getTime() / 1000),
-          yesAmount: market.yesAmount || 0,
-          noAmount: market.noAmount || 0,
+          endTime: Math.floor(market.endTime.getTime() / 1000),
+          createdAt: Math.floor(market.createdAt.getTime() / 1000),
+          yesAmount: Math.floor(market.totalYesAmount * 1e9), // Convert SOL to lamports
+          noAmount: Math.floor(market.totalNoAmount * 1e9), // Convert SOL to lamports
           resolved: market.resolved,
           winningOutcome: market.winningOutcome || false,
         });
@@ -84,7 +84,7 @@ const ClaimWinnings = ({ market, onClaimed }: ClaimWinningsProps) => {
 
     try {
       setIsClaiming(true);
-      const marketPubkey = new PublicKey(market.address);
+      const marketPubkey = new PublicKey(market.id);
 
       const signature = await claimWinningsDirect(wallet, marketPubkey);
 
