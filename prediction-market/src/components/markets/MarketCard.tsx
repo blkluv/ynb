@@ -108,15 +108,15 @@ export default function MarketCard({ market }: { market: MockMarket }) {
       </div>
 
       {/* Creator */}
-      {market.creatorWallet && (
+      {market.creator && (
         <div className="mb-4">
           <Link
-            href={`/profile/${market.creatorWallet}`}
+            href={`/profile/${market.creator}`}
             className="flex items-center gap-2 text-xs text-gray-500 hover:text-gray-300 transition-colors"
           >
             <span>Created by:</span>
             <span className="font-mono text-gray-400">
-              {market.creatorWallet.slice(0, 4)}...{market.creatorWallet.slice(-4)}
+              {market.creator}
             </span>
           </Link>
         </div>
