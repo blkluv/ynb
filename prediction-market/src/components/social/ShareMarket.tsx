@@ -19,7 +19,7 @@ const ShareMarket = ({ market }: ShareMarketProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const marketUrl = getMarketUrl(market.address);
+  const marketUrl = getMarketUrl(market.id);
   
   // Generate share text
   const yesOdds = market.totalYesAmount + market.totalNoAmount > 0
