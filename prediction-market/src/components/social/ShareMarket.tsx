@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Share2, Twitter, Copy, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
-import type { MockMarket } from '@/types/market';
+import type { MockMarket } from '@/lib/mock/markets';
 import {
   getMarketUrl,
   getTwitterShareUrl,
