@@ -74,7 +74,7 @@ export default function ProfilePage() {
           try {
             const marketAddress = bet.market.toBase58();
 
-            let marketData = marketsMap.get(marketAddress);
+            let marketData: MarketAccount | null | undefined = marketsMap.get(marketAddress);
 
             if (!marketData) {
               marketData = await fetchMarketDirect(marketAddress);

@@ -58,7 +58,7 @@ export default function DashboardPage() {
             const marketAddress = bet.market.toBase58();
             
             // Check if we already fetched this market
-            let marketData = marketsMap.get(marketAddress);
+            let marketData: MarketAccount | null | undefined = marketsMap.get(marketAddress);
             
             if (!marketData) {
               marketData = await fetchMarketDirect(marketAddress);
