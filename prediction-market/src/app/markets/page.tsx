@@ -145,7 +145,7 @@ export default function MarketsPage() {
                     <span className="text-2xl">❌</span>
                     <div>
                       <p className="text-red-300 font-semibold">Error Loading Markets</p>
-                      <p className="text-red-200/70 text-sm">{error} - Showing demo data</p>
+                      <p className="text-red-200/70 text-sm">{error?.message || 'Error loading markets'} - Showing demo data</p>
                     </div>
                   </div>
                 </div>

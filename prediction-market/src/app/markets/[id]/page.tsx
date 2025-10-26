@@ -139,7 +139,7 @@ export default function MarketDetailPage() {
                 <div className="mt-4 bg-yellow-500/20 border border-yellow-500/30 rounded-xl p-4">
                   <div className="flex items-center justify-center gap-3">
                     <span className="text-2xl">⚠️</span>
-                    <p className="text-yellow-300 text-sm">{error}</p>
+                    <p className="text-yellow-300 text-sm">{error.message || 'An error occurred'}</p>
                   </div>
                 </div>
               )}
