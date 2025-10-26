@@ -34,8 +34,7 @@ export default function ResolveMarketInterface({
 
       try {
         setIsCheckingAuthority(true)
-        const marketPubkey = new PublicKey(market.id)
-        const marketData = await fetchMarketDirect(marketPubkey)
+        const marketData = await fetchMarketDirect(market.id) // market.id is already a string
         
         if (marketData) {
           const isMarketAuthority = marketData.authority.equals(wallet.publicKey)

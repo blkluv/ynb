@@ -35,8 +35,7 @@ export default function MarketDetailPage() {
       setError(null)
 
       // Try to fetch from blockchain using direct method
-      const marketPubkey = new PublicKey(marketId)
-      const marketData = await fetchMarketDirect(marketPubkey)
+      const marketData = await fetchMarketDirect(marketId) // marketId is already a string
 
       if (marketData) {
         // Transform to UI format
