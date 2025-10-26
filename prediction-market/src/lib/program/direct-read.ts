@@ -300,6 +300,158 @@ export async function fetchUserBet(
 }
 
 /**
+ * Fetch all bets for a user across all markets
+ */
+export async function fetchAllUserBets(
+  userPubkey: PublicKey
+): Promise<BetAccount[]> {
+  console.log("🔍 Fetching all bets for user:", userPubkey.toBase58());
+  
+  const connection = new Connection(RPC_ENDPOINT, CONNECTION_CONFIG.commitment);
+
+  try {
+    // Get all Bet accounts where user matches
+    const accounts = await connection.getProgramAccounts(PROGRAM_ID, {
+      filters: [
+        {
+          memcmp: {
+            offset: 0,
+            bytes: anchor.utils.bytes.bs58.encode(BET_DISCRIMINATOR),
+          },
+        },
+        {
+          memcmp: {
+            offset: 8, // After discriminator
+            bytes: userPubkey.toBase58(),
+          },
+        },
+      ],
+    });
+
+    console.log(`📦 Found ${accounts.length} bet accounts`);
+
+    // Decode each account
+    const bets: BetAccount[] = [];
+    for (const { pubkey, account } of accounts) {
+      const decoded = decodeBetAccount(account.data, pubkey);
+      if (decoded) {
+        bets.push(decoded);
+        console.log(`✅ Decoded bet: ${lamportsToSOL(decoded.amount)} SOL on ${decoded.outcome ? 'YES' : 'NO'}`);
+      }
+    }
+
+    console.log(`✅ Successfully decoded ${bets.length} bets`);
+    return bets;
+  } catch (error) {
+    console.error("❌ Error fetching user bets:", error);
+    return [];
+  }
+}
+
+/**
+ * Enriched bet with market information
+ */
+export interface EnrichedBet extends BetAccount {
+  marketData?: MarketAccount;
+  winnings?: {
+    hasWinnings: boolean;
+    canClaim: boolean;
+    winningsLamports: number;
+    winningsSOL: number;
+    multiplier: number;
+  };
+}
+
+/**
+ * User statistics
+ */
+export interface UserStats {
+  totalBets: number;
+  activeBets: number;
+  resolvedBets: number;
+  wonBets: number;
+  lostBets: number;
+  totalWagered: number; // SOL
+  totalWon: number; // SOL
+  totalClaimed: number; // SOL
+  unclaimedWinnings: number; // SOL
+  winRate: number; // percentage
+  profitLoss: number; // SOL (won - wagered)
+  roi: number; // percentage
+}
+
+/**
+ * Calculate user statistics from bets and markets
+ */
+export async function calculateUserStats(
+  bets: BetAccount[],
+  markets: Map<string, MarketAccount>
+): Promise<UserStats> {
+  let totalBets = 0;
+  let activeBets = 0;
+  let resolvedBets = 0;
+  let wonBets = 0;
+  let lostBets = 0;
+  let totalWagered = 0;
+  let totalWon = 0;
+  let totalClaimed = 0;
+  let unclaimedWinnings = 0;
+
+  for (const bet of bets) {
+    totalBets++;
+    totalWagered += lamportsToSOL(bet.amount);
+
+    const market = markets.get(bet.market.toBase58());
+    
+    if (!market) {
+      continue;
+    }
+
+    if (market.resolved) {
+      resolvedBets++;
+
+      if (bet.outcome === market.winningOutcome) {
+        wonBets++;
+
+        const winnings = calculateWinnings(bet, market);
+        if (winnings.hasWinnings) {
+          totalWon += winnings.winningsSOL;
+
+          if (bet.claimed) {
+            totalClaimed += winnings.winningsSOL;
+          } else {
+            unclaimedWinnings += winnings.winningsSOL;
+          }
+        }
+      } else {
+        lostBets++;
+      }
+    } else {
+      activeBets++;
+    }
+  }
+
+  const winRate = resolvedBets > 0 ? (wonBets / resolvedBets) * 100 : 0;
+  const profitLoss = totalClaimed - totalWagered;
+  const roi = totalWagered > 0 ? (profitLoss / totalWagered) * 100 : 0;
+
+  return {
+    totalBets,
+    activeBets,
+    resolvedBets,
+    wonBets,
+    lostBets,
+    totalWagered,
+    totalWon,
+    totalClaimed,
+    unclaimedWinnings,
+    winRate,
+    profitLoss,
+    roi,
+  };
+}
+
+/**
  * Calculate potential winnings for a user's bet
  */
 export function calculateWinnings(

@@ -24,7 +24,7 @@ const Header = () => {
   const navItems = [
     { name: 'Markets', href: '/markets' },
     { name: 'Create Market', href: '/create-market' },
-    { name: 'Portfolio', href: '/portfolio' },
+    { name: 'Dashboard', href: '/dashboard' },
     { name: 'Activity', href: '/activity' },
   ]
 
