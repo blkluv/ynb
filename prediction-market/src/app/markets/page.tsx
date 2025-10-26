@@ -247,7 +247,7 @@ export default function MarketsPage() {
 
             <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-800">
               <p className="text-gray-400 text-sm">
-                Showing {filteredMarkets.length} of {markets.length} markets
+                Showing {filteredMarkets.length} of {markets?.length || 0} markets
               </p>
               <Link
                 href="/create-market"

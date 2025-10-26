@@ -118,7 +118,7 @@ export default function ActivityPage() {
             <ActivityFeed events={filteredEvents} />
 
             {/* Load More */}
-            {events.length >= limit && filter === 'all' && (
+            {(events?.length || 0) >= limit && filter === 'all' && (
               <div className="text-center mt-6">
                 <button
                   onClick={() => setLimit((prev) => prev + 50)}
@@ -130,28 +130,28 @@ export default function ActivityPage() {
             )}
 
             {/* Stats */}
-            {events.length > 0 && (
+            {(events?.length || 0) > 0 && (
               <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                   <div className="text-xs text-gray-400 mb-1">Total Events</div>
-                  <div className="text-2xl font-bold text-white">{events.length}</div>
+                  <div className="text-2xl font-bold text-white">{events?.length || 0}</div>
                 </div>
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                   <div className="text-xs text-gray-400 mb-1">Bets Placed</div>
                   <div className="text-2xl font-bold text-blue-300">
-                    {events.filter((e) => e.type === 'bet_placed').length}
+                    {(events || []).filter((e) => e.type === 'bet_placed').length}
                   </div>
                 </div>
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                   <div className="text-xs text-gray-400 mb-1">Markets Created</div>
                   <div className="text-2xl font-bold text-purple-300">
-                    {events.filter((e) => e.type === 'market_created').length}
+                    {(events || []).filter((e) => e.type === 'market_created').length}
                   </div>
                 </div>
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                   <div className="text-xs text-gray-400 mb-1">Markets Resolved</div>
                   <div className="text-2xl font-bold text-green-300">
-                    {events.filter((e) => e.type === 'market_resolved').length}
+                    {(events || []).filter((e) => e.type === 'market_resolved').length}
                   </div>
                 </div>
               </div>
@@ -160,7 +160,7 @@ export default function ActivityPage() {
         )}
 
         {/* Empty State */}
-        {!isLoading && events.length === 0 && (
+        {!isLoading && (events?.length || 0) === 0 && (
           <div className="bg-gray-800 border border-gray-700 rounded-lg p-12 text-center">
             <div className="text-6xl mb-6">📡</div>
             <h2 className="text-2xl font-bold text-white mb-4">No Activity Yet</h2>

@@ -185,7 +185,7 @@ export default function LeaderboardPage() {
                   <div className="text-3xl font-bold text-green-300">
                     {((leaderboardData?.entries || []).length > 0 ?
                       (leaderboardData?.entries.reduce((sum, e) => sum + e.stats.winRate, 0) || 0) /
-                      leaderboardData.entries.length
+                      (leaderboardData?.entries.length || 1)
                       : 0).toFixed(1)}
                     %
                   </div>
