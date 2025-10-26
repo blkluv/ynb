@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
+use pyth_solana_receiver_sdk::price_update::PriceUpdateV2;
 
-declare_id!("9t6KXNy5xW8b6GyZmwUpqbHeQUKqxbvnfPy8oiRp9rka");
+declare_id!("GUzTP7BCgdTUTEDtguuUwZKdDbrkAKFiiRuqzpbSaQLu");
 
 #[program]
 pub mod prediction_market {
@@ -19,6 +20,10 @@ pub mod prediction_market {
         question: String,
         description: String,
         end_time: i64,
+        oracle_enabled: bool,
+        oracle_feed_id: Option<[u8; 32]>,
+        oracle_threshold: Option<i64>,
+        oracle_comparison: Option<u8>,
     ) -> Result<()> {
         let market = &mut ctx.accounts.market;
         let clock = Clock::get()?;
@@ -35,6 +40,26 @@ pub mod prediction_market {
         market.no_amount = 0;
         market.resolved = false;
         market.winning_outcome = false;
+        
+        // Oracle configuration
+        market.oracle_enabled = oracle_enabled;
+        
+        if oracle_enabled {
+            require!(oracle_feed_id.is_some(), ErrorCode::OracleFeedIdRequired);
+            require!(oracle_threshold.is_some(), ErrorCode::OracleThresholdRequired);
+            require!(oracle_comparison.is_some(), ErrorCode::OracleComparisonRequired);
+            
+            market.oracle_feed_id = oracle_feed_id.unwrap();
+            market.oracle_threshold = oracle_threshold.unwrap();
+            market.oracle_comparison = oracle_comparison.unwrap();
+            
+            // Validate comparison type (0=above, 1=below, 2=equals)
+            require!(market.oracle_comparison <= 2, ErrorCode::InvalidOracleComparison);
+        } else {
+            market.oracle_feed_id = [0; 32];
+            market.oracle_threshold = 0;
+            market.oracle_comparison = 0;
+        }
         
         Ok(())
     }
@@ -95,8 +120,49 @@ pub mod prediction_market {
         require!(clock.unix_timestamp >= market.end_time, ErrorCode::MarketNotExpired);
         require!(ctx.accounts.authority.key() == market.authority, ErrorCode::Unauthorized);
         
+        // Cannot manually resolve oracle-enabled markets
+        require!(!market.oracle_enabled, ErrorCode::MustUseOracle);
+        
         market.resolved = true;
         market.winning_outcome = outcome;
+        
+        Ok(())
+    }
+
+    pub fn resolve_with_oracle(ctx: Context<ResolveWithOracle>) -> Result<()> {
+        let market = &mut ctx.accounts.market;
+        let clock = Clock::get()?;
+        let price_update = &ctx.accounts.price_update;
+        
+        // Validations
+        require!(!market.resolved, ErrorCode::AlreadyResolved);
+        require!(clock.unix_timestamp >= market.end_time, ErrorCode::MarketNotExpired);
+        require!(market.oracle_enabled, ErrorCode::OracleNotEnabled);
+        
+        // Get price from Pyth
+        let price_feed = price_update.get_price_no_older_than(
+            &clock,
+            60, // Accept price up to 60 seconds old
+            &market.oracle_feed_id,
+        )?;
+        
+        let current_price = price_feed.price;
+        let threshold = market.oracle_threshold;
+        
+        // Determine outcome based on comparison type
+        let outcome = match market.oracle_comparison {
+            0 => current_price > threshold, // Above
+            1 => current_price < threshold, // Below
+            2 => current_price == threshold, // Equals (rare)
+            _ => return Err(ErrorCode::InvalidOracleComparison.into()),
+        };
+        
+        // Resolve market
+        market.resolved = true;
+        market.winning_outcome = outcome;
+        
+        msg!("Market resolved with oracle. Price: {}, Threshold: {}, Outcome: {}",
+             current_price, threshold, outcome);
         
         Ok(())
     }
@@ -165,7 +231,7 @@ pub struct Initialize<'info> {
 
 #[derive(Accounts)]
 pub struct CreateMarket<'info> {
-    #[account(init, payer = authority, space = 8 + 32 + 200 + 500 + 8 + 8 + 8 + 8 + 1 + 1)]
+    #[account(init, payer = authority, space = 8 + 32 + 204 + 504 + 8 + 8 + 8 + 8 + 1 + 1 + 1 + 32 + 8 + 1)]
     pub market: Account<'info, Market>,
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -194,6 +260,15 @@ pub struct ResolveMarket<'info> {
     #[account(mut)]
     pub market: Account<'info, Market>,
     pub authority: Signer<'info>,
+}
+
+#[derive(Accounts)]
+pub struct ResolveWithOracle<'info> {
+    #[account(mut)]
+    pub market: Account<'info, Market>,
+    /// The Pyth price update account
+    pub price_update: Account<'info, PriceUpdateV2>,
+    pub caller: Signer<'info>,
 }
 
 #[derive(Accounts)]
@@ -228,6 +303,11 @@ pub struct Market {
     pub no_amount: u64,               // 8
     pub resolved: bool,               // 1
     pub winning_outcome: bool,        // 1
+    // Oracle fields
+    pub oracle_enabled: bool,         // 1
+    pub oracle_feed_id: [u8; 32],     // 32
+    pub oracle_threshold: i64,        // 8
+    pub oracle_comparison: u8,        // 1 (0=above, 1=below, 2=equals)
 }
 
 #[account]
@@ -268,4 +348,17 @@ pub enum ErrorCode {
     AlreadyClaimed,
     #[msg("No winnings available")]
     NoWinnings,
+    // Oracle errors
+    #[msg("Oracle feed ID is required for oracle-enabled markets")]
+    OracleFeedIdRequired,
+    #[msg("Oracle threshold is required for oracle-enabled markets")]
+    OracleThresholdRequired,
+    #[msg("Oracle comparison type is required for oracle-enabled markets")]
+    OracleComparisonRequired,
+    #[msg("Invalid oracle comparison type (must be 0, 1, or 2)")]
+    InvalidOracleComparison,
+    #[msg("Oracle is not enabled for this market")]
+    OracleNotEnabled,
+    #[msg("This market must be resolved with oracle")]
+    MustUseOracle,
 }

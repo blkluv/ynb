@@ -5,7 +5,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-prediction_market = "9t6KXNy5xW8b6GyZmwUpqbHeQUKqxbvnfPy8oiRp9rka"
+prediction_market = "GUzTP7BCgdTUTEDtguuUwZKdDbrkAKFiiRuqzpbSaQLu"
 
 [programs.localnet]
 prediction_market = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
