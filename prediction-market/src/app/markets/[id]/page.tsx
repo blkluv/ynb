@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Layout from '@/components/layout/Layout'
 import WalletInfo from '@/components/wallet/WalletInfo'
@@ -8,9 +8,11 @@ import BinaryTradingInterface from '@/components/markets/BinaryTradingInterface'
 import ResolveMarketInterface from '@/components/markets/ResolveMarketInterface'
 import ClaimWinnings from '@/components/markets/ClaimWinnings'
 import ShareMarket from '@/components/social/ShareMarket'
+import RealTimeStatus from '@/components/common/RealTimeStatus'
 import { useWallet, useAnchorWallet } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
 import { fetchMarketDirect, lamportsToSOL } from '@/lib/program/direct-read'
+import { useRealTimeData } from '@/hooks/useRealTimeData'
 import { getMarketById, getMarketOdds, type MockMarket } from '@/lib/mock/markets'
 import Link from 'next/link'
 
@@ -21,21 +23,11 @@ export default function MarketDetailPage() {
   const params = useParams()
   const marketId = params.id as string
 
-  const [market, setMarket] = useState<MockMarket | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  // Load market from blockchain
-  const loadMarketData = async (showLoading = true) => {
+  // Load market from blockchain with real-time updates
+  const fetchMarket = useCallback(async (): Promise<MockMarket | null> => {
     try {
-      if (showLoading) setIsLoading(true)
-      else setIsRefreshing(true)
-      
-      setError(null)
-
       // Try to fetch from blockchain using direct method
-      const marketData = await fetchMarketDirect(marketId) // marketId is already a string
+      const marketData = await fetchMarketDirect(marketId)
 
       if (marketData) {
         // Transform to UI format
@@ -52,8 +44,8 @@ export default function MarketDetailPage() {
           resolved: marketData.resolved,
           winningOutcome: marketData.resolved ? marketData.winningOutcome : null,
         }
-        setMarket(transformed)
         console.log('✅ Market data loaded/refreshed')
+        return transformed
       } else {
         throw new Error('Market not found on-chain')
       }
@@ -61,27 +53,25 @@ export default function MarketDetailPage() {
       console.error('Error loading market:', err)
       // Fallback to mock data
       const mockMarket = getMarketById(marketId)
-      if (mockMarket) {
-        setMarket(mockMarket)
-        setError('Using demo data - connect wallet for live data')
-      } else {
-        setError('Market not found')
-      }
-    } finally {
-      setIsLoading(false)
-      setIsRefreshing(false)
+      return mockMarket || null
     }
-  }
-
-  const handleRefreshMarket = () => {
-    console.log('🔄 Refreshing market data...')
-    loadMarketData(false)
-  }
-
-  // Load market on mount
-  useEffect(() => {
-    loadMarketData(true)
   }, [marketId])
+
+  const {
+    data: market,
+    isLoading,
+    isRefreshing,
+    error,
+    lastUpdated,
+    refresh,
+    toggleAutoRefresh,
+    isAutoRefreshEnabled,
+  } = useRealTimeData({
+    fetchData: fetchMarket,
+    interval: 5000, // Refresh every 5 seconds (faster for market detail)
+    fetchOnMount: true,
+    enabled: true,
+  })
 
   if (isLoading) {
     return (
@@ -169,6 +159,17 @@ export default function MarketDetailPage() {
               </div>
             </div>
           )}
+
+          {/* Real-Time Status */}
+          <div className="mb-6 flex justify-end">
+            <RealTimeStatus
+              lastUpdated={lastUpdated}
+              isRefreshing={isRefreshing}
+              isAutoRefreshEnabled={isAutoRefreshEnabled}
+              onRefresh={refresh}
+              onToggleAutoRefresh={toggleAutoRefresh}
+            />
+          </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Main Content */}
@@ -266,13 +267,13 @@ export default function MarketDetailPage() {
               {/* Resolution Interface (for market creator) */}
               <ResolveMarketInterface 
                 market={market} 
-                onResolved={handleRefreshMarket}
+                onResolved={refresh}
               />
 
               {/* Claim Winnings Interface */}
               <ClaimWinnings 
                 market={market} 
-                onClaimed={handleRefreshMarket}
+                onClaimed={refresh}
               />
 
               {/* Activity Feed (Placeholder) */}
@@ -339,7 +340,7 @@ export default function MarketDetailPage() {
                 ) : (
                   <BinaryTradingInterface 
                     market={market} 
-                    onBetPlaced={handleRefreshMarket}
+                    onBetPlaced={refresh}
                   />
                 )}
               </div>

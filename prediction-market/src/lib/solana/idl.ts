@@ -1,961 +1,297 @@
-/**
- * Program IDL in camelCase format in order to be used in JS/TS.
- *
- * Generado automáticamente por Anchor
- * Program ID: 5RkwWAaXDWKhEDmw8XQsoDqUvbZAphqoeZNX5tFmE6o8
- */
-export type PredictionMarket = {
-  address: '5RkwWAaXDWKhEDmw8XQsoDqUvbZAphqoeZNX5tFmE6o8'
-  metadata: {
-    name: 'predictionMarket'
-    version: '0.1.0'
-    spec: '0.1.0'
-    description: 'Decentralized Prediction Market on Solana'
-  }
-  instructions: [
-    {
-      name: 'claimWinnings'
-      docs: ['Claim winnings']
-      discriminator: [161, 215, 24, 59, 14, 236, 242, 221]
-      accounts: [
-        {
-          name: 'market'
-          writable: true
-        },
-        {
-          name: 'position'
-          writable: true
-        },
-        {
-          name: 'marketVault'
-          writable: true
-          pda: {
-            seeds: [
-              {
-                kind: 'const'
-                value: [118, 97, 117, 108, 116]
-              },
-              {
-                kind: 'account'
-                path: 'market'
-              }
-            ]
-          }
-        },
-        {
-          name: 'user'
-          writable: true
-          signer: true
-        }
-      ]
-      args: []
-    },
-    {
-      name: 'createMarket'
-      docs: ['Initialize a new prediction market']
-      discriminator: [103, 226, 97, 235, 200, 188, 251, 254]
-      accounts: [
-        {
-          name: 'market'
-          writable: true
-          pda: {
-            seeds: [
-              {
-                kind: 'const'
-                value: [109, 97, 114, 107, 101, 116]
-              },
-              {
-                kind: 'account'
-                path: 'authority'
-              },
-              {
-                kind: 'arg'
-                path: 'question'
-              }
-            ]
-          }
-        },
-        {
-          name: 'authority'
-          writable: true
-          signer: true
-        },
-        {
-          name: 'systemProgram'
-          address: '11111111111111111111111111111111'
-        }
-      ]
-      args: [
-        {
-          name: 'question'
-          type: 'string'
-        },
-        {
-          name: 'description'
-          type: 'string'
-        },
-        {
-          name: 'endTime'
-          type: 'i64'
-        },
-        {
-          name: 'category'
-          type: 'string'
-        }
-      ]
-    },
-    {
-      name: 'placeBet'
-      docs: ['Place a bet on YES or NO']
-      discriminator: [222, 62, 67, 220, 63, 166, 126, 33]
-      accounts: [
-        {
-          name: 'market'
-          writable: true
-        },
-        {
-          name: 'position'
-          writable: true
-          pda: {
-            seeds: [
-              {
-                kind: 'const'
-                value: [112, 111, 115, 105, 116, 105, 111, 110]
-              },
-              {
-                kind: 'account'
-                path: 'market'
-              },
-              {
-                kind: 'account'
-                path: 'user'
-              }
-            ]
-          }
-        },
-        {
-          name: 'marketVault'
-          writable: true
-          pda: {
-            seeds: [
-              {
-                kind: 'const'
-                value: [118, 97, 117, 108, 116]
-              },
-              {
-                kind: 'account'
-                path: 'market'
-              }
-            ]
-          }
-        },
-        {
-          name: 'user'
-          writable: true
-          signer: true
-        },
-        {
-          name: 'systemProgram'
-          address: '11111111111111111111111111111111'
-        }
-      ]
-      args: [
-        {
-          name: 'outcome'
-          type: 'bool'
-        },
-        {
-          name: 'amount'
-          type: 'u64'
-        }
-      ]
-    },
-    {
-      name: 'resolveMarket'
-      docs: ['Resolve the market (only authority)']
-      discriminator: [155, 23, 80, 173, 46, 74, 23, 239]
-      accounts: [
-        {
-          name: 'market'
-          writable: true
-        },
-        {
-          name: 'authority'
-          signer: true
-        }
-      ]
-      args: [
-        {
-          name: 'winningOutcome'
-          type: 'bool'
-        }
-      ]
-    }
-  ]
-  accounts: [
-    {
-      name: 'market'
-      discriminator: [219, 190, 213, 55, 0, 227, 198, 154]
-    },
-    {
-      name: 'userPosition'
-      discriminator: [251, 248, 209, 245, 83, 234, 17, 27]
-    }
-  ]
-  events: [
-    {
-      name: 'betPlaced'
-      discriminator: [88, 88, 145, 226, 126, 206, 32, 0]
-    },
-    {
-      name: 'marketCreated'
-      discriminator: [88, 184, 130, 231, 226, 84, 6, 58]
-    },
-    {
-      name: 'marketResolved'
-      discriminator: [89, 67, 230, 95, 143, 106, 199, 202]
-    },
-    {
-      name: 'winningsClaimed'
-      discriminator: [187, 184, 29, 196, 54, 117, 70, 150]
-    }
-  ]
-  errors: [
-    {
-      code: 6000
-      name: 'questionTooLong'
-      msg: 'Question too long (max 200 characters)'
-    },
-    {
-      code: 6001
-      name: 'descriptionTooLong'
-      msg: 'Description too long (max 1000 characters)'
-    },
-    {
-      code: 6002
-      name: 'categoryTooLong'
-      msg: 'Category too long (max 50 characters)'
-    },
-    {
-      code: 6003
-      name: 'invalidEndTime'
-      msg: 'End time must be in the future'
-    },
-    {
-      code: 6004
-      name: 'invalidAmount'
-      msg: 'Invalid bet amount'
-    },
-    {
-      code: 6005
-      name: 'marketResolved'
-      msg: 'Market is already resolved'
-    },
-    {
-      code: 6006
-      name: 'marketExpired'
-      msg: 'Market has expired'
-    },
-    {
-      code: 6007
-      name: 'outcomeMismatch'
-      msg: 'Cannot change outcome after first bet'
-    },
-    {
-      code: 6008
-      name: 'alreadyResolved'
-      msg: 'Market is already resolved'
-    },
-    {
-      code: 6009
-      name: 'marketNotExpired'
-      msg: 'Market has not expired yet'
-    },
-    {
-      code: 6010
-      name: 'unauthorized'
-      msg: 'unauthorized'
-    },
-    {
-      code: 6011
-      name: 'marketNotResolved'
-      msg: 'Market is not resolved yet'
-    },
-    {
-      code: 6012
-      name: 'alreadyClaimed'
-      msg: 'Winnings already claimed'
-    },
-    {
-      code: 6013
-      name: 'losingPosition'
-      msg: 'This is a losing position'
-    }
-  ]
-  types: [
-    {
-      name: 'betPlaced'
-      type: {
-        kind: 'struct'
-        fields: [
-          {
-            name: 'market'
-            type: 'pubkey'
-          },
-          {
-            name: 'user'
-            type: 'pubkey'
-          },
-          {
-            name: 'outcome'
-            type: 'bool'
-          },
-          {
-            name: 'amount'
-            type: 'u64'
-          },
-          {
-            name: 'totalYes'
-            type: 'u64'
-          },
-          {
-            name: 'totalNo'
-            type: 'u64'
-          }
-        ]
-      }
-    },
-    {
-      name: 'market'
-      type: {
-        kind: 'struct'
-        fields: [
-          {
-            name: 'authority'
-            type: 'pubkey'
-          },
-          {
-            name: 'question'
-            type: 'string'
-          },
-          {
-            name: 'description'
-            type: 'string'
-          },
-          {
-            name: 'category'
-            type: 'string'
-          },
-          {
-            name: 'endTime'
-            type: 'i64'
-          },
-          {
-            name: 'totalYesAmount'
-            type: 'u64'
-          },
-          {
-            name: 'totalNoAmount'
-            type: 'u64'
-          },
-          {
-            name: 'resolved'
-            type: 'bool'
-          },
-          {
-            name: 'winningOutcome'
-            type: {
-              option: 'bool'
-            }
-          },
-          {
-            name: 'createdAt'
-            type: 'i64'
-          },
-          {
-            name: 'bump'
-            type: 'u8'
-          }
-        ]
-      }
-    },
-    {
-      name: 'marketCreated'
-      type: {
-        kind: 'struct'
-        fields: [
-          {
-            name: 'market'
-            type: 'pubkey'
-          },
-          {
-            name: 'authority'
-            type: 'pubkey'
-          },
-          {
-            name: 'question'
-            type: 'string'
-          },
-          {
-            name: 'endTime'
-            type: 'i64'
-          }
-        ]
-      }
-    },
-    {
-      name: 'marketResolved'
-      type: {
-        kind: 'struct'
-        fields: [
-          {
-            name: 'market'
-            type: 'pubkey'
-          },
-          {
-            name: 'winningOutcome'
-            type: 'bool'
-          },
-          {
-            name: 'totalYes'
-            type: 'u64'
-          },
-          {
-            name: 'totalNo'
-            type: 'u64'
-          }
-        ]
-      }
-    },
-    {
-      name: 'userPosition'
-      type: {
-        kind: 'struct'
-        fields: [
-          {
-            name: 'user'
-            type: 'pubkey'
-          },
-          {
-            name: 'market'
-            type: 'pubkey'
-          },
-          {
-            name: 'outcome'
-            type: 'bool'
-          },
-          {
-            name: 'amount'
-            type: 'u64'
-          },
-          {
-            name: 'claimed'
-            type: 'bool'
-          },
-          {
-            name: 'bump'
-            type: 'u8'
-          }
-        ]
-      }
-    },
-    {
-      name: 'winningsClaimed'
-      type: {
-        kind: 'struct'
-        fields: [
-          {
-            name: 'market'
-            type: 'pubkey'
-          },
-          {
-            name: 'user'
-            type: 'pubkey'
-          },
-          {
-            name: 'amount'
-            type: 'u64'
-          }
-        ]
-      }
-    }
-  ]
-}
+// NOTA: Este archivo NO se está usando.
+// El IDL activo está en: /src/lib/program/idl.ts
+// 
+// Este archivo se mantiene por compatibilidad pero puede ser eliminado.
 
-export const IDL: PredictionMarket = {
-  address: '5RkwWAaXDWKhEDmw8XQsoDqUvbZAphqoeZNX5tFmE6o8',
-  metadata: {
-    name: 'predictionMarket',
-    version: '0.1.0',
-    spec: '0.1.0',
-    description: 'Decentralized Prediction Market on Solana',
+export const IDL = {
+  "address": "9t6KXNy5xW8b6GyZmwUpqbHeQUKqxbvnfPy8oiRp9rka",
+  "metadata": {
+    "name": "prediction_market",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Permisionless prediction markets for social accountability in LATAM"
   },
-  instructions: [
+  "instructions": [
     {
-      name: 'claimWinnings',
-      docs: ['Claim winnings'],
-      discriminator: [161, 215, 24, 59, 14, 236, 242, 221],
-      accounts: [
-        {
-          name: 'market',
-          writable: true,
-        },
-        {
-          name: 'position',
-          writable: true,
-        },
-        {
-          name: 'marketVault',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [118, 97, 117, 108, 116],
-              },
-              {
-                kind: 'account',
-                path: 'market',
-              },
-            ],
-          },
-        },
-        {
-          name: 'user',
-          writable: true,
-          signer: true,
-        },
+      "name": "create_market",
+      "discriminator": [
+        103,
+        226,
+        97,
+        235,
+        200,
+        188,
+        251,
+        254
       ],
-      args: [],
+      "accounts": [
+        {
+          "name": "market",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "question",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "end_time",
+          "type": "i64"
+        }
+      ]
     },
     {
-      name: 'createMarket',
-      docs: ['Initialize a new prediction market'],
-      discriminator: [103, 226, 97, 235, 200, 188, 251, 254],
-      accounts: [
-        {
-          name: 'market',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [109, 97, 114, 107, 101, 116],
-              },
-              {
-                kind: 'account',
-                path: 'authority',
-              },
-              {
-                kind: 'arg',
-                path: 'question',
-              },
-            ],
-          },
-        },
-        {
-          name: 'authority',
-          writable: true,
-          signer: true,
-        },
-        {
-          name: 'systemProgram',
-          address: '11111111111111111111111111111111',
-        },
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
       ],
-      args: [
+      "accounts": [
         {
-          name: 'question',
-          type: 'string',
+          "name": "global_state",
+          "writable": true,
+          "signer": true
         },
         {
-          name: 'description',
-          type: 'string',
+          "name": "authority",
+          "writable": true,
+          "signer": true
         },
         {
-          name: 'endTime',
-          type: 'i64',
-        },
-        {
-          name: 'category',
-          type: 'string',
-        },
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
       ],
+      "args": []
     },
     {
-      name: 'placeBet',
-      docs: ['Place a bet on YES or NO'],
-      discriminator: [222, 62, 67, 220, 63, 166, 126, 33],
-      accounts: [
-        {
-          name: 'market',
-          writable: true,
-        },
-        {
-          name: 'position',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [112, 111, 115, 105, 116, 105, 111, 110],
-              },
-              {
-                kind: 'account',
-                path: 'market',
-              },
-              {
-                kind: 'account',
-                path: 'user',
-              },
-            ],
-          },
-        },
-        {
-          name: 'marketVault',
-          writable: true,
-          pda: {
-            seeds: [
-              {
-                kind: 'const',
-                value: [118, 97, 117, 108, 116],
-              },
-              {
-                kind: 'account',
-                path: 'market',
-              },
-            ],
-          },
-        },
-        {
-          name: 'user',
-          writable: true,
-          signer: true,
-        },
-        {
-          name: 'systemProgram',
-          address: '11111111111111111111111111111111',
-        },
+      "name": "place_bet",
+      "discriminator": [
+        222,
+        62,
+        67,
+        220,
+        63,
+        166,
+        126,
+        33
       ],
-      args: [
+      "accounts": [
         {
-          name: 'outcome',
-          type: 'bool',
+          "name": "market",
+          "writable": true
         },
         {
-          name: 'amount',
-          type: 'u64',
+          "name": "user",
+          "writable": true,
+          "signer": true
         },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
       ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "bet_yes",
+          "type": "bool"
+        }
+      ]
     },
     {
-      name: 'resolveMarket',
-      docs: ['Resolve the market (only authority)'],
-      discriminator: [155, 23, 80, 173, 46, 74, 23, 239],
-      accounts: [
-        {
-          name: 'market',
-          writable: true,
-        },
-        {
-          name: 'authority',
-          signer: true,
-        },
+      "name": "resolve_market",
+      "discriminator": [
+        155,
+        23,
+        80,
+        173,
+        46,
+        74,
+        23,
+        239
       ],
-      args: [
+      "accounts": [
         {
-          name: 'winningOutcome',
-          type: 'bool',
+          "name": "market",
+          "writable": true
         },
+        {
+          "name": "authority",
+          "signer": true
+        }
       ],
-    },
+      "args": [
+        {
+          "name": "outcome",
+          "type": "bool"
+        }
+      ]
+    }
   ],
-  accounts: [
+  "accounts": [
     {
-      name: 'market',
-      discriminator: [219, 190, 213, 55, 0, 227, 198, 154],
+      "name": "GlobalState",
+      "discriminator": [
+        163,
+        46,
+        74,
+        168,
+        216,
+        123,
+        133,
+        98
+      ]
     },
     {
-      name: 'userPosition',
-      discriminator: [251, 248, 209, 245, 83, 234, 17, 27],
-    },
+      "name": "Market",
+      "discriminator": [
+        219,
+        190,
+        213,
+        55,
+        0,
+        227,
+        198,
+        154
+      ]
+    }
   ],
-  events: [
+  "errors": [
     {
-      name: 'betPlaced',
-      discriminator: [88, 88, 145, 226, 126, 206, 32, 0],
+      "code": 6000,
+      "name": "QuestionTooLong",
+      "msg": "Question too long (max 200 characters)"
     },
     {
-      name: 'marketCreated',
-      discriminator: [88, 184, 130, 231, 226, 84, 6, 58],
+      "code": 6001,
+      "name": "InvalidEndTime",
+      "msg": "Invalid end time"
     },
     {
-      name: 'marketResolved',
-      discriminator: [89, 67, 230, 95, 143, 106, 199, 202],
+      "code": 6002,
+      "name": "MarketResolved",
+      "msg": "Market already resolved"
     },
     {
-      name: 'winningsClaimed',
-      discriminator: [187, 184, 29, 196, 54, 117, 70, 150],
+      "code": 6003,
+      "name": "MarketExpired",
+      "msg": "Market expired"
     },
+    {
+      "code": 6004,
+      "name": "BetTooSmall",
+      "msg": "Bet too small (min 0.01 SOL)"
+    },
+    {
+      "code": 6005,
+      "name": "AlreadyResolved",
+      "msg": "Already resolved"
+    },
+    {
+      "code": 6006,
+      "name": "MarketNotExpired",
+      "msg": "Market not expired yet"
+    },
+    {
+      "code": 6007,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6008,
+      "name": "MathOverflow",
+      "msg": "Math overflow"
+    }
   ],
-  errors: [
+  "types": [
     {
-      code: 6000,
-      name: 'questionTooLong',
-      msg: 'Question too long (max 200 characters)',
+      "name": "GlobalState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_markets",
+            "type": "u64"
+          },
+          {
+            "name": "total_volume",
+            "type": "u64"
+          }
+        ]
+      }
     },
     {
-      code: 6001,
-      name: 'descriptionTooLong',
-      msg: 'Description too long (max 1000 characters)',
-    },
-    {
-      code: 6002,
-      name: 'categoryTooLong',
-      msg: 'Category too long (max 50 characters)',
-    },
-    {
-      code: 6003,
-      name: 'invalidEndTime',
-      msg: 'End time must be in the future',
-    },
-    {
-      code: 6004,
-      name: 'invalidAmount',
-      msg: 'Invalid bet amount',
-    },
-    {
-      code: 6005,
-      name: 'marketResolved',
-      msg: 'Market is already resolved',
-    },
-    {
-      code: 6006,
-      name: 'marketExpired',
-      msg: 'Market has expired',
-    },
-    {
-      code: 6007,
-      name: 'outcomeMismatch',
-      msg: 'Cannot change outcome after first bet',
-    },
-    {
-      code: 6008,
-      name: 'alreadyResolved',
-      msg: 'Market is already resolved',
-    },
-    {
-      code: 6009,
-      name: 'marketNotExpired',
-      msg: 'Market has not expired yet',
-    },
-    {
-      code: 6010,
-      name: 'unauthorized',
-      msg: 'unauthorized',
-    },
-    {
-      code: 6011,
-      name: 'marketNotResolved',
-      msg: 'Market is not resolved yet',
-    },
-    {
-      code: 6012,
-      name: 'alreadyClaimed',
-      msg: 'Winnings already claimed',
-    },
-    {
-      code: 6013,
-      name: 'losingPosition',
-      msg: 'This is a losing position',
-    },
-  ],
-  types: [
-    {
-      name: 'betPlaced',
-      type: {
-        kind: 'struct',
-        fields: [
+      "name": "Market",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            name: 'market',
-            type: 'pubkey',
+            "name": "authority",
+            "type": "pubkey"
           },
           {
-            name: 'user',
-            type: 'pubkey',
+            "name": "question",
+            "type": "string"
           },
           {
-            name: 'outcome',
-            type: 'bool',
+            "name": "description",
+            "type": "string"
           },
           {
-            name: 'amount',
-            type: 'u64',
+            "name": "end_time",
+            "type": "i64"
           },
           {
-            name: 'totalYes',
-            type: 'u64',
+            "name": "created_at",
+            "type": "i64"
           },
           {
-            name: 'totalNo',
-            type: 'u64',
-          },
-        ],
-      },
-    },
-    {
-      name: 'market',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'authority',
-            type: 'pubkey',
+            "name": "yes_amount",
+            "type": "u64"
           },
           {
-            name: 'question',
-            type: 'string',
+            "name": "no_amount",
+            "type": "u64"
           },
           {
-            name: 'description',
-            type: 'string',
+            "name": "resolved",
+            "type": "bool"
           },
           {
-            name: 'category',
-            type: 'string',
-          },
-          {
-            name: 'endTime',
-            type: 'i64',
-          },
-          {
-            name: 'totalYesAmount',
-            type: 'u64',
-          },
-          {
-            name: 'totalNoAmount',
-            type: 'u64',
-          },
-          {
-            name: 'resolved',
-            type: 'bool',
-          },
-          {
-            name: 'winningOutcome',
-            type: {
-              option: 'bool',
-            },
-          },
-          {
-            name: 'createdAt',
-            type: 'i64',
-          },
-          {
-            name: 'bump',
-            type: 'u8',
-          },
-        ],
-      },
-    },
-    {
-      name: 'marketCreated',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'market',
-            type: 'pubkey',
-          },
-          {
-            name: 'authority',
-            type: 'pubkey',
-          },
-          {
-            name: 'question',
-            type: 'string',
-          },
-          {
-            name: 'endTime',
-            type: 'i64',
-          },
-        ],
-      },
-    },
-    {
-      name: 'marketResolved',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'market',
-            type: 'pubkey',
-          },
-          {
-            name: 'winningOutcome',
-            type: 'bool',
-          },
-          {
-            name: 'totalYes',
-            type: 'u64',
-          },
-          {
-            name: 'totalNo',
-            type: 'u64',
-          },
-        ],
-      },
-    },
-    {
-      name: 'userPosition',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'user',
-            type: 'pubkey',
-          },
-          {
-            name: 'market',
-            type: 'pubkey',
-          },
-          {
-            name: 'outcome',
-            type: 'bool',
-          },
-          {
-            name: 'amount',
-            type: 'u64',
-          },
-          {
-            name: 'claimed',
-            type: 'bool',
-          },
-          {
-            name: 'bump',
-            type: 'u8',
-          },
-        ],
-      },
-    },
-    {
-      name: 'winningsClaimed',
-      type: {
-        kind: 'struct',
-        fields: [
-          {
-            name: 'market',
-            type: 'pubkey',
-          },
-          {
-            name: 'user',
-            type: 'pubkey',
-          },
-          {
-            name: 'amount',
-            type: 'u64',
-          },
-        ],
-      },
-    },
-  ],
-}
+            "name": "winning_outcome",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ]
+};

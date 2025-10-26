@@ -39,24 +39,24 @@ const HeroSection = () => {
           {/* Main Headline */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
             <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              Generate your Prediction Market in 3 steps
+              Accountability Markets for LATAM
             </span>
             <br />
             <span className="text-gray-400 text-2xl sm:text-3xl lg:text-4xl">
-              Put your price for truth
+              Did they keep their promise? Let the market decide.
             </span>
           </h1>
 
           {/* Problem Statement */}
           <p className="text-xl sm:text-2xl text-gray-300 mb-4 max-w-4xl mx-auto leading-relaxed">
-            It&apos;s hard to prove that <span className="text-pink-400 font-bold">community predictions or insights</span> 
-            {' '}lead to measurable impact.
+            Political promises, public projects, and institutional commitments{' '}
+            <span className="text-pink-400 font-bold">lack transparent tracking</span>.
           </p>
 
           {/* Solution Statement */}
           <p className="text-lg sm:text-xl text-purple-300 mb-12 max-w-3xl mx-auto">
-            On-chain tracking of <span className="font-bold text-white">outcomes linked to real-world data</span> and social metrics, 
-            enabling transparent reporting and funding.
+            Create <span className="font-bold text-white">YES/NO markets</span> on promises and outcomes.
+            {' '}Community bets → Evidence decides → Accountability enforced.
           </p>
 
           {/* Stats Bar */}
@@ -78,17 +78,20 @@ const HeroSection = () => {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
-              href="/markets"
+              href="/create-market"
               className="group px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-purple-500/50 flex items-center gap-2"
             >
-              <span>Explore Markets</span>
+              <span>Create Market</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             
-            <button className="px-8 py-4 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 hover:border-white/20 text-white font-semibold rounded-lg transition-all duration-200 flex items-center gap-2">
+            <Link
+              href="/markets"
+              className="px-8 py-4 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 hover:border-white/20 text-white font-semibold rounded-lg transition-all duration-200 flex items-center gap-2"
+            >
               <TrendingUp className="w-5 h-5" />
-              <span>View Demo</span>
-            </button>
+              <span>Browse Markets</span>
+            </Link>
           </div>
 
           {/* Trust Indicators */}

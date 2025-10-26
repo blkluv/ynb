@@ -1,4 +1,4 @@
-// Mock data for prediction markets
+// Mock data for prediction markets (Binary YES/NO only)
 
 export interface MockMarket {
   id: string

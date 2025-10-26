@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import Layout from '@/components/layout/Layout'
 import WalletInfo from '@/components/wallet/WalletInfo'
 import MarketCard from '@/components/markets/MarketCard'
+import RealTimeStatus from '@/components/common/RealTimeStatus'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { fetchAllMarketsDirect, calculateOdds, lamportsToSOL } from '@/lib/program/direct-read'
+import { useRealTimeData } from '@/hooks/useRealTimeData'
 import {
   MOCK_MARKETS,
   CATEGORIES,
@@ -15,78 +17,84 @@ import {
 
 export default function MarketsPage() {
   const { connected } = useWallet()
-  const [markets, setMarkets] = useState<MockMarket[]>([])
   const [filteredMarkets, setFilteredMarkets] = useState<MockMarket[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string>('All')
   const [statusFilter, setStatusFilter] = useState<string>('all')
 
-  // Load markets from smart contract
-  useEffect(() => {
-    async function loadMarkets() {
-      setIsLoading(true)
-      setError(null)
+  // Load markets from smart contract with real-time updates
+  const fetchMarkets = useCallback(async (): Promise<MockMarket[]> => {
+    try {
+      // Fetch markets directly from blockchain
+      const marketsData = await fetchAllMarketsDirect()
 
-      try {
-        // Fetch markets directly from blockchain
-        const marketsData = await fetchAllMarketsDirect()
+      console.log(`✅ Loaded ${marketsData.length} markets from blockchain`)
 
-        console.log(`✅ Loaded ${marketsData.length} markets from blockchain`)
-
-        if (marketsData.length === 0) {
-          console.log("⚠️ No markets found, showing demo data")
-          setMarkets(MOCK_MARKETS)
-          setIsLoading(false)
-          return
-        }
-
-        // Transform to UI format
-        const transformed: MockMarket[] = marketsData.map((market) => {
-          const odds = calculateOdds(market.yesAmount, market.noAmount);
-          const totalVolume = lamportsToSOL(market.yesAmount + market.noAmount);
-          
-          return {
-            id: market.address,
-            question: market.question,
-            description: market.description,
-            category: 'Other', // Default category (not stored on-chain yet)
-            creator: market.authority.toString().slice(0, 4) + '...' + market.authority.toString().slice(-4),
-            createdAt: new Date(market.createdAt * 1000),
-            endTime: new Date(market.endTime * 1000),
-            totalYesAmount: lamportsToSOL(market.yesAmount),
-            totalNoAmount: lamportsToSOL(market.noAmount),
-            resolved: market.resolved,
-            winningOutcome: market.resolved ? market.winningOutcome : null,
-          };
-        });
-
-        // If no markets found, fallback to mock data for demo
-        if (transformed.length === 0) {
-          console.log('No on-chain markets found, using mock data')
-          setMarkets(MOCK_MARKETS)
-        } else {
-          setMarkets(transformed)
-        }
-
-      } catch (err: any) {
-        console.error('Error loading markets:', err)
-        setError(err.message || 'Failed to load markets')
-        // Fallback to mock data on error
-        setMarkets(MOCK_MARKETS)
-      } finally {
-        setIsLoading(false)
+      if (marketsData.length === 0) {
+        console.log("⚠️ No markets found, showing demo data")
+        return MOCK_MARKETS
       }
-    }
 
-    loadMarkets()
+      // Transform to UI format
+      const transformed: MockMarket[] = marketsData.map((market) => {
+        const odds = calculateOdds(market.yesAmount, market.noAmount);
+        const totalVolume = lamportsToSOL(market.yesAmount + market.noAmount);
+        
+        return {
+          id: market.address,
+          question: market.question,
+          description: market.description,
+          category: 'Other', // Default category (not stored on-chain yet)
+          creator: market.authority.toString().slice(0, 4) + '...' + market.authority.toString().slice(-4),
+          createdAt: new Date(market.createdAt * 1000),
+          endTime: new Date(market.endTime * 1000),
+          totalYesAmount: lamportsToSOL(market.yesAmount),
+          totalNoAmount: lamportsToSOL(market.noAmount),
+          resolved: market.resolved,
+          winningOutcome: market.resolved ? market.winningOutcome : null,
+        };
+      });
+
+      // If no markets found, fallback to mock data for demo
+      if (transformed.length === 0) {
+        console.log('No on-chain markets found, using mock data')
+        return MOCK_MARKETS
+      }
+
+      return transformed
+
+    } catch (err: any) {
+      console.error('Error loading markets:', err)
+      // Fallback to mock data on error
+      return MOCK_MARKETS
+    }
   }, [])
+
+  const {
+    data: markets,
+    isLoading,
+    isRefreshing,
+    error,
+    lastUpdated,
+    refresh,
+    toggleAutoRefresh,
+    isAutoRefreshEnabled,
+  } = useRealTimeData({
+    fetchData: fetchMarkets,
+    interval: 10000, // Refresh every 10 seconds
+    fetchOnMount: true,
+    enabled: true,
+  })
 
   // Apply filters
   useEffect(() => {
+    if (!markets) {
+      setFilteredMarkets([])
+      return
+    }
+
     let filtered = [...markets]
 
     // Search filter
@@ -161,13 +169,28 @@ export default function MarketsPage() {
 
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">
-              Prediction Markets
-            </h1>
-            <p className="text-gray-400">
-              Trade on YES/NO markets about political promises, public projects,
-              and institutional commitments
-            </p>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h1 className="text-4xl font-bold text-white mb-2">
+                  Prediction Markets
+                </h1>
+                <p className="text-gray-400">
+                  Trade on YES/NO markets about political promises, public projects,
+                  and institutional commitments
+                </p>
+              </div>
+            </div>
+
+            {/* Real-Time Status */}
+            <div className="flex justify-end">
+              <RealTimeStatus
+                lastUpdated={lastUpdated}
+                isRefreshing={isRefreshing}
+                isAutoRefreshEnabled={isAutoRefreshEnabled}
+                onRefresh={refresh}
+                onToggleAutoRefresh={toggleAutoRefresh}
+              />
+            </div>
           </div>
 
           {/* Filters */}
