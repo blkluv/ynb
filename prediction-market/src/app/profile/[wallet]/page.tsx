@@ -63,15 +63,16 @@ export default function ProfilePage() {
         return { bets: [], stats: {
           totalBets: 0,
           activeBets: 0,
+          resolvedBets: 0,
           wonBets: 0,
           lostBets: 0,
-          winRate: 0,
           totalWagered: 0,
           totalWon: 0,
-          totalLost: 0,
-          netProfit: 0,
+          totalClaimed: 0,
+          unclaimedWinnings: 0,
+          winRate: 0,
+          profitLoss: 0,
           roi: 0,
-          avgBetSize: 0,
         }};
       }
 
