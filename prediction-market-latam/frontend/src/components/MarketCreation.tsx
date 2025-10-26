@@ -19,7 +19,7 @@ interface EvidenceRequirements {
 export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connection }) => {
   const { publicKey, signTransaction } = useWallet();
   const [loading, setLoading] = useState(false);
-  
+
   const [marketData, setMarketData] = useState({
     question: '',
     description: '',
@@ -27,7 +27,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
     resolutionDate: '',
     initialLiquidity: 0
   });
-  
+
   const [evidenceRequirements, setEvidenceRequirements] = useState<EvidenceRequirements>({
     minEvidenceCount: 1,
     requiredTypes: ['Scientific'],
@@ -43,7 +43,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
     }
 
     setLoading(true);
-    
+
     try {
       // Convert form data to program format
       const marketDataProgram = {
@@ -90,7 +90,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
 
       console.log('Market created:', tx);
       alert('Market created successfully!');
-      
+
     } catch (error) {
       console.error('Error creating market:', error);
       alert('Failed to create market: ' + error);
@@ -100,12 +100,12 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6">Create Prediction Market</h2>
-      
+    <div className="max-w-2xl p-6 mx-auto bg-white rounded-lg shadow-lg">
+      <h2 className="mb-6 text-2xl font-bold">Create Prediction Market</h2>
+
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
             Question *
           </label>
           <input
@@ -119,7 +119,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
             Description
           </label>
           <textarea
@@ -133,7 +133,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
             Category
           </label>
           <select
@@ -142,7 +142,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select Category</option>
-            <option value="Politics">Politics</option>
+            <option value="Social">Social</option>
             <option value="Economics">Economics</option>
             <option value="Technology">Technology</option>
             <option value="Environment">Environment</option>
@@ -153,7 +153,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
             Resolution Date *
           </label>
           <input
@@ -165,7 +165,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block mb-2 text-sm font-medium text-gray-700">
             Initial Liquidity (SOL)
           </label>
           <input
@@ -181,18 +181,18 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
       </div>
 
       <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-4">Evidence Requirements</h3>
-        
+        <h3 className="mb-4 text-lg font-semibold">Evidence Requirements</h3>
+
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block mb-2 text-sm font-medium text-gray-700">
               Minimum Evidence Count
             </label>
             <input
               type="number"
               value={evidenceRequirements.minEvidenceCount}
               onChange={(e) => setEvidenceRequirements({
-                ...evidenceRequirements, 
+                ...evidenceRequirements,
                 minEvidenceCount: parseInt(e.target.value) || 1
               })}
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
@@ -202,7 +202,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block mb-2 text-sm font-medium text-gray-700">
               Required Evidence Types
             </label>
             <div className="space-y-2">
@@ -238,7 +238,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
                 type="checkbox"
                 checked={evidenceRequirements.oracleRequired}
                 onChange={(e) => setEvidenceRequirements({
-                  ...evidenceRequirements, 
+                  ...evidenceRequirements,
                   oracleRequired: e.target.checked
                 })}
                 className="mr-2"
@@ -251,7 +251,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
                 type="checkbox"
                 checked={evidenceRequirements.scientificPeerReview}
                 onChange={(e) => setEvidenceRequirements({
-                  ...evidenceRequirements, 
+                  ...evidenceRequirements,
                   scientificPeerReview: e.target.checked
                 })}
                 className="mr-2"
@@ -264,7 +264,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
                 type="checkbox"
                 checked={evidenceRequirements.governmentSourceRequired}
                 onChange={(e) => setEvidenceRequirements({
-                  ...evidenceRequirements, 
+                  ...evidenceRequirements,
                   governmentSourceRequired: e.target.checked
                 })}
                 className="mr-2"
@@ -278,7 +278,7 @@ export const MarketCreation: React.FC<MarketCreationProps> = ({ program, connect
       <button
         onClick={handleCreateMarket}
         disabled={loading || !marketData.question || !marketData.resolutionDate}
-        className="w-full mt-6 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        className="w-full px-4 py-3 mt-6 text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
       >
         {loading ? 'Creating Market...' : 'Create Market'}
       </button>

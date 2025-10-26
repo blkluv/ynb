@@ -315,7 +315,7 @@ export default function CreateMarketPage() {
             className="w-full border rounded-lg p-3"
           >
             <option value="crypto">Crypto</option>
-            <option value="politics">Politics</option>
+            <option value="social">Social</option>
             <option value="sports">Sports</option>
             <option value="technology">Technology</option>
             <option value="other">Other</option>

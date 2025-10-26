@@ -3,11 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { MarketQuestion, MarketCategory } from '@/types/market';
-import { 
-  CalendarIcon, 
-  UserGroupIcon, 
+import {
+  CalendarIcon,
+  UserGroupIcon,
   CurrencyDollarIcon,
-  ArrowTrendingUpIcon 
+  ArrowTrendingUpIcon
 } from '@heroicons/react/24/outline';
 
 interface MarketCardProps {
@@ -16,7 +16,7 @@ interface MarketCardProps {
 
 const categoryEmojis: Record<MarketCategory, string> = {
   [MarketCategory.SPORTS]: '⚽',
-  [MarketCategory.POLITICS]: '🏛️',
+  [MarketCategory.SOCIAL]: '📲',
   [MarketCategory.ECONOMICS]: '📈',
   [MarketCategory.TECHNOLOGY]: '💻',
   [MarketCategory.CRYPTO]: '₿',
@@ -29,29 +29,29 @@ const formatTimeRemaining = (dateString: string) => {
   const now = new Date();
   const target = new Date(dateString);
   const diff = target.getTime() - now.getTime();
-  
+
   if (diff < 0) return 'Closed';
-  
+
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  
+
   if (days > 0) return `${days}d ${hours}h`;
   return `${hours}h`;
 };
 
 export default function MarketCard({ market }: MarketCardProps) {
-  const topOption = market.options.reduce((prev, current) => 
+  const topOption = market.options.reduce((prev, current) =>
     (prev.probability > current.probability) ? prev : current
   );
 
   return (
     <Link href={`/market/${market.id}`}>
-      <div className="bg-gray-800 rounded-lg p-5 border border-gray-700 hover:border-purple-500 transition-all hover:shadow-lg hover:shadow-purple-500/10 cursor-pointer group">
+      <div className="p-5 transition-all bg-gray-800 border border-gray-700 rounded-lg cursor-pointer hover:border-purple-500 hover:shadow-lg hover:shadow-purple-500/10 group">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-lg">{categoryEmojis[market.category]}</span>
-            <span className="text-xs text-gray-400 uppercase tracking-wide">
+            <span className="text-xs tracking-wide text-gray-400 uppercase">
               {market.category}
             </span>
           </div>
@@ -62,12 +62,12 @@ export default function MarketCard({ market }: MarketCardProps) {
         </div>
 
         {/* Question */}
-        <h3 className="text-white font-semibold mb-3 line-clamp-2 group-hover:text-purple-300 transition-colors">
+        <h3 className="mb-3 font-semibold text-white transition-colors line-clamp-2 group-hover:text-purple-300">
           {market.question}
         </h3>
 
         {/* Options Preview */}
-        <div className="space-y-2 mb-4">
+        <div className="mb-4 space-y-2">
           {market.options.slice(0, 2).map((option) => (
             <div key={option.id} className="flex items-center justify-between">
               <span className="text-sm text-gray-300">{option.text}</span>
@@ -78,7 +78,7 @@ export default function MarketCard({ market }: MarketCardProps) {
                     style={{ width: `${option.probability * 100}%` }}
                   ></div>
                 </div>
-                <span className="text-sm font-medium text-purple-400 w-12 text-right">
+                <span className="w-12 text-sm font-medium text-right text-purple-400">
                   {(option.probability * 100).toFixed(0)}%
                 </span>
               </div>
@@ -92,7 +92,7 @@ export default function MarketCard({ market }: MarketCardProps) {
             <CurrencyDollarIcon className="w-4 h-4 text-gray-400" />
             <div className="text-xs">
               <div className="text-gray-400">Volume</div>
-              <div className="text-white font-medium">
+              <div className="font-medium text-white">
                 ${(market.volume / 1000).toFixed(1)}k
               </div>
             </div>
@@ -101,14 +101,14 @@ export default function MarketCard({ market }: MarketCardProps) {
             <UserGroupIcon className="w-4 h-4 text-gray-400" />
             <div className="text-xs">
               <div className="text-gray-400">Traders</div>
-              <div className="text-white font-medium">{market.participants}</div>
+              <div className="font-medium text-white">{market.participants}</div>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
             <CalendarIcon className="w-4 h-4 text-gray-400" />
             <div className="text-xs">
               <div className="text-gray-400">Ends in</div>
-              <div className="text-white font-medium">
+              <div className="font-medium text-white">
                 {formatTimeRemaining(market.resolutionDate)}
               </div>
             </div>

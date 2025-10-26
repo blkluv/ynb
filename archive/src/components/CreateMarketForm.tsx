@@ -10,7 +10,7 @@ import { usePredictionMarket } from '@/hooks/usePredictionMarket'
 import toast from 'react-hot-toast'
 
 const CATEGORIES = [
-  'Politics',
+  'Social',
   'Sports',
   'Crypto',
   'Economics',
@@ -22,10 +22,10 @@ const CATEGORIES = [
 
 const EXAMPLE_MARKETS = [
   {
-    question: 'Will Argentina dollarize by December 2025?',
+    question: 'Will The Breakfast Club mention LUV NFT by December 2025?',
     description:
-      'Resolves YES if Argentina officially adopts the USD as its primary currency by Dec 31, 2025. NO otherwise.',
-    category: 'Politics',
+      'Resolves YES if The Breakfast Club will mention LUV NFT by Dec 31, 2025. NO otherwise.',
+    category: 'Social',
   },
   {
     question: 'Will Bitcoin reach $100K before 2026?',
@@ -47,7 +47,7 @@ export function CreateMarketForm() {
 
   const [question, setQuestion] = useState('')
   const [description, setDescription] = useState('')
-  const [category, setCategory] = useState('Politics')
+  const [category, setCategory] = useState('Social')
   const [endDate, setEndDate] = useState('')
   const [endTime, setEndTime] = useState('23:59')
 
@@ -120,10 +120,10 @@ export function CreateMarketForm() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="bg-white rounded-xl shadow-lg p-8">
+      <div className="p-8 bg-white shadow-lg rounded-xl">
         {/* Header */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="mb-2 text-3xl font-bold text-gray-900">
             Create Prediction Market
           </h2>
           <p className="text-gray-600">
@@ -133,19 +133,19 @@ export function CreateMarketForm() {
         </div>
 
         {/* Example Markets */}
-        <div className="mb-8 p-4 bg-blue-50 rounded-lg">
-          <div className="text-sm font-medium text-blue-900 mb-3">
+        <div className="p-4 mb-8 rounded-lg bg-blue-50">
+          <div className="mb-3 text-sm font-medium text-blue-900">
             💡 Need inspiration? Try an example:
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
             {EXAMPLE_MARKETS.map((example, index) => (
               <button
                 key={index}
                 type="button"
                 onClick={() => loadExample(index)}
-                className="text-left p-3 bg-white rounded border border-blue-200 hover:border-blue-400 hover:shadow transition-all"
+                className="p-3 text-left transition-all bg-white border border-blue-200 rounded hover:border-blue-400 hover:shadow"
               >
-                <div className="text-xs font-semibold text-blue-700 mb-1">
+                <div className="mb-1 text-xs font-semibold text-blue-700">
                   {example.category}
                 </div>
                 <div className="text-sm text-gray-700 line-clamp-2">
@@ -159,7 +159,7 @@ export function CreateMarketForm() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Question */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block mb-2 text-sm font-semibold text-gray-700">
               Market Question *
             </label>
             <input
@@ -171,7 +171,7 @@ export function CreateMarketForm() {
               maxLength={200}
               required
             />
-            <div className="flex justify-between items-center mt-1">
+            <div className="flex items-center justify-between mt-1">
               <p className="text-xs text-gray-500">
                 Keep it clear and unambiguous
               </p>
@@ -187,19 +187,19 @@ export function CreateMarketForm() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block mb-2 text-sm font-semibold text-gray-700">
               Resolution Criteria *
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Describe exactly how this market will be resolved. What sources will be used? What counts as YES vs NO?"
               rows={6}
               maxLength={1000}
               required
             />
-            <div className="flex justify-between items-center mt-1">
+            <div className="flex items-center justify-between mt-1">
               <p className="text-xs text-gray-500">
                 Be specific about data sources and resolution logic
               </p>
@@ -215,7 +215,7 @@ export function CreateMarketForm() {
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block mb-2 text-sm font-semibold text-gray-700">
               Category *
             </label>
             <select
@@ -233,9 +233,9 @@ export function CreateMarketForm() {
           </div>
 
           {/* End Date & Time */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block mb-2 text-sm font-semibold text-gray-700">
                 End Date *
               </label>
               <input
@@ -249,7 +249,7 @@ export function CreateMarketForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block mb-2 text-sm font-semibold text-gray-700">
                 End Time (UTC) *
               </label>
               <input
@@ -289,8 +289,8 @@ export function CreateMarketForm() {
 
           {/* Preview */}
           {question && description && (
-            <div className="mt-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">
+            <div className="p-6 mt-8 border border-gray-200 rounded-lg bg-gray-50">
+              <h3 className="mb-3 text-sm font-semibold text-gray-700">
                 Preview
               </h3>
               <div className="space-y-2">
@@ -298,14 +298,14 @@ export function CreateMarketForm() {
                   {question}
                 </div>
                 <div className="flex items-center gap-3 text-sm text-gray-600">
-                  <span className="px-2 py-1 bg-white rounded text-xs font-medium">
+                  <span className="px-2 py-1 text-xs font-medium bg-white rounded">
                     {category}
                   </span>
                   {endDateTime && (
                     <span>Closes {endDateTime.toLocaleDateString()}</span>
                   )}
                 </div>
-                <div className="text-sm text-gray-700 mt-2">{description}</div>
+                <div className="mt-2 text-sm text-gray-700">{description}</div>
               </div>
             </div>
           )}
@@ -330,7 +330,7 @@ export function CreateMarketForm() {
               'Connect Wallet to Create Market'
             ) : isCreatingMarket ? (
               <>
-                <span className="inline-block animate-spin mr-2">⌛</span>
+                <span className="inline-block mr-2 animate-spin">⌛</span>
                 Creating Market...
               </>
             ) : (
@@ -339,7 +339,7 @@ export function CreateMarketForm() {
           </button>
 
           {!connected && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div className="p-4 border border-yellow-200 rounded-lg bg-yellow-50">
               <p className="text-sm text-yellow-800">
                 ⚠️ You need to connect your wallet to create a market.
               </p>
@@ -347,7 +347,7 @@ export function CreateMarketForm() {
           )}
 
           {connected && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="p-4 border border-blue-200 rounded-lg bg-blue-50">
               <p className="text-sm text-blue-800">
                 💡 Creating a market costs ~0.01 SOL for rent (refundable when
                 market closes).

@@ -50,7 +50,7 @@ Simple YES/NO markets on political promises, public projects, and institutional 
 User fills form:
 - Question: "¿Milei cumplirá déficit cero 2025?"
 - Resolution Criteria: "YES if official Ministry reports confirm zero deficit by Dec 31, 2025"
-- Category: Politics
+- Category: Social
 - End Date: 2025-12-31
 ```
 

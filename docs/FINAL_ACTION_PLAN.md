@@ -147,7 +147,7 @@ npm run dev
 2. Fill form:
    - **Question:** "Will Argentina dollarize by Dec 2025?"
    - **Description:** "Resolves YES if USD becomes official currency by Dec 31, 2025."
-   - **Category:** Politics
+   - **Category:** Social
    - **End Date:** [30 days from today]
 3. Click "Create Market" → Approve transaction
 4. **COPY THE MARKET ADDRESS** from transaction

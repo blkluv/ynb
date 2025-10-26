@@ -93,7 +93,7 @@ Se tomará como referencia el informe de Enero 2026 que consolida
 los datos del año 2025.
 
 Category:
-Politics
+Social
 
 End Date:
 2025-12-31

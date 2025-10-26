@@ -26,7 +26,7 @@ const initialForm: CreateMarketFormType = {
 
 const categoryOptions = [
   { value: MarketCategory.SPORTS, label: 'Sports', emoji: '⚽' },
-  { value: MarketCategory.POLITICS, label: 'Politics', emoji: '🏛️' },
+  { value: MarketCategory.SOCIAL, label: 'Social', emoji: '📲' },
   { value: MarketCategory.ECONOMICS, label: 'Economics', emoji: '📈' },
   { value: MarketCategory.TECHNOLOGY, label: 'Technology', emoji: '💻' },
   { value: MarketCategory.CRYPTO, label: 'Crypto', emoji: '₿' },
@@ -149,7 +149,7 @@ export default function CreateMarketForm() {
               href={newMarket.explorerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-purple-400 hover:text-purple-300 underline"
+              className="text-xs text-purple-400 underline hover:text-purple-300"
             >
               View on Solana Explorer →
             </a>
@@ -188,26 +188,26 @@ export default function CreateMarketForm() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-gray-900 text-white">
+    <div className="p-6 mx-auto text-white bg-gray-900 max-w-7xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Create Prediction Market</h1>
+        <h1 className="mb-2 text-3xl font-bold">Create Prediction Market</h1>
         <p className="text-gray-400">
           Set up your prediction market with clear questions, resolution
           criteria, and trading parameters.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Form Section */}
         <div className="lg:col-span-2">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information */}
-            <div className="bg-gray-800 rounded-lg p-6">
-              <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
+            <div className="p-6 bg-gray-800 rounded-lg">
+              <h2 className="mb-4 text-xl font-semibold">Basic Information</h2>
 
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block mb-2 text-sm font-medium">
                     Market Question *
                   </label>
                   <input
@@ -223,7 +223,7 @@ export default function CreateMarketForm() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block mb-2 text-sm font-medium">
                     Description *
                   </label>
                   <textarea
@@ -238,9 +238,9 @@ export default function CreateMarketForm() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label className="block mb-2 text-sm font-medium">
                       Category *
                     </label>
                     <select
@@ -262,7 +262,7 @@ export default function CreateMarketForm() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label className="block mb-2 text-sm font-medium">
                       Outcome Type *
                     </label>
                     <select
@@ -281,7 +281,7 @@ export default function CreateMarketForm() {
                         </option>
                       ))}
                     </select>
-                    <p className="text-sm text-gray-400 mt-1">
+                    <p className="mt-1 text-sm text-gray-400">
                       {
                         outcomeTypeOptions.find(
                           (opt) => opt.value === form.outcomeType
@@ -294,8 +294,8 @@ export default function CreateMarketForm() {
             </div>
 
             {/* Market Options */}
-            <div className="bg-gray-800 rounded-lg p-6">
-              <h2 className="text-xl font-semibold mb-4">Market Options</h2>
+            <div className="p-6 bg-gray-800 rounded-lg">
+              <h2 className="mb-4 text-xl font-semibold">Market Options</h2>
 
               <div className="space-y-4">
                 {form.options.map((option, index) => (
@@ -316,7 +316,7 @@ export default function CreateMarketForm() {
                       <button
                         type="button"
                         onClick={() => removeOption(index)}
-                        className="p-3 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-colors"
+                        className="p-3 text-red-400 transition-colors rounded-lg hover:text-red-300 hover:bg-red-900/20"
                       >
                         <TrashIcon className="w-5 h-5" />
                       </button>
@@ -327,7 +327,7 @@ export default function CreateMarketForm() {
                 <button
                   type="button"
                   onClick={addOption}
-                  className="flex items-center gap-2 px-4 py-3 text-purple-400 hover:text-purple-300 hover:bg-purple-900/20 rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-4 py-3 text-purple-400 transition-colors rounded-lg hover:text-purple-300 hover:bg-purple-900/20"
                 >
                   <PlusIcon className="w-5 h-5" />
                   Add Option
@@ -336,12 +336,12 @@ export default function CreateMarketForm() {
             </div>
 
             {/* Resolution Details */}
-            <div className="bg-gray-800 rounded-lg p-6">
-              <h2 className="text-xl font-semibold mb-4">Resolution Details</h2>
+            <div className="p-6 bg-gray-800 rounded-lg">
+              <h2 className="mb-4 text-xl font-semibold">Resolution Details</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block mb-2 text-sm font-medium">
                     Resolution Date *
                   </label>
                   <div className="relative">
@@ -359,7 +359,7 @@ export default function CreateMarketForm() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block mb-2 text-sm font-medium">
                     Resolution Source *
                   </label>
                   <input
@@ -377,12 +377,12 @@ export default function CreateMarketForm() {
             </div>
 
             {/* Fees Configuration */}
-            <div className="bg-gray-800 rounded-lg p-6">
-              <h2 className="text-xl font-semibold mb-4">Fee Configuration</h2>
+            <div className="p-6 bg-gray-800 rounded-lg">
+              <h2 className="mb-4 text-xl font-semibold">Fee Configuration</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block mb-2 text-sm font-medium">
                     Creation Fee (%)
                   </label>
                   <input
@@ -402,7 +402,7 @@ export default function CreateMarketForm() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block mb-2 text-sm font-medium">
                     Trading Fee (%)
                   </label>
                   <input
@@ -422,7 +422,7 @@ export default function CreateMarketForm() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block mb-2 text-sm font-medium">
                     Resolution Fee (%)
                   </label>
                   <input
@@ -445,16 +445,16 @@ export default function CreateMarketForm() {
 
             {/* Wallet Connection Status */}
             {!isConnected && (
-              <div className="bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-4 mb-6">
+              <div className="p-4 mb-6 border rounded-lg bg-yellow-900/20 border-yellow-600/30">
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-yellow-600 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">!</span>
+                  <div className="flex items-center justify-center w-5 h-5 bg-yellow-600 rounded-full">
+                    <span className="text-xs font-bold text-white">!</span>
                   </div>
                   <div>
-                    <p className="text-yellow-300 font-medium">
+                    <p className="font-medium text-yellow-300">
                       Wallet Not Connected
                     </p>
-                    <p className="text-yellow-400 text-sm">
+                    <p className="text-sm text-yellow-400">
                       Connect your wallet to create a market
                     </p>
                   </div>
@@ -467,11 +467,11 @@ export default function CreateMarketForm() {
               <button
                 type="submit"
                 disabled={!isFormValid() || isSubmitting || !isConnected}
-                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center gap-2"
+                className="flex items-center gap-2 px-8 py-4 font-semibold text-white transition-all duration-200 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-5 h-5 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
                     Creating Market...
                   </>
                 ) : !isConnected ? (

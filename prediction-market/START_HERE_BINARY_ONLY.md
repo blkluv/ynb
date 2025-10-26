@@ -168,7 +168,7 @@ No need for complex numeric predictions or expensive oracle integrations.
 ```
 "Polymarket does global crypto events.
 PredictIt does US politics.
-We do LATAM accountability: political promises, public projects, institutional commitments."
+We do Social accountability: social media promises, public projects, institutional commitments."
 ```
 
 ### **3. Tech Advantages**
@@ -180,7 +180,7 @@ Simple UX: anyone can create a market in 2 minutes."
 
 ### **4. Market Opportunity**
 ```
-"600M people in LATAM.
+"600M people on social media.
 Weak institutional accountability.
 Growing crypto adoption.
 First mover in accountability markets."
@@ -225,7 +225,7 @@ A: "We're a prediction market protocol, not a betting platform.
 ## 🛠️ **Next Development Steps (Post-Hackathon)**
 
 ### **Phase 1: Polish MVP**
-1. Add more LATAM market templates
+1. Add more Social Media market templates
 2. Improve resolution evidence flow
 3. Add social sharing (viral loop)
 4. Multi-language (ES/PT/EN)

@@ -82,23 +82,23 @@ let markets: MarketQuestion[] = loadFromLocalStorage('markets', [
   },
   {
     id: '3',
-    question: 'Who will win the 2024 US Presidential Election?',
+    question: 'Will The Breakfast Club talk about LUV NFT solutions?',
     description:
-      'Market resolves based on the official Electoral College results.',
-    category: 'politics' as any,
+      'Market resolves based on the LUV NFT solutions results.',
+    category: 'social' as any,
     resolutionDate: '2024-11-06T23:59:59Z',
     resolutionSource: 'https://www.example.com/election-results',
     outcomeType: 'categorical' as any,
     options: [
       {
         id: 'dem',
-        text: 'Democratic Candidate',
+        text: 'Yes',
         probability: 0.52,
         volume: 15600,
       },
       {
         id: 'rep',
-        text: 'Republican Candidate',
+        text: 'No',
         probability: 0.46,
         volume: 13800,
       },

@@ -30,7 +30,7 @@ export interface MarketFees {
 
 export enum MarketCategory {
   SPORTS = 'sports',
-  POLITICS = 'politics',
+  SOCIAL = 'social',
   ECONOMICS = 'economics',
   TECHNOLOGY = 'technology',
   CRYPTO = 'crypto',

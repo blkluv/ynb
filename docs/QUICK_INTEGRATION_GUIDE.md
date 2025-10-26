@@ -178,7 +178,7 @@ export function CreateMarketForm() {
 
   const [question, setQuestion] = useState('')
   const [description, setDescription] = useState('')
-  const [category, setCategory] = useState('Politics')
+  const [category, setCategory] = useState('Social')
   const [endDate, setEndDate] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -225,7 +225,7 @@ export function CreateMarketForm() {
         onChange={(e) => setCategory(e.target.value)}
         className="w-full px-4 py-2 border rounded"
       >
-        <option value="Politics">Politics</option>
+        <option value="Social">Social</option>
         <option value="Sports">Sports</option>
         <option value="Crypto">Crypto</option>
         <option value="Economics">Economics</option>

@@ -18,7 +18,7 @@ const steps = [
     title: 'Predict or Create',
     description: 'Find existing markets or create your own',
     time: '2 minutes',
-    action: 'Thousands of markets on politics, crypto, sports, economy.',
+    action: 'Thousands of markets on social, crypto, sports, economy.',
     color: 'from-pink-500 to-purple-500'
   },
   {
@@ -35,18 +35,18 @@ const steps = [
 const HowItWorksSection = () => {
   return (
     <section className="relative py-24 bg-gradient-to-b from-black to-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <div className="inline-block px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full mb-6">
-            <span className="text-sm text-purple-300 font-medium">Simple and Fast</span>
+        <div className="mb-16 text-center">
+          <div className="inline-block px-4 py-2 mb-6 border rounded-full bg-purple-500/10 border-purple-500/20">
+            <span className="text-sm font-medium text-purple-300">Simple and Fast</span>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+          <h2 className="mb-4 text-4xl font-bold sm:text-5xl">
+            <span className="text-transparent bg-gradient-to-r from-white to-gray-300 bg-clip-text">
               From Zero to Predicting in 3 Steps
             </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto text-xl text-gray-400">
             You don&apos;t need to be an expert. Start predicting and earning in minutes.
           </p>
         </div>
@@ -54,9 +54,9 @@ const HowItWorksSection = () => {
         {/* Steps */}
         <div className="relative">
           {/* Connection Line */}
-          <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 transform -translate-y-1/2 opacity-20"></div>
+          <div className="absolute left-0 right-0 hidden h-1 transform -translate-y-1/2 lg:block top-1/2 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 opacity-20"></div>
 
-          <div className="grid md:grid-cols-3 gap-8 relative">
+          <div className="relative grid gap-8 md:grid-cols-3">
             {steps.map((step, index) => {
               const Icon = step.icon;
               return (
@@ -65,7 +65,7 @@ const HowItWorksSection = () => {
                   className="relative group"
                 >
                   {/* Card */}
-                  <div className="bg-gray-900 border border-gray-700 hover:border-gray-600 rounded-2xl p-8 transition-all duration-300 hover:scale-105 relative overflow-hidden">
+                  <div className="relative p-8 overflow-hidden transition-all duration-300 bg-gray-900 border border-gray-700 hover:border-gray-600 rounded-2xl hover:scale-105">
                     {/* Background Gradient */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${step.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
 
@@ -76,29 +76,29 @@ const HowItWorksSection = () => {
                       </div>
 
                       {/* Icon */}
-                      <div className="absolute -top-2 -right-2 w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700">
+                      <div className="absolute flex items-center justify-center w-12 h-12 bg-gray-800 border border-gray-700 rounded-lg -top-2 -right-2">
                         <Icon className="w-6 h-6 text-purple-400" />
                       </div>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-2xl font-bold text-white mb-3">
+                    <h3 className="mb-3 text-2xl font-bold text-white">
                       {step.title}
                     </h3>
 
                     {/* Description */}
-                    <p className="text-gray-400 mb-4">
+                    <p className="mb-4 text-gray-400">
                       {step.description}
                     </p>
 
                     {/* Time Badge */}
                     <div className="flex items-center gap-2 mb-4">
                       <CheckCircle className="w-5 h-5 text-green-400" />
-                      <span className="text-green-400 font-medium">{step.time}</span>
+                      <span className="font-medium text-green-400">{step.time}</span>
                     </div>
 
                     {/* Action */}
-                    <p className="text-gray-300 text-sm">
+                    <p className="text-sm text-gray-300">
                       {step.action}
                     </p>
 
@@ -110,8 +110,8 @@ const HowItWorksSection = () => {
 
                   {/* Arrow (desktop only) */}
                   {index < steps.length - 1 && (
-                    <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
-                      <div className="w-8 h-8 bg-gray-900 border-2 border-purple-500 rounded-full flex items-center justify-center">
+                    <div className="absolute z-10 hidden transform -translate-y-1/2 lg:block top-1/2 -right-4">
+                      <div className="flex items-center justify-center w-8 h-8 bg-gray-900 border-2 border-purple-500 rounded-full">
                         <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
                       </div>
                     </div>
@@ -123,31 +123,31 @@ const HowItWorksSection = () => {
         </div>
 
         {/* Bottom Stats */}
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="text-center p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
-            <div className="text-3xl font-bold text-white mb-2">10s</div>
+        <div className="grid grid-cols-2 gap-6 mt-16 md:grid-cols-4">
+          <div className="p-6 text-center border border-gray-800 bg-gray-900/50 rounded-xl">
+            <div className="mb-2 text-3xl font-bold text-white">10s</div>
             <div className="text-sm text-gray-400">Setup Time</div>
           </div>
-          <div className="text-center p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
-            <div className="text-3xl font-bold text-white mb-2">$5</div>
+          <div className="p-6 text-center border border-gray-800 bg-gray-900/50 rounded-xl">
+            <div className="mb-2 text-3xl font-bold text-white">$5</div>
             <div className="text-sm text-gray-400">Minimum to Start</div>
           </div>
-          <div className="text-center p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
-            <div className="text-3xl font-bold text-white mb-2">24h</div>
+          <div className="p-6 text-center border border-gray-800 bg-gray-900/50 rounded-xl">
+            <div className="mb-2 text-3xl font-bold text-white">24h</div>
             <div className="text-sm text-gray-400">Average Resolution</div>
           </div>
-          <div className="text-center p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
-            <div className="text-3xl font-bold text-white mb-2">0%</div>
+          <div className="p-6 text-center border border-gray-800 bg-gray-900/50 rounded-xl">
+            <div className="mb-2 text-3xl font-bold text-white">0%</div>
             <div className="text-sm text-gray-400">Withdrawal Fees</div>
           </div>
         </div>
 
         {/* CTA */}
         <div className="mt-12 text-center">
-          <button className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-purple-500/50">
+          <button className="px-8 py-4 font-semibold text-white transition-all duration-200 rounded-lg shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 hover:shadow-purple-500/50">
             Start Now - It&apos;s Free →
           </button>
-          <p className="text-gray-500 text-sm mt-4">
+          <p className="mt-4 text-sm text-gray-500">
             No credit card required. Just your wallet.
           </p>
         </div>

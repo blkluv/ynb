@@ -141,7 +141,7 @@ export const MOCK_MARKETS: MockMarket[] = [
     question: 'Will any country ban TikTok nationwide in 2025?',
     description:
       'This market resolves YES if any country with population >50M implements a complete nationwide ban on TikTok before December 31, 2025.',
-    category: 'Politics',
+    category: 'Social',
     creator: 'Qr8s...4Zu5',
     createdAt: new Date('2025-03-10'),
     endTime: new Date('2025-12-31'),
@@ -207,7 +207,7 @@ export const CATEGORIES = [
   'Crypto',
   'Technology',
   'Sports',
-  'Politics',
+  'Social',
   'Economics',
   'Climate',
 ]

@@ -495,7 +495,7 @@ export function getExplorerLink(
  *   question: "Will Argentina dollarize by Dec 2025?",
  *   description: "Resolves YES if...",
  *   endTime: Math.floor(Date.now() / 1000) + 86400 * 30, // 30 days
- *   category: "Politics"
+ *   category: "Social"
  * });
  *
  * // 2. Place bets

@@ -59,7 +59,7 @@ Fuente oficial: Informes mensuales del Ministerio de Economía publicados en htt
 Se tomará como referencia el informe del mes de Enero 2026 que consolida los datos del año 2025.
 
 Category:
-Politics
+Social
 
 End Date:
 2025-12-31
