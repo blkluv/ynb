@@ -90,18 +90,34 @@ const HeroSection = () => {
               href="/create-market"
               className="group px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-[#00F0FF] via-[#FF0080] to-[#FF7A2F] hover:opacity-90 text-white font-bold rounded-lg transition-all duration-200 shadow-lg hover:shadow-[#00F0FF]/50 flex items-center justify-center gap-2 text-center min-h-[48px]"
             >
-              <span>Create Market</span>
-              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+              <span>🆕 Create Market</span>
             </Link>
 
             <Link
               href="/markets"
               className="px-6 sm:px-8 py-3 sm:py-4 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-[#00F0FF]/30 hover:border-[#00F0FF]/50 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-center min-h-[48px]"
             >
-              <TrendingUp className="w-5 h-5" />
-              <span>Browse Markets</span>
+              <span>📈 Browse Markets</span>
             </Link>
+
+            <Link
+              href="https://www.tiktok.com/t/ZP96DNX4Eyckw-vydLq/"
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-[#00F0FF]/30 hover:border-[#00F0FF]/50 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-center min-h-[48px]"
+            >
+              <span>🔮 PredicTok TikTok Effect</span>
+            </Link>
+
+            <Link
+              href="https://www.tiktok.com/t/ZP96DNq9CAkcR-DjEnm/"
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-[#00F0FF]/30 hover:border-[#00F0FF]/50 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 text-center min-h-[48px]"
+            >
+              <span>🤔 PredicTok It TikTok Effect</span>
+            </Link>
+
+
+
           </div>
+
 
           {/* Trust Indicators - Mobile optimized */}
           <div className="flex flex-col flex-wrap items-center justify-center gap-4 px-4 mt-12 sm:mt-16 sm:flex-row sm:gap-8 opacity-60">

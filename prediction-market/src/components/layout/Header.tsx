@@ -58,7 +58,7 @@ const Header = () => {
                 'ml-2 text-xl font-bold',
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               )}>
-                PredicTok
+                PredicTok.fun
               </span>
             </Link>
           </div>
