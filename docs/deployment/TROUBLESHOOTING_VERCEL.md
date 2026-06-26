@@ -172,7 +172,7 @@ export default {
 ```
 ✅ NORMAL:
 [GET] / - 200 in 234ms
-[GET] /images/prismafi-logo.svg - 200 in 12ms
+[GET] /images/predictokfun.svg - 200 in 12ms
 
 ❌ ERROR:
 [GET] / - 500 in 1234ms

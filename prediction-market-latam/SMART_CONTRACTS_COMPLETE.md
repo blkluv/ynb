@@ -1,8 +1,8 @@
-# ✅ PrismaFi Smart Contracts - COMPLETADOS
+# ✅ PredicTok.fun Smart Contracts - COMPLETADOS
 
 ## 🎉 Resumen Ejecutivo
 
-Los smart contracts de PrismaFi Prediction Markets en Solana están **100% completos** y listos para testing y deployment.
+Los smart contracts de PredicTok.fun Prediction Markets en Solana están **100% completos** y listos para testing y deployment.
 
 ---
 
@@ -393,8 +393,8 @@ Early adopter badge: primeros 1000 usuarios
 ## 📞 Contacto
 
 ¿Dudas o issues? Abre un issue en GitHub o contáctanos en:
-- Discord: https://discord.gg/prismafi
-- Twitter: @PrismaFi
+- TikTok: https://tiktok.com/predictokfun
+- Twitter: @PredicTok.fun
 
 ---
 

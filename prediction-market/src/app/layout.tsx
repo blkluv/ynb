@@ -18,9 +18,9 @@ const prompt = Prompt({
 })
 
 export const metadata: Metadata = {
-  title: 'PrismaFi | Transparent Prediction Markets for Social Impact',
+  title: 'PredicTok.fun | Transparent Prediction Markets for Social Impact',
   description:
-    'Building transparent prediction markets for social impact across LATAM. Turn accountability into a public good on Solana.',
+    'Building transparent prediction markets for social impact across TikTok. Turn accountability into a public good on Solana.',
   viewport: {
     width: 'device-width',
     initialScale: 1,
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'PrismaFi',
+    title: 'PredicTok.fun',
   },
   formatDetection: {
     telephone: false,

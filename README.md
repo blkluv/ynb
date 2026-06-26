@@ -1,15 +1,15 @@
-# 🎯 PrismaFi - Transparent Prediction Markets on Solana
+# 🎯 PredicTok.fun - Transparent Prediction Markets on Solana
 
 > **Transparent, Verifiable, On-Chain.** A next-generation prediction market platform built on Solana with full transparency and instant settlements. Every bet, resolution, and payout is verifiable on-chain.
 
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://cypherpunk-hackathon2025-three.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://predictok.fun)
 [![Solana](https://img.shields.io/badge/Solana-Devnet-9945FF?logo=solana)](https://solana.com)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
 
 ---
 
-## 🌟 What Makes PrismaFi Different?
+## 🌟 What Makes PredicTok.fun Different?
 
 Traditional prediction markets suffer from opacity and trust issues. You never know if odds are manipulated or if your payout will arrive.
 
@@ -24,7 +24,7 @@ Traditional prediction markets suffer from opacity and trust issues. You never k
 
 ## 🚀 Live Demo
 
-**👉 [Try it now on Solana Devnet](https://cypherpunk-hackathon2025-three.vercel.app/)**
+**👉 [Try it now on Solana Devnet](https://predictok.fun)**
 
 ### Quick Start (No Installation):
 1. Install [Phantom Wallet](https://phantom.app/)
@@ -490,10 +490,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact & Links
 
-- **Live Demo**: https://cypherpunk-hackathon2025-three.vercel.app/
+- **Live Demo**: https://predictok.fun
 - **GitHub**: https://github.com/Edgadafi/cypherpunk-hackathon2025
-- **Twitter**: @YourTwitterHandle (coming soon)
-- **Discord**: Join our community (coming soon)
 
 ---
 
@@ -503,7 +501,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Team**: Edgadafi  
 **Category**: DeFi / Prediction Markets  
 **Blockchain**: Solana (Devnet)  
-**Demo**: [Live on Vercel](https://cypherpunk-hackathon2025-three.vercel.app/)
+**Demo**: [Live on Vercel](https://predictok.fun)
 
 ---
 

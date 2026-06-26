@@ -1,4 +1,4 @@
-# PrismaFi - Pharos Hackathon 2025 Submission Checklist
+# PredicTok.fun - Pharos Hackathon 2025 Submission Checklist
 
 > **Complete submission package for Builders Track**  
 > **Submitted by**: Edgadafi  
@@ -18,7 +18,7 @@
 **Contents:**
 - ✅ Introduction: Solo founder from LATAM building transparent prediction markets
 - ✅ Problem Statement: Opacity, high fees, centralized control in existing markets
-- ✅ Solution: PrismaFi - transparent, fast, AI-enhanced prediction markets on Solana
+- ✅ Solution: PredicTok.fun - transparent, fast, AI-enhanced prediction markets on Solana
 - ✅ Product Features: Core trading, discovery, social, **AI Market Analyzer (Swarms)**
 - ✅ Technical Architecture: Next.js + Solana + Anchor + Swarms AI
 - ✅ Traction: Live demo on Vercel + Solana Devnet
@@ -55,7 +55,7 @@
 # Prerequisites
 1. Switch Phantom to Solana Devnet
 2. Get test SOL from faucet
-3. Open demo at: https://cypherpunk-hackathon2025-three.vercel.app/
+3. Open demo at: https://predictok.fun
 4. Use Loom, OBS, or ScreenFlow
 5. Follow the script section-by-section
 6. Export as MP4, 1080p
@@ -133,7 +133,7 @@ cypherpunk-hackathon2025/
 
 ## 🎯 Live Demo
 
-**URL**: [cypherpunk-hackathon2025-three.vercel.app](https://cypherpunk-hackathon2025-three.vercel.app/)
+**URL**: [predictok.fun](https://predictok.fun)
 
 **Status**: ✅ **LIVE & WORKING**
 
@@ -401,8 +401,7 @@ cypherpunk-hackathon2025/
 - **Checklist**: [SUBMISSION_CHECKLIST.md](./SUBMISSION_CHECKLIST.md) (this file)
 
 ### Social (Coming Soon)
-- Twitter: @PrismaFi (TBD)
-- Discord: PrismaFi Community (TBD)
+- Twitter: @PredicTok.fun (TBD)
 
 ---
 

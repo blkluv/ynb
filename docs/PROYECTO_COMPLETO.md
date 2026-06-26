@@ -99,7 +99,7 @@ prediction-market/
 │       └── market.ts
 ├── public/
 │   └── images/
-│       └── prismafi-logo.svg
+│       └── predictokfun.svg
 ├── .env.local                         (Con Privy App ID)
 ├── package.json
 ├── tailwind.config.ts

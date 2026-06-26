@@ -10,7 +10,7 @@
 
 ### Pre-Demo Setup (Do this before presenting)
 1. Have wallet with ~1 SOL ready
-2. Open app in browser: https://cypherpunk-hackathon2025-three.vercel.app
+2. Open app in browser: https://predictok.fun
 3. Have [Pyth Network website](https://pyth.network) open in another tab for reference
 4. Pre-check current BTC/SOL/ETH prices for talking points
 
@@ -21,7 +21,7 @@
 ### 1. **Introduction** (30 seconds)
 
 **Say:**
-> "Let me show you something that makes PrismaFi different from every other prediction market out there. Traditional prediction markets have a trust problem: someone has to manually resolve the outcome. What if they're biased? What if they disappear? What if they just don't feel like resolving?
+> "Let me show you something that makes PredicTok.fun different from every other prediction market out there. Traditional prediction markets have a trust problem: someone has to manually resolve the outcome. What if they're biased? What if they disappear? What if they just don't feel like resolving?
 >
 > We solved this with **Oracle-powered automatic resolution** using Pyth Network."
 
@@ -180,7 +180,7 @@
 - **vs Polymarket:** They use UMA (human dispute resolution)
 - **vs Augur:** Expensive on Ethereum, slow resolution
 - **vs Kalshi:** Regulated, limited markets, manual settlement
-- **PrismaFi:** Trustless, instant, unlimited markets, pennies in fees
+- **PredicTok.fun:** Trustless, instant, unlimited markets, pennies in fees
 
 ---
 
@@ -241,7 +241,7 @@ After the demo, judges/audience should be able to answer:
 
 ## 🔗 Helpful Links to Have Ready
 
-- **Live Demo:** https://cypherpunk-hackathon2025-three.vercel.app
+- **Live Demo:** (https://predictok.fun)
 - **Solana Explorer (Devnet):** https://explorer.solana.com?cluster=devnet
 - **Program ID:** `GUzTP7BCgdTUTEDtguuUwZKdDbrkAKFiiRuqzpbSaQLu`
 - **GitHub:** https://github.com/Edgadafi/cypherpunk-hackathon2025

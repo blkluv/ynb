@@ -34,7 +34,7 @@ export default function PrivyProvider({ children }: PrivyProviderProps) {
         appearance: {
           theme: 'dark',
           accentColor: '#7c3aed',
-          logo: '/images/prismafi-logo.svg',
+          logo: '/images/predictokfun.svg',
           showWalletLoginFirst: true,
         },
         loginMethods: ['wallet', 'email', 'google', 'twitter'],

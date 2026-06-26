@@ -8,7 +8,7 @@
 
 ## 📊 Summary
 
-PrismaFi now supports **automatic market resolution** using Pyth Network's decentralized price oracles. This enables trustless, instant resolution for price-based prediction markets without any human intervention.
+PredicTok.fun now supports **automatic market resolution** using Pyth Network's decentralized price oracles. This enables trustless, instant resolution for price-based prediction markets without any human intervention.
 
 ---
 
@@ -96,7 +96,7 @@ interface OracleConfig {
 - Loading states
 
 **UI Highlights:**
-- Clean brutalist design matching PrismaFi aesthetic
+- Clean brutalist design matching PredicTok.fun aesthetic
 - Real-time validation
 - Preview of resolution criteria
 - Gas cost estimation
@@ -353,7 +353,7 @@ The architecture supports **any Pyth price feed**. Easy to add:
 
 > "Traditional prediction markets have a trust problem: someone has to manually resolve them. What if they're wrong? What if they're biased?"
 
-> "PrismaFi solves this with Pyth Network integration. For price-based markets like 'Will Bitcoin hit $100k?', the market auto-resolves using real, verifiable price data from Pyth's oracle network."
+> "PredicTok.fun solves this with Pyth Network integration. For price-based markets like 'Will Bitcoin hit $100k?', the market auto-resolves using real, verifiable price data from Pyth's oracle network."
 
 > "This makes resolution:
 > - **Trustless** - No human can manipulate it

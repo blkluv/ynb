@@ -4,7 +4,7 @@
 
 import type { UserStats, MarketAccount, EnrichedBet } from '../program/direct-read';
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://cypherpunk-hackathon2025-three.vercel.app';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://predictok.fun';
 
 /**
  * Generate Twitter/X share URL
@@ -45,7 +45,7 @@ export function generateProfileShareText(
 🎲 ${stats.totalBets} bets | 🎯 ${winRate}% win rate
 💰 ${profit} SOL profit | 📈 ${roi}% ROI
 
-Check out my track record on PrismaFi! 🚀`;
+Check out my track record on PredicTok.fun! 🚀`;
 }
 
 /**
@@ -53,7 +53,7 @@ Check out my track record on PrismaFi! 🚀`;
  */
 export function generateMarketShareText(market: MarketAccount): string {
   const totalPool = (market.yesAmount + market.noAmount) / 1e9; // Convert to SOL
-  const yesOdds = market.yesAmount + market.noAmount > 0 
+  const yesOdds = market.yesAmount + market.noAmount > 0
     ? ((market.yesAmount / (market.yesAmount + market.noAmount)) * 100).toFixed(0)
     : '50';
 
@@ -65,7 +65,7 @@ Current odds:
 
 Total pool: ${totalPool.toFixed(2)} SOL
 
-What's your prediction? Trade now on PrismaFi! 🚀`;
+What's your prediction? Trade now on PredicTok.fun! 🚀`;
 }
 
 /**

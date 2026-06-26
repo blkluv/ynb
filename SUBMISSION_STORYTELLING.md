@@ -4,7 +4,7 @@
 > **Project**: PrismaFi  
 > **Builder**: Edgadafi  
 > **Category**: DeFi / Prediction Markets  
-> **Live Demo**: [cypherpunk-hackathon2025-three.vercel.app](https://cypherpunk-hackathon2025-three.vercel.app/)
+> **Live Demo**: [predictok.fun](https://predictok.fun)
 
 ---
 

@@ -258,7 +258,7 @@ function MyLayout() {
 3. **Appearance**:
    - Theme: Dark
    - Accent Color: #7c3aed (purple)
-   - Logo: /images/prismafi-logo.svg
+   - Logo: /images/predictokfun.svg
 
 4. **Security**:
    - ✅ Require email verification

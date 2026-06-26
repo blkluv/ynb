@@ -20,7 +20,7 @@
 
 ## Overview
 
-Trepa (PrismaFi) is built as a **full-stack decentralized application** with four main layers:
+Trepa (PredicTok.fun) is built as a **full-stack decentralized application** with four main layers:
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -255,7 +255,7 @@ Layout
 
 ### Swarms Multi-Agent Architecture
 
-PrismaFi integrates **Swarms** - a multi-agent AI orchestration platform - to provide market participants with intelligent insights that go beyond raw odds.
+PredicTok.fun integrates **Swarms** - a multi-agent AI orchestration platform - to provide market participants with intelligent insights that go beyond raw odds.
 
 ### Agent Architecture
 

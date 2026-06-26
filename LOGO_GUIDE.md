@@ -4,7 +4,7 @@
 
 ```
 📂 prediction-market/public/images/
-   └── prismafi-logo.svg  ← Reemplaza este archivo
+   └── predictokfun.svg  ← Reemplaza este archivo
 ```
 
 ---
@@ -19,14 +19,14 @@ cd /home/edgadafi/cypherpunk-hackathon2025/prediction-market/public/images
 
 # 2. Copia tu logo desde Windows
 # Nota: En WSL, tu C:\ está en /mnt/c/
-cp /mnt/c/Users/TU_USUARIO/Downloads/mi-logo.svg ./prismafi-logo.svg
+cp /mnt/c/Users/TU_USUARIO/Downloads/mi-logo.svg ./predictokfun.svg
 
 # 3. Verifica que se copió
-ls -lh prismafi-logo.svg
+ls -lh predictokfun.svg
 
 # 4. Commit y push
 cd /home/edgadafi/cypherpunk-hackathon2025
-git add prediction-market/public/images/prismafi-logo.svg
+git add prediction-market/public/images/predictokfun.svg
 git commit -m "Update logo"
 git push
 ```
@@ -37,7 +37,7 @@ git push
 2. Navega a `prediction-market/public/images/`
 3. **Click derecho** → **Reveal in File Explorer**
 4. **Arrastra tu archivo** desde tu PC
-5. Renombra a `prismafi-logo.svg` (o `.png`)
+5. Renombra a `predictokfun.svg` (o `.png`)
 6. Git add, commit, push
 
 ### **Opción 3: Via Git Clone Local**
@@ -45,8 +45,8 @@ git push
 ```bash
 # Si tienes el repo clonado en Windows
 cd C:\ruta\a\tu\repo\prediction-market\public\images
-copy C:\mi-logo.svg prismafi-logo.svg
-git add prismafi-logo.svg
+copy C:\mi-logo.svg predictokfun.svg
+git add predictokfun.svg
 git commit -m "Update logo"
 git push
 ```
@@ -175,7 +175,7 @@ className="text-blue-500"  // Logo azul
 ```bash
 # Estructura:
 public/images/
-  ├── prismafi-logo.svg          ← Logo principal (blanco)
+  ├── predictokfun.svg          ← Logo principal (blanco)
   ├── prismafi-logo-dark.svg     ← Versión para dark mode
   └── prismafi-logo-light.svg    ← Versión para light mode
 ```
@@ -186,15 +186,15 @@ public/images/
 <Link href="/" className="flex items-center">
   {/* Dark mode logo */}
   <img
-    src="/images/prismafi-logo.svg"
-    alt="PrismaFi"
+    src="/images/predictokfun.svg"
+    alt="PredicTok.fun"
     className="h-10 w-auto dark:block hidden"
   />
   
   {/* Light mode logo (si añades light mode) */}
   <img
     src="/images/prismafi-logo-dark.svg"
-    alt="PrismaFi"
+    alt="PredicTok.fun"
     className="h-10 w-auto dark:hidden block"
   />
 </Link>
@@ -261,7 +261,7 @@ Antes de subir tu logo:
 - [ ] Colores apropiados para dark mode
 - [ ] Aspect ratio correcto
 - [ ] Probado en diferentes tamaños
-- [ ] Archivo nombrado: `prismafi-logo.svg` o `.png`
+- [ ] Archivo nombrado: `predictokfun.svg` o `.png`
 
 ---
 
@@ -272,14 +272,14 @@ Antes de subir tu logo:
 
 # 2. Sube a WSL
 cd /home/edgadafi/cypherpunk-hackathon2025/prediction-market/public/images
-cp /mnt/c/ruta/a/tu/logo.svg ./prismafi-logo.svg
+cp /mnt/c/ruta/a/tu/logo.svg ./predictokfun.svg
 
 # 3. (Opcional) Ajusta Header.tsx si necesitas cambiar tamaño
 # Ver: src/components/layout/Header.tsx línea 49
 
 # 4. Commit y push
 cd /home/edgadafi/cypherpunk-hackathon2025
-git add prediction-market/public/images/prismafi-logo.svg
+git add prediction-market/public/images/predictokfun.svg
 git commit -m "feat: Update logo design"
 git push
 
@@ -305,7 +305,7 @@ Si tu logo tiene texto, asegúrate de:
         font-size="24" 
         font-weight="bold"
         fill="currentColor">
-    PrismaFi
+    PredicTok.fun
   </text>
 </svg>
 ```

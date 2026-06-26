@@ -1,6 +1,6 @@
-# Contributing to PrismaFi
+# Contributing to PredicTok.fun
 
-Thank you for your interest in contributing to PrismaFi! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to PredicTok.fun! This document provides guidelines and instructions for contributing.
 
 ---
 
@@ -229,7 +229,7 @@ When adding features:
 
 ## 🙏 Thank You!
 
-Your contributions make PrismaFi better for everyone. We appreciate your time and effort!
+Your contributions make PredicTok.fun better for everyone. We appreciate your time and effort!
 
 ---
 

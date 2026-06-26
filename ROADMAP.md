@@ -1,4 +1,4 @@
-# 🛣️ PrismaFi Roadmap
+# 🛣️ PredicTok.fun Roadmap
 
 > **Vision:** Build the most transparent, accessible, and feature-rich prediction market platform on Solana.
 
@@ -205,7 +205,7 @@ pub struct TokenPool {
 
 ## 🤝 Contributing
 
-Want to help build PrismaFi? Check out our [Contributing Guide](./CONTRIBUTING.md) and pick a feature from the roadmap!
+Want to help build PredicTok.fun? Check out our [Contributing Guide](./CONTRIBUTING.md) and pick a feature from the roadmap!
 
 **High-Priority Contributions:**
 - Stablecoin integration (Phase 4)

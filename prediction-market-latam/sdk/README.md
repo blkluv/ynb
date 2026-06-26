@@ -1,6 +1,6 @@
 # PrismaFi Prediction Market SDK
 
-TypeScript SDK para interactuar con los smart contracts de PrismaFi Prediction Markets en Solana.
+TypeScript SDK para interactuar con los smart contracts de PredicTok.fun Prediction Markets en Solana.
 
 ## Instalación
 

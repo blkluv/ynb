@@ -1,8 +1,8 @@
-# PrismaFi Product Requirements Document
+# PredicTok.fun Product Requirements Document
 
 ## 1. Product Overview
 
-- **Name:** PrismaFi
+- **Name:** PredicTok.fun
 - **Tagline:** "The open prediction layer for Solana."
 - **Summary:** A decentralized, non-custodial protocol for creating and trading prediction markets using Solana's fast and low-cost infrastructure.
 - **Vision:** To democratize forecasting by enabling anyone to express, trade, and monetize information with transparent, permissionless markets.
@@ -18,7 +18,7 @@
 - **Retail traders:** Seek to profit from knowledge or speculation.
 - **Communities / DAOs:** Use prediction markets to coordinate beliefs and decisions.
 - **Validators / Oracles:** Secure event resolution for reputation and staking rewards.
-- **Developers:** Integrate PrismaFi's markets and data feeds into DeFi apps or dashboards.
+- **Developers:** Integrate PredicTok.fun's markets and data feeds into DeFi apps or dashboards.
 
 ## 4. User Stories
 

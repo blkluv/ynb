@@ -1,4 +1,4 @@
-# 🔮 PrismaFi Prediction Markets - Solana Smart Contracts
+# 🔮 PredicTok.fun Prediction Markets - Solana Smart Contracts
 
 **Permisionless prediction markets para social accountability en LATAM**
 
@@ -385,7 +385,7 @@ MIT License - see [LICENSE](LICENSE) for details
 
 - **Website**: https://prismafi.io
 - **Twitter**: [@PrismaFi](https://twitter.com/PrismaFi)
-- **Discord**: https://discord.gg/prismafi
+- **TikTok**: https://tiktok.com/@predictokfun
 - **Docs**: https://docs.prismafi.io
 
 ---

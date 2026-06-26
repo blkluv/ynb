@@ -588,12 +588,8 @@ The question is "Who builds the best one?"
 ### Get Involved
 
 #### **Try PrismaFi**
-- Live demo: [cypherpunk-hackathon2025-three.vercel.app](https://cypherpunk-hackathon2025-three.vercel.app/)
+- Live demo: [predictok.fun](https://predictok.fun)
 - Connect wallet, place bets, see AI insights
-
-#### **Contribute**
-- GitHub: [github.com/Edgadafi/cypherpunk-hackathon2025](https://github.com/Edgadafi/cypherpunk-hackathon2025)
-- Open issues, submit PRs, report bugs
 
 #### **Partner**
 - Enterprise API: [Email]
