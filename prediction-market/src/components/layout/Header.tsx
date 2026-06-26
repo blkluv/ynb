@@ -7,6 +7,7 @@ import { clsx } from 'clsx'
 import WalletButton from './WalletButton'
 import { ThemeToggle } from '../common/ThemeToggle'
 import { useTheme } from '@/contexts/ThemeContext'
+import Image from "next/image";
 
 const Header = () => {
   const { theme } = useTheme()
@@ -53,12 +54,8 @@ const Header = () => {
               <img
              src="/images/predictokfun.svg"
              alt="PredicTok"
-             className="w-auto h-48 sm:h-64 md:h-72"
-             style={{ border: '2px solid red' }} // Temporary to see if image is there
-             onError={(e) => {
-             console.log('SVG failed to load');
-          }}
-           />
+             className="w-auto h-48 mx-auto sm:h-64 md:h-72"
+             />
             </Link>
           </div>
 

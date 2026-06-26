@@ -2,6 +2,7 @@
 
 import { ArrowRight, TrendingUp, Shield, Zap } from 'lucide-react';
 import Link from 'next/link';
+import Image from "next/image";
 
 const HeroSection = () => {
   return (
@@ -37,16 +38,13 @@ const HeroSection = () => {
 
           {/* Logo - Responsive sizing for mobile */}
           <div className="flex justify-center mb-6 sm:mb-8">
-            <img
+          <img
              src="/images/predictokfun.svg"
              alt="PredicTok"
-             className="w-auto h-48 sm:h-64 md:h-72"
-             style={{ border: '2px solid red' }} // Temporary to see if image is there
-             onError={(e) => {
-             console.log('SVG failed to load');
-          }}
+             className="w-auto h-48 mx-auto sm:h-64 md:h-72"
            />
           </div>
+          <div className="flex justify-center mb-6 sm:mb-8">
 
           {/* Main Headline - Optimized for mobile readability */}
           <h1 className="px-2 mb-4 text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl sm:mb-6">
