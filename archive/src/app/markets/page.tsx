@@ -29,8 +29,8 @@ export default function MarketsPage() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
                 <img
-                  src="/images/predictokfun.svg"
-                  alt="PredicTok.fun"
+                  src="https://i.imgur.com/L3hsSR9.png"
+                  alt="PredicTok"
                   className="w-10 h-10"
                 />
                 <h1 className="text-3xl font-bold text-white">

@@ -49,10 +49,10 @@ const Header = () => {
           {/* Logo - Fixed size for header */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <img
-                src="/images/predictokfun-512.png"
-                alt="PredicTok"
-                className="w-auto h-8"  // Small header logo
+            <img
+               src="https://i.imgur.com/zmM1iSx.png"
+               alt="PredicTok"
+               className="w-auto h-8"
               />
               <span className={clsx(
                 'ml-2 text-xl font-bold',

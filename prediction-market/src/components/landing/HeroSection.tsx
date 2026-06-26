@@ -37,7 +37,7 @@ const HeroSection = () => {
           {/* Logo - Responsive sizing for mobile */}
           <div className="flex justify-center mb-6 sm:mb-8">
             <img
-              src="/images/predictokfun.png"
+              src="https://i.imgur.com/zmM1iSx.png"
               alt="PredicTok"
               className="w-auto h-48 mx-auto sm:h-64 md:h-72"
             />
