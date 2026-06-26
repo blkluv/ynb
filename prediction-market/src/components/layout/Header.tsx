@@ -52,7 +52,7 @@ const Header = () => {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <img
-             src="/images/predictokfun.svg"
+             src="/images/predictokfun.png"
              alt="PredicTok"
              className="w-auto h-48 mx-auto sm:h-64 md:h-72"
              />
