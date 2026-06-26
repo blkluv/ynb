@@ -34,7 +34,7 @@ export default function PrivyProvider({ children }: PrivyProviderProps) {
         appearance: {
           theme: 'dark',
           accentColor: '#7c3aed',
-          logo: '/images/predictokfun.svg',
+          logo: '/images/predictokfun.png',
           showWalletLoginFirst: true,
         },
         loginMethods: ['wallet', 'email', 'google', 'twitter'],

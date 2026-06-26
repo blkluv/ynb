@@ -14,7 +14,6 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0)
@@ -24,7 +23,6 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Navigation items
   const navItems = [
     { name: 'Markets', href: '/markets' },
     { name: 'Create Market', href: '/create-market' },
@@ -48,14 +46,20 @@ const Header = () => {
     >
       <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
+          {/* Logo - Fixed size for header */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <img
-             src="/images/predictokfun.png"
-             alt="PredicTok"
-             className="w-auto h-48 mx-auto sm:h-64 md:h-72"
-             />
+                src="/images/predictokfun-512.png"
+                alt="PredicTok"
+                className="w-auto h-8"  // Small header logo
+              />
+              <span className={clsx(
+                'ml-2 text-xl font-bold',
+                theme === 'dark' ? 'text-white' : 'text-gray-900'
+              )}>
+                PredicTok
+              </span>
             </Link>
           </div>
 
