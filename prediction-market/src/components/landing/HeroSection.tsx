@@ -2,14 +2,12 @@
 
 import { ArrowRight, TrendingUp, Shield, Zap } from 'lucide-react';
 import Link from 'next/link';
-import Image from "next/image";
 
 const HeroSection = () => {
   return (
     <section className="relative flex items-center justify-center min-h-screen overflow-hidden">
       {/* Gradient Background - Updated with Official Colors */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-[#8B5CF6]">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
       </div>
 
       {/* Floating Elements - Updated with Official Colors */}
