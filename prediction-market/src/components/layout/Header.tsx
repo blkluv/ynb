@@ -45,21 +45,21 @@ const Header = () => {
             : 'bg-white/60 backdrop-blur-sm'
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <img
                 src="/images/predictokfun.svg"
-                alt="PrismaFi"
-                className="h-10 w-auto brightness-100 hover:brightness-110 transition-all"
+                alt="PredicTok.fun"
+                className="w-auto h-10 transition-all brightness-100 hover:brightness-110"
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="items-center hidden space-x-8 md:flex">
             {navItems.map((item) => (
               <Link
                 key={item.name}
@@ -77,9 +77,9 @@ const Header = () => {
           </nav>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
+          <div className="items-center flex-1 hidden max-w-md mx-8 lg:flex">
             <div className="relative w-full">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <Search className={clsx(
                   'h-4 w-4',
                   theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
@@ -99,7 +99,7 @@ const Header = () => {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="items-center hidden space-x-4 md:flex">
             <ThemeToggle />
             <WalletButton />
           </div>
@@ -116,9 +116,9 @@ const Header = () => {
               )}
             >
               {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
+                <X className="w-6 h-6" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="w-6 h-6" />
               )}
             </button>
           </div>
@@ -136,7 +136,7 @@ const Header = () => {
               {/* Mobile Search */}
               <div className="px-3 py-2">
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <Search className={clsx(
                       'h-4 w-4',
                       theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
@@ -173,7 +173,7 @@ const Header = () => {
               ))}
 
               {/* Mobile Actions */}
-              <div className="px-3 py-2 flex items-center gap-3">
+              <div className="flex items-center gap-3 px-3 py-2">
                 <ThemeToggle />
                 <div className="flex-1">
                   <WalletButton />

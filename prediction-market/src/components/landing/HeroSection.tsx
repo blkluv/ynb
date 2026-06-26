@@ -39,7 +39,7 @@ const HeroSection = () => {
           <div className="flex justify-center mb-6 sm:mb-8">
             <img
               src="/images/predictokfun.svg"
-              alt="PrismaFi"
+              alt="PredicTok.fun"
               className="w-auto h-48 sm:h-64 md:h-72"
             />
           </div>
