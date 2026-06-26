@@ -51,10 +51,14 @@ const Header = () => {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <img
-                src="/images/predictokfun.svg"
-                alt="PredicTok.fun"
-                className="w-auto h-10 transition-all brightness-100 hover:brightness-110"
-              />
+             src="/images/predictokfun.svg"
+             alt="PredicTok"
+             className="w-auto h-48 sm:h-64 md:h-72"
+             style={{ border: '2px solid red' }} // Temporary to see if image is there
+             onError={(e) => {
+             console.log('SVG failed to load');
+          }}
+           />
             </Link>
           </div>
 
