@@ -1,6 +1,6 @@
 {
-  "name": "PrismaFi - Prediction Markets",
-  "short_name": "PrismaFi",
+  "name": "PredicTok - Prediction Markets",
+  "short_name": "PredicTok",
   "description": "Building transparent prediction markets for social impact across LATAM",
   "start_url": "/",
   "display": "standalone",
@@ -9,13 +9,13 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/images/prismafi-logo.png",
+      "src": "/images/predictokfun.svg",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/images/prismafi-logo.png",
+      "src": "/images/predictokfun.svg",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -32,7 +32,7 @@
     "wallet_adapter": true,
     "deep_links": [
       "prisma://",
-      "https://prisma.fi"
+      "https://predictok.fun"
     ]
   }
 }
