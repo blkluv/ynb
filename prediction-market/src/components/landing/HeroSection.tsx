@@ -25,26 +25,25 @@ const HeroSection = () => {
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF7A2F]/10 border border-[#FF7A2F]/30 rounded-full mb-8 backdrop-blur-sm">
             <Zap className="w-4 h-4 text-[#FF7A2F]" />
             <span className="text-sm text-[#FF7A2F] font-semibold tracking-wide">
-            <a
-                  href="https://tiktok.com/@predictok"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline hover:text-[#FF9A4F] transition-colors"
-                >
-             @PredicTokfun
-            </a>
+              <a
+                href="https://tiktok.com/@predictok"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline hover:text-[#FF9A4F] transition-colors"
+              >
+                @PredicTokfun
+              </a>
             </span>
           </div>
 
           {/* Logo - Responsive sizing for mobile */}
           <div className="flex justify-center mb-6 sm:mb-8">
-          <img
-             src="/images/predictokfun.svg"
-             alt="PredicTok"
-             className="w-auto h-48 mx-auto sm:h-64 md:h-72"
-           />
+            <img
+              src="/images/predictokfun.svg"
+              alt="PredicTok"
+              className="w-auto h-48 mx-auto sm:h-64 md:h-72"
+            />
           </div>
-          <div className="flex justify-center mb-6 sm:mb-8">
 
           {/* Main Headline - Optimized for mobile readability */}
           <h1 className="px-2 mb-4 text-3xl font-bold sm:text-4xl md:text-5xl lg:text-6xl sm:mb-6">
@@ -65,10 +64,10 @@ const HeroSection = () => {
 
           {/* Solution */}
           <p className="max-w-3xl px-4 mx-auto mb-8 text-base text-gray-300 sm:text-lg md:text-xl sm:mb-12">
-          <span className="font-bold text-[#00F0FF]">YES = they deliver.</span>
-             {' '}<span className="font-bold text-[#FF0080]">NO = they cap.</span>
+            <span className="font-bold text-[#00F0FF]">YES = they deliver.</span>
+            {' '}<span className="font-bold text-[#FF0080]">NO = they cap.</span>
             {' '}Community votes. Hard evidence wins. {' '}
-          <span className="text-[#00F0FF]">No cap.</span> 🎯
+            <span className="text-[#00F0FF]">No cap.</span> 🎯
           </p>
 
           {/* Stats Bar - Mobile grid layout */}
